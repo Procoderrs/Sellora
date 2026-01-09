@@ -1,5 +1,6 @@
 import Product from "../models/productModel.js";
 import slugify from "slugify";
+import cloudinary from "../utils/cloudinary.js";
 
 // CREATE PRODUCT
 

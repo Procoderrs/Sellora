@@ -7,3 +7,7 @@
       --color-danger: '#E35336',
       --color-textMain: '#3B2F2F',
 }
+
+button {
+  cursor: pointer;
+}
