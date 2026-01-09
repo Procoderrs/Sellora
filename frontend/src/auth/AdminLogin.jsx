@@ -7,20 +7,28 @@ export default function AdminLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false); // ✅ loading state
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setLoading(true); // start "logging in" state
+
     try {
+      console.log("Sending login request..."); // ✅ log request start
       const res = await api.post('/login', { email, password });
+      
+      console.log("Login response received:", res.data); // ✅ log response
       login(res.data);
-      console.log(res.data);
-      console.log(res.data);
+      
+      setLoading(false); // stop loading
       navigate('/');
     } catch (error) {
+      setLoading(false); // stop loading
       setError('Invalid credentials');
-      console.log(error, 'msg from admin login');
+      console.error("Login error:", error.response?.data || error); // ✅ detailed log
     }
   };
 
@@ -56,9 +64,11 @@ export default function AdminLogin() {
 
         <button 
           type="submit"
-          className="w-full bg-[#A0522D] hover:bg-[#8B4513] text-white font-semibold py-3 rounded-lg shadow-md transition-all"
+          disabled={loading} // ✅ disable button while loading
+          className={`w-full text-white font-semibold py-3 rounded-lg shadow-md transition-all
+            ${loading ? 'bg-[#F4A460] cursor-not-allowed' : 'bg-[#A0522D] hover:bg-[#8B4513]'}`}
         >
-          Login
+          {loading ? "Logging in..." : "Login"} {/* ✅ show "Logging in..." */}
         </button>
 
         <p className="text-xs text-gray-500 mt-4 text-center">
