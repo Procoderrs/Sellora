@@ -1,3 +1,4 @@
+// index.js
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -17,7 +18,8 @@ import adminOrderRoutes from "./routes/adminOrderRoutes.js";
 dotenv.config();
 
 const app = express();
-// Middlewares
+
+// Middleware
 app.use(
   cors({
     origin: [
@@ -32,9 +34,9 @@ app.use(
 
 app.use(express.json());
 
+// Routes
 app.get("/", (req, res) => res.send("API is running"));
 
-// Routes
 app.use("/api/admin", adminAuthRoutes);
 app.use("/api/customers", customerAuthRoutes);
 app.use('/api/customerDashboard', customerDashboardRoutes);
@@ -54,7 +56,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// **Connect DB and seed admin/categories**
+// Connect DB and seed admin/categories
 const init = async () => {
   try {
     await connectDb();
@@ -67,5 +69,13 @@ const init = async () => {
 };
 init();
 
-// ✅ Export app for serverless deployment
+// ✅ Detect if running locally and start server on port 5000
+if (process.env.NODE_ENV !== "production") {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Server running locally on http://localhost:${PORT}`);
+  });
+}
+
+// ✅ Export app for Vercel serverless deployment
 export default app;

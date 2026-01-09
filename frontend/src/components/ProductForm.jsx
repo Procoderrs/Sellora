@@ -9,6 +9,7 @@ export default function ProductForm({ selected, onClose, onSuccess }) {
   const [stock, setStock] = useState("");
   const [images, setImages] = useState([]);
   const [status, setStatus] = useState("active");
+const [loading, setLoading] = useState(false); // new state for request
 
   const [parents, setParents] = useState([]);
   const [selectedParent, setSelectedParent] = useState("");
@@ -43,37 +44,43 @@ export default function ProductForm({ selected, onClose, onSuccess }) {
     }
   }, [selected, parents]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (!selectedSub) {
-      alert("Please select a subcategory");
-      return;
+  if (!selectedSub) {
+    alert("Please select a subcategory");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("title", title);
+  formData.append("description", description);
+  formData.append("price", price);
+  formData.append("discount", discount);
+  formData.append("stock", stock);
+  formData.append("category", selectedSub);
+  formData.append("status", status);
+  images.forEach(file => formData.append("images", file));
+
+  try {
+    setLoading(true); // ✅ start loading
+
+    if (selected) {
+      await api.put(`/products/${selected._id}`, formData);
+    } else {
+      await api.post("/products", formData);
     }
 
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("description", description);
-    formData.append("price", price);
-    formData.append("discount", discount);
-    formData.append("stock", stock);
-    formData.append("category", selectedSub);
-    formData.append("status", status);
-    images.forEach(file => formData.append("images", file));
+    onSuccess();
+    onClose();
+  } catch (err) {
+    console.error(err.response?.data || err);
+    alert(err.response?.data?.message || "Something went wrong");
+  } finally {
+    setLoading(false); // ✅ stop loading
+  }
+};
 
-    try {
-      if (selected) {
-        await api.put(`/products/${selected._id}`, formData);
-      } else {
-        await api.post("/products", formData);
-      }
-      onSuccess();
-      onClose();
-    } catch (err) {
-      console.error(err.response?.data || err);
-      alert(err.response?.data?.message || "Something went wrong");
-    }
-  };
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
@@ -203,12 +210,12 @@ export default function ProductForm({ selected, onClose, onSuccess }) {
             Cancel
           </button>
           <button
-            type="submit"
-            className="px-4 py-2 rounded-lg bg-[#A0522D]
-                       text-[#F5F5DC] hover:bg-[#8B4513] transition"
-          >
-            Save
-          </button>
+  type="submit"
+  className="px-4 py-2 rounded-lg bg-[#A0522D] text-[#F5F5DC] hover:bg-[#8B4513] transition"
+  disabled={loading} // prevent double click
+>
+  {loading ? "Saving..." : "Save"} 
+</button>
         </div>
       </form>
     </div>
