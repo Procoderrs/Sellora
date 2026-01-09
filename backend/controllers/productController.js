@@ -1,11 +1,12 @@
+
+
+
+
 import Product from "../models/productModel.js";
 import slugify from "slugify";
-import cloudinary from "../utils/cloudinary.js";
-
+import { uploadImage } from "../utils/cloudinary.js";
 // CREATE PRODUCT
 
-
-// CREATE PRODUCT
 export const createProduct = async (req, res) => {
   try {
     const { title, description, price, discount, stock, category, status } = req.body;
@@ -23,14 +24,10 @@ export const createProduct = async (req, res) => {
 
     const images = [];
 
-    // Upload each file to Cloudinary
     if (req.files?.length) {
       for (const file of req.files) {
-        const result = await cloudinary.uploader.upload(
-          `data:${file.mimetype};base64,${file.buffer.toString("base64")}`,
-          { folder: "products" }
-        );
-        images.push(result.secure_url); // store secure Cloudinary URL
+        const url = await uploadImage(file);
+        images.push(url);
       }
     }
 
@@ -89,6 +86,8 @@ export const getProducts = async (req, res) => {
 };
  */
 // UPDATE PRODUCT
+
+
 export const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
@@ -96,18 +95,14 @@ export const updateProduct = async (req, res) => {
     const updatedData = { ...req.body };
 
     if (req.body.title) {
-      updatedData.slug = slugify(req.body.title);
+      updatedData.slug = slugify(req.body.title, { lower: true });
     }
 
-    // Upload new images if provided
     if (req.files?.length) {
       const images = [];
       for (const file of req.files) {
-        const result = await cloudinary.uploader.upload(
-          `data:${file.mimetype};base64,${file.buffer.toString("base64")}`,
-          { folder: "products" }
-        );
-        images.push(result.secure_url);
+        const url = await uploadImage(file);
+        images.push(url);
       }
       updatedData.images = images;
     }
@@ -124,6 +119,7 @@ export const updateProduct = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 
 // DELETE PRODUCT
