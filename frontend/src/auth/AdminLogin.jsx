@@ -17,60 +17,64 @@ export default function AdminLogin() {
   const isValidEmail = (value) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  // Reset errors
-  setEmailError("");
-  setPasswordError("");
+    // Reset errors
+    setEmailError("");
+    setPasswordError("");
 
-  // Frontend validation
-  if (!email.trim()) {
-    setEmailError("Email is required");
-    return;
-  }
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
 
-  if (!isValidEmail(email)) {
-    setEmailError("Please enter a valid email address");
-    return;
-  }
-
-  if (!password.trim()) {
-    setPasswordError("Password is required");
-    return;
-  }
-
-  if (password.length < 6) {
-    setPasswordError("Password must be at least 6 characters");
-    return;
-  }
-
-  setLoading(true);
-
-  try {
-  console.log("Sending login:", { email: email.trim(), password: password.trim() });
-  const res = await api.post("/login", { email: email.trim(), password: password.trim() });
-  console.log("Login response:", res.data);
-  login(res.data);
-  navigate("/");
-} 
- catch (err) {
-    const message =
-      err.response?.data?.message || "Login failed";
-
-    // Backend-driven error handling
-    if (message.toLowerCase().includes("email")) {
-      setEmailError(message);
-    } else if (message.toLowerCase().includes("password")) {
-      setPasswordError(message);
-    } else {
-      setPasswordError("Invalid email or password");
+    // Frontend validation
+    if (!trimmedEmail) {
+      setEmailError("Email is required");
+      return;
     }
-  } finally {
-    setLoading(false);
-  }
-};
+    if (!isValidEmail(trimmedEmail)) {
+      setEmailError("Please enter a valid email address");
+      return;
+    }
+    if (!trimmedPassword) {
+      setPasswordError("Password is required");
+      return;
+    }
+    if (trimmedPassword.length < 6) {
+      setPasswordError("Password must be at least 6 characters");
+      return;
+    }
 
+    setLoading(true);
+
+    try {
+      console.log("Sending login request:", { email: trimmedEmail, password: trimmedPassword });
+
+      const res = await api.post("/login", {
+        email: trimmedEmail,
+        password: trimmedPassword
+      });
+
+      console.log("Login response:", res.data);
+
+      login(res.data); // Save token/user in context
+      navigate("/");   // Redirect to dashboard
+    } catch (err) {
+      console.error("Login error details:", err.response?.data || err);
+
+      const message = err.response?.data?.message || "Login failed";
+
+      if (message.toLowerCase().includes("email")) {
+        setEmailError(message);
+      } else if (message.toLowerCase().includes("password")) {
+        setPasswordError(message);
+      } else {
+        setPasswordError(message); // Display exact backend message
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#f5f5dc] to-[#e0cda9]">
