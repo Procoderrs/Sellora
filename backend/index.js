@@ -17,7 +17,19 @@ import adminOrderRoutes from "./routes/adminOrderRoutes.js";
 dotenv.config();
 
 const app = express();
-app.use(cors());
+// Middlewares
+app.use(
+  cors({
+    origin: [
+      "https://sellora-beta.vercel.app",
+      "http://localhost:5173",
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
 app.get("/", (req, res) => res.send("API is running"));
