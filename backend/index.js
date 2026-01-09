@@ -21,7 +21,7 @@ const app = express();
 app.use(
   cors({
     origin: [
-      "https://sellora-beta.vercel.app",
+      "https://sellora-rose.vercel.app",
       "http://localhost:5173",
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
