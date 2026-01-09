@@ -48,10 +48,13 @@ export default function AdminLogin() {
   setLoading(true);
 
   try {
-    const res = await api.post("/login", { email, password });
-    login(res.data);
-    navigate("/");
-  } catch (err) {
+  console.log("Sending login:", { email: email.trim(), password: password.trim() });
+  const res = await api.post("/login", { email: email.trim(), password: password.trim() });
+  console.log("Login response:", res.data);
+  login(res.data);
+  navigate("/");
+} 
+ catch (err) {
     const message =
       err.response?.data?.message || "Login failed";
 
