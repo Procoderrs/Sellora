@@ -21,9 +21,11 @@ export default function AddProduct() {
   const [parentId, setParentId] = useState("");
   const [subcategoryId, setSubcategoryId] = useState("");
 
-  // exactly 5 images
   const [images, setImages] = useState(Array(5).fill(null));
   const [previews, setPreviews] = useState(Array(5).fill(null));
+
+  // Validation state
+  const [errors, setErrors] = useState({});
 
   // Load categories
   useEffect(() => {
@@ -32,7 +34,7 @@ export default function AddProduct() {
     });
   }, []);
 
-  // Preload product data after categories are loaded
+  // Preload product data if editing
   useEffect(() => {
     if (editingProduct && parents.length) {
       setTitle(editingProduct.title);
@@ -42,7 +44,6 @@ export default function AddProduct() {
       setStock(editingProduct.stock);
       setStatus(editingProduct.status || "active");
 
-      // Category & subcategory
       if (editingProduct.category?.parent) {
         setParentId(editingProduct.category.parent._id);
         const parent = parents.find(p => p._id === editingProduct.category.parent._id);
@@ -52,7 +53,6 @@ export default function AddProduct() {
         setSubcategoryId(editingProduct.category._id);
       }
 
-      // Images previews
       const newPreviews = Array(5).fill(null);
       editingProduct.images?.forEach((img, idx) => {
         if (idx < 5) newPreviews[idx] = img;
@@ -78,18 +78,28 @@ export default function AddProduct() {
     setPreviews(updatedPreviews);
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!title.trim()) newErrors.title = "Title is required";
+    if (!description.trim()) newErrors.description = "Description is required";
+    if (!price || Number(price) <= 0) newErrors.price = "Price must be greater than 0";
+    if (!stock || Number(stock) < 0) newErrors.stock = "Stock must be 0 or more";
+    if (!subcategoryId) newErrors.subcategoryId = "Please select a subcategory";
+
+    if (!editingProduct && images.some(img => !img)) {
+      newErrors.images = "All 5 images are required";
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!subcategoryId) {
-      alert("Please select a subcategory");
-      return;
-    }
-
-    if (!editingProduct && images.some(img => !img)) {
-      alert("Please upload all 5 product images");
-      return;
-    }
+    if (!validateForm()) return;
 
     const formData = new FormData();
     formData.append("title", title);
@@ -132,41 +142,58 @@ export default function AddProduct() {
       >
         {/* BASIC INFO */}
         <div className="grid grid-cols-2 gap-6">
-          <input
-            value={title}
-            onChange={e => setTitle(e.target.value)}
-            placeholder="Product Title"
-            required
-            className="border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#F4A460]"
-          />
-          <input
-            type="number"
-            value={stock}
-            onChange={e => setStock(e.target.value)}
-            placeholder="Stock"
-            required
-            className="border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#F4A460]"
-          />
+          <div>
+            <input
+              value={title}
+              onChange={e => setTitle(e.target.value)}
+              placeholder="Product Title"
+              className={`border rounded-lg px-4 py-3 focus:ring-2 ${
+                errors.title ? "border-red-500 focus:ring-red-400" : "focus:ring-[#F4A460]"
+              }`}
+            />
+            {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
+          </div>
+          <div>
+            <input
+              type="number"
+              value={stock}
+              onChange={e => setStock(e.target.value)}
+              placeholder="Stock"
+              className={`border rounded-lg px-4 py-3 focus:ring-2 ${
+                errors.stock ? "border-red-500 focus:ring-red-400" : "focus:ring-[#F4A460]"
+              }`}
+            />
+            {errors.stock && <p className="text-red-500 text-sm mt-1">{errors.stock}</p>}
+          </div>
         </div>
 
-        <textarea
-          value={description}
-          onChange={e => setDescription(e.target.value)}
-          placeholder="Product Description"
-          rows={4}
-          className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#F4A460]"
-        />
+        <div>
+          <textarea
+            value={description}
+            onChange={e => setDescription(e.target.value)}
+            placeholder="Product Description"
+            rows={4}
+            className={`w-full border rounded-lg px-4 py-3 focus:ring-2 ${
+              errors.description ? "border-red-500 focus:ring-red-400" : "focus:ring-[#F4A460]"
+            }`}
+          />
+          {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
+        </div>
 
         {/* PRICE */}
         <div className="grid grid-cols-2 gap-6">
-          <input
-            type="number"
-            value={price}
-            onChange={e => setPrice(e.target.value)}
-            placeholder="Price"
-            required
-            className="border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#F4A460]"
-          />
+          <div>
+            <input
+              type="number"
+              value={price}
+              onChange={e => setPrice(e.target.value)}
+              placeholder="Price"
+              className={`border rounded-lg px-4 py-3 focus:ring-2 ${
+                errors.price ? "border-red-500 focus:ring-red-400" : "focus:ring-[#F4A460]"
+              }`}
+            />
+            {errors.price && <p className="text-red-500 text-sm mt-1">{errors.price}</p>}
+          </div>
           <input
             type="number"
             value={discount}
@@ -189,16 +216,21 @@ export default function AddProduct() {
             ))}
           </select>
 
-          <select
-            value={subcategoryId}
-            onChange={e => setSubcategoryId(e.target.value)}
-            className="border rounded-lg px-4 py-3"
-          >
-            <option value="">Select Subcategory</option>
-            {subcategories.map(sc => (
-              <option key={sc._id} value={sc._id}>{sc.name}</option>
-            ))}
-          </select>
+          <div>
+            <select
+              value={subcategoryId}
+              onChange={e => setSubcategoryId(e.target.value)}
+              className={`border rounded-lg px-4 py-3 ${
+                errors.subcategoryId ? "border-red-500" : ""
+              }`}
+            >
+              <option value="">Select Subcategory</option>
+              {subcategories.map(sc => (
+                <option key={sc._id} value={sc._id}>{sc.name}</option>
+              ))}
+            </select>
+            {errors.subcategoryId && <p className="text-red-500 text-sm mt-1">{errors.subcategoryId}</p>}
+          </div>
         </div>
 
         {/* IMAGES */}
@@ -206,6 +238,7 @@ export default function AddProduct() {
           <h3 className="text-lg font-semibold text-[#3B2F2F] mb-3">
             Product Images (Exactly 5)
           </h3>
+          {errors.images && <p className="text-red-500 text-sm mb-2">{errors.images}</p>}
           <div className="grid grid-cols-5 gap-4">
             {images.map((_, i) => (
               <div key={i} className="flex flex-col items-center">
