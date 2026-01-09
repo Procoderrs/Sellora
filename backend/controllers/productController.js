@@ -2,17 +2,12 @@ import Product from "../models/productModel.js";
 import slugify from "slugify";
 
 // CREATE PRODUCT
+
+
+// CREATE PRODUCT
 export const createProduct = async (req, res) => {
   try {
-    const {
-      title,
-      description,
-      price,
-      discount,
-      stock,
-      category,
-      status,
-    } = req.body;
+    const { title, description, price, discount, stock, category, status } = req.body;
 
     if (!title || !category) {
       return res.status(400).json({ message: "Missing required fields" });
@@ -25,8 +20,18 @@ export const createProduct = async (req, res) => {
       return res.status(400).json({ message: "Product already exists" });
     }
 
-    // ✅ extract Cloudinary URLs
-    const images = req.files?.map((file) => file.path) || [];
+    const images = [];
+
+    // Upload each file to Cloudinary
+    if (req.files?.length) {
+      for (const file of req.files) {
+        const result = await cloudinary.uploader.upload(
+          `data:${file.mimetype};base64,${file.buffer.toString("base64")}`,
+          { folder: "products" }
+        );
+        images.push(result.secure_url); // store secure Cloudinary URL
+      }
+    }
 
     const product = await Product.create({
       title,
@@ -40,15 +45,13 @@ export const createProduct = async (req, res) => {
       images,
     });
 
-    res.status(201).json({
-      message: "Product created successfully",
-      product,
-    });
+    res.status(201).json({ message: "Product created successfully", product });
   } catch (error) {
     console.error("CREATE PRODUCT ERROR:", error);
     res.status(500).json({ message: error.message });
   }
 };
+
 
 
 
@@ -89,34 +92,38 @@ export const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const updatedData = {
-      ...req.body
-    };
+    const updatedData = { ...req.body };
 
     if (req.body.title) {
       updatedData.slug = slugify(req.body.title);
     }
-if (req.files?.length) {
-  updatedData.images = req.files.map(f => f.path);
-}
-    const updatedProduct = await Product.findByIdAndUpdate(
-      id,
-      updatedData,
-      { new: true }
-    );
+
+    // Upload new images if provided
+    if (req.files?.length) {
+      const images = [];
+      for (const file of req.files) {
+        const result = await cloudinary.uploader.upload(
+          `data:${file.mimetype};base64,${file.buffer.toString("base64")}`,
+          { folder: "products" }
+        );
+        images.push(result.secure_url);
+      }
+      updatedData.images = images;
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(id, updatedData, { new: true });
 
     if (!updatedProduct) {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    res.json({
-      message: "Product updated successfully",
-      product: updatedProduct
-    });
+    res.json({ message: "Product updated successfully", product: updatedProduct });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
+    console.error("UPDATE PRODUCT ERROR:", error);
+    res.status(500).json({ message: error.message });
   }
 };
+
 
 // DELETE PRODUCT
 export const deleteProduct = async (req, res) => {
