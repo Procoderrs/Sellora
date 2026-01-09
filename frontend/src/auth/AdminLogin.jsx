@@ -16,6 +16,7 @@ export default function AdminLogin() {
       const res = await api.post('/login', { email, password });
       login(res.data);
       console.log(res.data);
+      console.log(res.data);
       navigate('/');
     } catch (error) {
       setError('Invalid credentials');

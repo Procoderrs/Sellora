@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL + '/api/admin', // use Vite env variable
+  baseURL: import.meta.env.VITE_API_URL +'/api/admin', // use Vite env variable
 });
 
 api.interceptors.request.use((config) => {
@@ -13,3 +13,8 @@ api.interceptors.request.use((config) => {
 });
 
 export default api;
+
+
+/* http://localhost:5000/
+
+https://sellora-sj49.vercel.app*/

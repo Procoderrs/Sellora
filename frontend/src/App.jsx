@@ -6,6 +6,7 @@ import './App.css'
 import AdminLayout from './layout/AdminLayout';
 import Categories from './pages/Categories';
 import Product from './pages/Product'
+import ProductPage from './pages/ProductPage';
 
 
 function App() {
@@ -20,6 +21,9 @@ function App() {
 
       <Route path='/categories'element={<Categories/>}/>
       <Route path='/products'element={<Product/>}/>
+      <Route path='/products/add'element={<ProductPage/>}/>
+
+
 
 
       </Route>
