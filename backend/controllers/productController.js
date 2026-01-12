@@ -1,12 +1,7 @@
-
-
-
-
 import Product from "../models/productModel.js";
 import slugify from "slugify";
-import { uploadToCloudinary } from "../utils/uploadToCloudinary.js";
-// CREATE PRODUCT
 
+// CREATE PRODUCT
 export const createProduct = async (req, res) => {
   try {
     const { title, description, price, discount, stock, category, status } = req.body;
@@ -22,14 +17,8 @@ export const createProduct = async (req, res) => {
       return res.status(400).json({ message: "Product already exists" });
     }
 
-    const images = [];
-
-    if (req.files?.length) {
-      for (const file of req.files) {
-        const url = await uploadToCloudinary(file,'products');
-        images.push(url);
-      }
-    }
+    // Using multer-storage-cloudinary: file.path already has the URL
+    const images = req.files?.map(file => file.path) || [];
 
     const product = await Product.create({
       title,
@@ -50,17 +39,14 @@ export const createProduct = async (req, res) => {
   }
 };
 
-
-
-
 // GET ALL PRODUCTS
 export const getProducts = async (req, res) => {
   try {
     const products = await Product.find()
       .populate({
         path: "category",
-        select: "name slug parent", // include parent field
-        populate: { path: "parent", select: "name slug" } // nested populate parent
+        select: "name slug parent",
+        populate: { path: "parent", select: "name slug" },
       })
       .sort({ createdAt: -1 });
 
@@ -70,28 +56,10 @@ export const getProducts = async (req, res) => {
   }
 };
 
-
-/**
- * GET SINGLE PRODUCT BY ID
- */
-/* export const getSingleProduct = async (req, res) => {
-  const product = await Product.findById(req.params.id)
-    .populate("category", "name slug");
-
-  if (!product || product.status !== "active") {
-    return res.status(404).json({ message: "Product not found" });
-  }
-
-  res.json(product);
-};
- */
 // UPDATE PRODUCT
-
-
 export const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
-
     const updatedData = { ...req.body };
 
     if (req.body.title) {
@@ -99,12 +67,7 @@ export const updateProduct = async (req, res) => {
     }
 
     if (req.files?.length) {
-      const images = [];
-      for (const file of req.files) {
-        const url = await uploadToCloudinary(file);
-        images.push(url);
-      }
-      updatedData.images = images;
+      updatedData.images = req.files.map(file => file.path); // URLs from multer-storage-cloudinary
     }
 
     const updatedProduct = await Product.findByIdAndUpdate(id, updatedData, { new: true });
@@ -119,8 +82,6 @@ export const updateProduct = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-
 
 // DELETE PRODUCT
 export const deleteProduct = async (req, res) => {
