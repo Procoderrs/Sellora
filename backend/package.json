@@ -7,9 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node --env-file=.env index.js"
   },
-  "engines": {
-    "node": "22.21.0"
-  },
+  
   "keywords": [],
   "author": "",
   "license": "ISC",
