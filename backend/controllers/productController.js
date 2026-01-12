@@ -2,6 +2,7 @@ import Product from "../models/productModel.js";
 import slugify from "slugify";
 
 // CREATE PRODUCT
+// CREATE PRODUCT
 export const createProduct = async (req, res) => {
   try {
     const { title, description, price, discount, stock, category, status } = req.body;
@@ -17,8 +18,7 @@ export const createProduct = async (req, res) => {
       return res.status(400).json({ message: "Product already exists" });
     }
 
-    // Using multer-storage-cloudinary: file.path already has the URL
-    const images = req.files?.map(file => file.path) || [];
+    const images = req.cloudinaryUrls || []; // use URLs uploaded by handleImageUpload
 
     const product = await Product.create({
       title,
@@ -39,6 +39,34 @@ export const createProduct = async (req, res) => {
   }
 };
 
+// UPDATE PRODUCT
+export const updateProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedData = { ...req.body };
+
+    if (req.body.title) {
+      updatedData.slug = slugify(req.body.title, { lower: true });
+    }
+
+    if (req.cloudinaryUrls?.length) {
+      updatedData.images = req.cloudinaryUrls; // use uploaded URLs
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(id, updatedData, { new: true });
+
+    if (!updatedProduct) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.json({ message: "Product updated successfully", product: updatedProduct });
+  } catch (error) {
+    console.error("UPDATE PRODUCT ERROR:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
 // GET ALL PRODUCTS
 export const getProducts = async (req, res) => {
   try {
@@ -57,7 +85,7 @@ export const getProducts = async (req, res) => {
 };
 
 // UPDATE PRODUCT
-export const updateProduct = async (req, res) => {
+/* export const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
     const updatedData = { ...req.body };
@@ -82,7 +110,7 @@ export const updateProduct = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
+ */
 // DELETE PRODUCT
 export const deleteProduct = async (req, res) => {
   try {
