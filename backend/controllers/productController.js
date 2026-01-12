@@ -4,7 +4,7 @@
 
 import Product from "../models/productModel.js";
 import slugify from "slugify";
-import { uploadImage } from "../utils/cloudinary.js";
+import { uploadToCloudinary } from "../utils/uploadToCloudinary.js";
 // CREATE PRODUCT
 
 export const createProduct = async (req, res) => {
@@ -26,7 +26,7 @@ export const createProduct = async (req, res) => {
 
     if (req.files?.length) {
       for (const file of req.files) {
-        const url = await uploadImage(file);
+        const url = await uploadToCloudinary(file,'products');
         images.push(url);
       }
     }
@@ -101,7 +101,7 @@ export const updateProduct = async (req, res) => {
     if (req.files?.length) {
       const images = [];
       for (const file of req.files) {
-        const url = await uploadImage(file);
+        const url = await uploadToCloudinary(file);
         images.push(url);
       }
       updatedData.images = images;
