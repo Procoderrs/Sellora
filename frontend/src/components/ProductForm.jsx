@@ -17,7 +17,7 @@ const [loading, setLoading] = useState(false); // new state for request
   const [selectedSub, setSelectedSub] = useState("");
 
   useEffect(() => {
-    api.get("/categories/category-tree").then(res => {
+    api.get("/admin/categories/category-tree").then(res => {
       setParents(res.data.categories || []);
     });
   }, []);
@@ -66,9 +66,9 @@ const [loading, setLoading] = useState(false); // new state for request
     setLoading(true); // ✅ start loading
 
     if (selected) {
-      await api.put(`/products/${selected._id}`, formData);
+      await api.put(`/admin/products/${selected._id}`, formData);
     } else {
-      await api.post("/products", formData);
+      await api.post("/admin/products", formData);
     }
 
     onSuccess();

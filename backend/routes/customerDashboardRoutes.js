@@ -1,10 +1,10 @@
 import express from "express";
-import customerAuth from "../middleware/customerAuth.js";
+import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 // Example: Get logged-in customer's info
-router.get("/profile", customerAuth, (req, res) => {
+router.get("/profile", authMiddleware, (req, res) => {
   res.json({
     message: "Customer profile",
     user: {

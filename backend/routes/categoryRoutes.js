@@ -5,16 +5,17 @@ import {
   updateCategory,
   deleteCategory,getCategoryTree
 } from "../controllers/categoryController.js";
-import adminAuth from "../middleware/adminAuth.js";
+import authMiddleware from "../middleware/authMiddleware.js";
+import adminOnly from "../middleware/adminOnly.js";
 
 const router = express.Router();
 
 // Admin-only category routes
-router.post("/", adminAuth, createCategory);        // Create category
-router.get("/category-tree",adminAuth, getCategoryTree);
-router.get("/", adminAuth, getCategories);         // List all categories
-router.put("/:id", adminAuth, updateCategory);     // Update category
-router.delete("/:id", adminAuth, deleteCategory);  // Delete category
+router.post("/", authMiddleware,adminOnly, createCategory);        // Create category
+router.get("/category-tree",authMiddleware,adminOnly, getCategoryTree);
+router.get("/", authMiddleware, getCategories);         // List all categories
+router.put("/:id", authMiddleware,adminOnly, updateCategory);     // Update category
+router.delete("/:id", authMiddleware,adminOnly, deleteCategory);  // Delete category
 
 
 export default router;

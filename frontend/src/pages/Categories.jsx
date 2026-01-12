@@ -11,7 +11,7 @@ export default function Categories() {
 	const [deletingCategory, setDeletingCategory] = useState(null);
 
 	const fetchCategories = async () => {
-		const res = await api.get("/categories");
+		const res = await api.get("/admin/categories");
 		const all = res.data.categories;
 		setCategories(all.filter((c) => c.parent));
 		setParentCategories(all.filter((c) => !c.parent));

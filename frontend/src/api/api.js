@@ -1,18 +1,30 @@
-import axios from 'axios';
+// api/api.js
+
+// api/api.js
+import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL +'/api/admin', // use Vite env variable
+  baseURL: import.meta.env.VITE_API_URL + "/api",
 });
 
+// Request interceptor to attach auth token
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('adminToken');
-  if (token && !config.url.includes('/login')) {
+  const token = localStorage.getItem("authToken"); // jo tum login me save kiya tha
+  if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
+}, (error) => {
+  return Promise.reject(error);
 });
 
 export default api;
+
+
+
+
+
+
 
 
 /* http://localhost:5000/

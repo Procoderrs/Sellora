@@ -3,18 +3,18 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 import { AuthContext } from "../context/AuthContext";
 
-export default function Login() {
-  const [form, setForm] = useState({ email: "", password: "" });
+export default function Signup() {
+  const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
 
   const validate = () => {
     const temp = {};
+    if (!form.name) temp.name = "Name is required.";
     if (!form.email) temp.email = "Email is required.";
     else if (!/\S+@\S+\.\S+/.test(form.email))
       temp.email = "Enter a valid email address.";
-
     if (!form.password) temp.password = "Password is required.";
     else if (form.password.length < 6)
       temp.password = "Password must be at least 6 characters.";
@@ -28,15 +28,11 @@ export default function Login() {
     if (!validate()) return;
 
     try {
-      const { data } = await api.post("/authentication/login", form); // backend login endpoint
+      const { data } = await api.post("/authentication/register", form); // backend register endpoint
       login(data);
-      console.log(data);
-
-      // Redirect based on role
-      if (data.user.role === "admin") navigate("/admin/dashboard");
-      else navigate("/customer/dashboard");
+      navigate("/customer/dashboard");
     } catch (err) {
-      alert(err?.response?.data?.message || "Login failed");
+      alert(err?.response?.data?.message || "Signup failed");
     }
   };
 
@@ -50,7 +46,7 @@ export default function Login() {
   };
 
   const isFormValid =
-    form.email && form.password && Object.keys(errors).length === 0;
+    form.name && form.email && form.password && Object.keys(errors).length === 0;
 
   return (
     <div className="min-h-screen flex bg-gray-100">
@@ -59,7 +55,17 @@ export default function Login() {
           onSubmit={handleSubmit}
           className="bg-white rounded-lg shadow-lg p-10 w-full max-w-md space-y-6"
         >
-          <h1 className="text-2xl font-bold text-center">Login</h1>
+          <h1 className="text-2xl font-bold text-center">Customer Signup</h1>
+
+          <input
+            placeholder="Name"
+            value={form.name}
+            onChange={(e) => onChangeField("name", e.target.value)}
+            className={`w-full p-3 border rounded ${
+              errors.name ? "border-red-500" : "border-gray-300"
+            }`}
+          />
+          {errors.name && <p className="text-red-600 text-sm">{errors.name}</p>}
 
           <input
             type="email"
@@ -86,14 +92,14 @@ export default function Login() {
           <button
             disabled={!isFormValid}
             className={`w-full py-2 text-white rounded ${
-              isFormValid ? "bg-purple-600 hover:bg-purple-700" : "bg-gray-500 cursor-not-allowed"
+              isFormValid ? "bg-green-600 hover:bg-green-700" : "bg-gray-500 cursor-not-allowed"
             }`}
           >
-            Login
+            Signup
           </button>
 
           <p className="text-center text-sm">
-            New user? <a href="/signup" className="text-blue-600">Signup</a>
+            Already have an account? <a href="/" className="text-blue-600">Login</a>
           </p>
         </form>
       </div>

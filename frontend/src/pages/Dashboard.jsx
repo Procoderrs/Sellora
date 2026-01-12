@@ -11,9 +11,9 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const products = await api.get('/products')
-        const categories = await api.get('/categories')
-        const orders = await api.get('/orders')
+        const products = await api.get('/admin/products')
+        const categories = await api.get('/admin/categories')
+        const orders = await api.get('/admin/orders')
 
         setStats({
           products: products.data.products.length,

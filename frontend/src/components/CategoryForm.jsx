@@ -27,8 +27,8 @@ export default function CategoryForm({ topCategories = [], selected = null, onCl
 
     try {
       const payload = { name, parent: parent || null, status, description };
-      if (selected) await api.put(`/categories/${selected._id}`, payload);
-      else await api.post("/categories", payload);
+      if (selected) await api.put(`/admin/categories/${selected._id}`, payload);
+      else await api.post("/admin/categories", payload);
       setError("");
       onSuccess();
       onClose();

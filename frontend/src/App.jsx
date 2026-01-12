@@ -1,27 +1,40 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import RequireAdmin from './auth/RequireAdmin';
-import AdminLogin from './auth/AdminLogin';
-import Dashboard from './pages/Dashboard';
-import AdminLayout from './layout/AdminLayout';
-import Categories from './pages/Categories';
-import Product from './pages/Product';
-import AddProduct from './pages/AddProduct'; // same page for add/edit
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Login from "./auth/AdminLogin.jsx";
+import Signup from "./auth/CustomerSignup.jsx";
 
-function App() {
+import RequireAdmin from "./auth/RequireAdmin.jsx";
+import RequireCustomer from "./auth/RequireCustomer.jsx";
+
+import Dashboard from "./pages/Dashboard.jsx";
+import AdminLayout from "./layout/AdminLayout.jsx";
+import Categories from "./pages/Categories.jsx";
+import Product from "./pages/Product.jsx";
+import AddProduct from "./pages/AddProduct.jsx";
+import CustomerDashboard from "./pages/CustomerDashboard.jsx";
+
+export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/login' element={<AdminLogin />} />
-        <Route element={<RequireAdmin><AdminLayout /></RequireAdmin>}>
-          <Route path='/' element={<Dashboard />} />
-          <Route path='/categories' element={<Categories />} />
-          <Route path='/products' element={<Product />} />
-          {/* unified route for add/edit */}
-          <Route path='/product' element={<AddProduct />} />
+        {/* Public Routes */}
+        <Route path="/" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+
+        {/* Admin Protected Routes */}
+        <Route element={<RequireAdmin />}>
+          <Route element={<AdminLayout />}>
+            <Route path="/admin/dashboard" element={<Dashboard />} />
+            <Route path="/admin/categories" element={<Categories />} />
+            <Route path="/admin/products" element={<Product />} />
+            <Route path="/admin/product" element={<AddProduct />} />
+          </Route>
+        </Route>
+
+        {/* Customer Protected Routes */}
+        <Route element={<RequireCustomer />}>
+          <Route path="/customer/dashboard" element={<CustomerDashboard />} />
         </Route>
       </Routes>
     </BrowserRouter>
   );
 }
-
-export default App;

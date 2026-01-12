@@ -29,7 +29,7 @@ export default function AddProduct() {
 
   // Load categories
   useEffect(() => {
-    api.get("/categories/category-tree").then(res => {
+    api.get("/admin/categories/category-tree").then(res => {
       setParents(res.data.categories || []);
     });
   }, []);
@@ -117,11 +117,11 @@ export default function AddProduct() {
     try {
       setLoading(true);
       if (editingProduct) {
-        await api.put(`/products/${editingProduct._id}`, formData);
+        await api.put(`/admin/products/${editingProduct._id}`, formData);
       } else {
-        await api.post("/products", formData);
+        await api.post("/admin/products", formData);
       }
-      navigate("/products");
+      navigate("/admin/products");
     } catch (err) {
       console.error(err);
       alert(err.response?.data?.message || "Something went wrong");

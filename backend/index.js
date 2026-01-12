@@ -5,8 +5,8 @@ import dotenv from "dotenv";
 import connectDb from "./config/db.js";
 import createAdmin from "./utils/createAdmin.js";
 import { seedCategories } from "./utils/seedCategories.js";
-import adminAuthRoutes from "./routes/adminAuthRoutes.js";
-import customerAuthRoutes from "./routes/customerAuthRoutes.js";
+//import adminAuthRoutes from "./routes/adminAuthRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 import customerDashboardRoutes from "./routes/customerDashboardRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
@@ -37,8 +37,8 @@ app.use(express.json());
 // Routes
 app.get("/", (req, res) => res.send("API is running"));
 
-app.use("/api/admin", adminAuthRoutes);
-app.use("/api/customers", customerAuthRoutes);
+//app.use("/api/admin", adminAuthRoutes);
+app.use("/api/authentication", authRoutes);
 app.use('/api/customerDashboard', customerDashboardRoutes);
 app.use("/api/admin/categories", categoryRoutes);
 app.use("/api/admin/products", productRoutes);

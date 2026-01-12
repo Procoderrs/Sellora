@@ -10,7 +10,7 @@ export default function Products() {
 
   const fetchData = async () => {
     try {
-      const prodRes = await api.get("/products");
+      const prodRes = await api.get("/admin/products");
       setProducts(prodRes.data.products || []);
     } catch (err) {
       console.error("Error fetching products:", err);
@@ -22,7 +22,7 @@ export default function Products() {
   }, []);
 
   const handleAdd = () => {
-  navigate("/product"); // no state needed
+  navigate("/admin/product"); // no state needed
 };
 
 const handleEdit = (product) => {
@@ -35,7 +35,7 @@ const handleEdit = (product) => {
 
   const handleDeleteConfirmed = async () => {
     try {
-      await api.delete(`/products/${deletingProduct._id}`);
+      await api.delete(`/admin/products/${deletingProduct._id}`);
       setDeletingProduct(null);
       fetchData();
     } catch (err) {

@@ -1,14 +1,15 @@
 import express from "express";
-import adminAuth from "../middleware/adminAuth.js";
+import authMiddleware from "../middleware/authMiddleware.js";
 import { createProduct, getProducts, updateProduct, deleteProduct } from "../controllers/productController.js";
 import upload, { handleImageUpload } from '../middleware/upload.js';
+import adminOnly from "../middleware/adminOnly.js";
 
 const router = express.Router();
 
 // Admin-only product routes
-router.post("/", adminAuth, upload.array("images", 5), handleImageUpload, createProduct);
-router.get("/", adminAuth, getProducts);
-router.put("/:id", adminAuth, upload.array("images", 5), handleImageUpload, updateProduct);
-router.delete("/:id", adminAuth, deleteProduct);
+router.post("/", authMiddleware,adminOnly ,upload.array("images", 5), handleImageUpload, createProduct);
+router.get("/", authMiddleware,adminOnly, getProducts);
+router.put("/:id", authMiddleware, upload.array("images", 5), handleImageUpload, updateProduct);
+router.delete("/:id", authMiddleware,adminOnly, deleteProduct);
 
 export default router;
