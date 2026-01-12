@@ -17,4 +17,4 @@ export default api;
 
 /* http://localhost:5000/
 
-https://sellora-jmdk.vercel.app*/
+https://sellora-k59a.vercel.app*/
