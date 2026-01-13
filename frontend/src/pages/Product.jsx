@@ -26,7 +26,7 @@ export default function Products() {
 };
 
 const handleEdit = (product) => {
-  navigate("/product", { state: { product } }); // pass product for editing
+  navigate("/admin/product", { state: { product } }); // pass product for editing
 };
 
   const handleDelete = (product) => {

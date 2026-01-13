@@ -24,17 +24,14 @@ export default function AddProduct() {
   const [images, setImages] = useState(Array(5).fill(null));
   const [previews, setPreviews] = useState(Array(5).fill(null));
 
-  // Validation state
   const [errors, setErrors] = useState({});
 
-  // Load categories
   useEffect(() => {
     api.get("/admin/categories/category-tree").then(res => {
       setParents(res.data.categories || []);
     });
   }, []);
 
-  // Preload product data if editing
   useEffect(() => {
     if (editingProduct && parents.length) {
       setTitle(editingProduct.title);
@@ -98,7 +95,6 @@ export default function AddProduct() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!validateForm()) return;
 
     const formData = new FormData();
@@ -110,9 +106,7 @@ export default function AddProduct() {
     formData.append("status", status);
     formData.append("category", subcategoryId);
 
-    images.forEach(img => {
-      if (img) formData.append("images", img);
-    });
+    images.forEach(img => img && formData.append("images", img));
 
     try {
       setLoading(true);
@@ -132,96 +126,104 @@ export default function AddProduct() {
 
   return (
     <div className="min-h-screen bg-[#F5F5DC] p-10">
-      <h1 className="text-3xl font-bold text-[#A0522D] mb-8">
+      <h1 className="text-3xl font-bold text-[#A0522D] mb-8 text-center">
         {editingProduct ? "Edit Product" : "Add New Product"}
       </h1>
 
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded-2xl shadow-xl p-8 max-w-6xl mx-auto space-y-8"
+        className="bg-white rounded-2xl shadow-xl p-8 max-w-6xl mx-auto space-y-6"
       >
-        {/* BASIC INFO */}
-        <div className="grid grid-cols-2 gap-6">
+        {/* SMALL FIELDS */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
+            <label className="block text-sm font-medium text-[#3B2F2F] mb-1">Title</label>
             <input
               value={title}
               onChange={e => setTitle(e.target.value)}
               placeholder="Product Title"
-              className={`border rounded-lg px-4 py-3 focus:ring-2 ${
+              className={`border rounded-lg px-4 py-2 w-full focus:ring-2 ${
                 errors.title ? "border-red-500 focus:ring-red-400" : "focus:ring-[#F4A460]"
               }`}
             />
             {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
           </div>
+
           <div>
+            <label className="block text-sm font-medium text-[#3B2F2F] mb-1">Stock</label>
             <input
               type="number"
               value={stock}
               onChange={e => setStock(e.target.value)}
               placeholder="Stock"
-              className={`border rounded-lg px-4 py-3 focus:ring-2 ${
+              className={`border rounded-lg px-4 py-2 w-full focus:ring-2 ${
                 errors.stock ? "border-red-500 focus:ring-red-400" : "focus:ring-[#F4A460]"
               }`}
             />
             {errors.stock && <p className="text-red-500 text-sm mt-1">{errors.stock}</p>}
           </div>
-        </div>
 
-        <div>
-          <textarea
-            value={description}
-            onChange={e => setDescription(e.target.value)}
-            placeholder="Product Description"
-            rows={4}
-            className={`w-full border rounded-lg px-4 py-3 focus:ring-2 ${
-              errors.description ? "border-red-500 focus:ring-red-400" : "focus:ring-[#F4A460]"
-            }`}
-          />
-          {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
-        </div>
-
-        {/* PRICE */}
-        <div className="grid grid-cols-2 gap-6">
           <div>
+            <label className="block text-sm font-medium text-[#3B2F2F] mb-1">Price</label>
             <input
               type="number"
               value={price}
               onChange={e => setPrice(e.target.value)}
               placeholder="Price"
-              className={`border rounded-lg px-4 py-3 focus:ring-2 ${
+              className={`border rounded-lg px-4 py-2 w-full focus:ring-2 ${
                 errors.price ? "border-red-500 focus:ring-red-400" : "focus:ring-[#F4A460]"
               }`}
             />
             {errors.price && <p className="text-red-500 text-sm mt-1">{errors.price}</p>}
           </div>
-          <input
-            type="number"
-            value={discount}
-            onChange={e => setDiscount(e.target.value)}
-            placeholder="Discount"
-            className="border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#F4A460]"
-          />
+
+          <div>
+            <label className="block text-sm font-medium text-[#3B2F2F] mb-1">Discount</label>
+            <input
+              type="number"
+              value={discount}
+              onChange={e => setDiscount(e.target.value)}
+              placeholder="Discount"
+              className="border rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-[#F4A460]"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[#3B2F2F] mb-1">Status</label>
+            <select
+              value={status}
+              onChange={e => setStatus(e.target.value)}
+              className="border rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-[#F4A460]"
+            >
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
         </div>
 
         {/* CATEGORY */}
-        <div className="grid grid-cols-2 gap-6">
-          <select
-            value={parentId}
-            onChange={e => handleParentChange(e.target.value)}
-            className="border rounded-lg px-4 py-3"
-          >
-            <option value="">Select Parent Category</option>
-            {parents.map(p => (
-              <option key={p._id} value={p._id}>{p.name}</option>
-            ))}
-          </select>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-[#3B2F2F] mb-1">Parent Category</label>
+            <select
+              value={parentId}
+              onChange={e => handleParentChange(e.target.value)}
+              className="border rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-[#F4A460]"
+            >
+              <option value="">Select Parent Category</option>
+              {parents.map(p => (
+                <option key={p._id} value={p._id}>{p.name}</option>
+              ))}
+            </select>
+          </div>
 
           <div>
+            <label className="block text-sm font-medium text-[#3B2F2F] mb-1">Subcategory</label>
             <select
               value={subcategoryId}
               onChange={e => setSubcategoryId(e.target.value)}
-              className={`border rounded-lg px-4 py-3 ${
-                errors.subcategoryId ? "border-red-500" : ""
+              className={`border rounded-lg px-4 py-2 w-full focus:ring-2 ${
+                errors.subcategoryId ? "border-red-500 focus:ring-red-400" : "focus:ring-[#F4A460]"
               }`}
             >
               <option value="">Select Subcategory</option>
@@ -233,11 +235,24 @@ export default function AddProduct() {
           </div>
         </div>
 
+        {/* DESCRIPTION */}
+        <div>
+          <label className="block text-sm font-medium text-[#3B2F2F] mb-1">Description</label>
+          <textarea
+            value={description}
+            onChange={e => setDescription(e.target.value)}
+            placeholder="Product Description"
+            rows={5}
+            className={`w-full border rounded-lg px-4 py-3 focus:ring-2 ${
+              errors.description ? "border-red-500 focus:ring-red-400" : "focus:ring-[#F4A460]"
+            }`}
+          />
+          {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
+        </div>
+
         {/* IMAGES */}
         <div>
-          <h3 className="text-lg font-semibold text-[#3B2F2F] mb-3">
-            Product Images (Exactly 5)
-          </h3>
+          <label className="block text-sm font-medium text-[#3B2F2F] mb-2">Product Images (Exactly 5)</label>
           {errors.images && <p className="text-red-500 text-sm mb-2">{errors.images}</p>}
           <div className="grid grid-cols-5 gap-4">
             {images.map((_, i) => (
@@ -267,17 +282,7 @@ export default function AddProduct() {
           </div>
         </div>
 
-        {/* STATUS */}
-        <select
-          value={status}
-          onChange={e => setStatus(e.target.value)}
-          className="border rounded-lg px-4 py-3 w-64"
-        >
-          <option value="active">Active</option>
-          <option value="inactive">Inactive</option>
-        </select>
-
-        {/* ACTIONS */}
+        {/* ACTION BUTTONS */}
         <div className="flex justify-end gap-4 pt-4">
           <button
             type="button"

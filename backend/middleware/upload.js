@@ -1,21 +1,28 @@
-// uploadMiddleware.js
 import multer from "multer";
-import { Readable } from "stream";
 import cloudinary from "../utils/cloudinary.js";
+import { Readable } from "stream";
 
+// Memory storage for multer
 const storage = multer.memoryStorage();
-const upload = multer({ storage });
 
+const upload = multer({
+  storage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB max
+});
+
+// Middleware to upload file to Cloudinary
 export const handleImageUpload = async (req, res, next) => {
-  if (!req.files?.length) return next();
-
   try {
-    const urls = [];
-    for (const file of req.files) {
-      const result = await new Promise((resolve, reject) => {
+    if (!req.files || req.files.length === 0) return next();
+
+    const uploadPromises = req.files.map((file) => {
+      return new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
-          { folder: "product_images" },
-          (err, res) => (err ? reject(err) : resolve(res))
+          { folder: "products" },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result.secure_url);
+          }
         );
 
         const readable = new Readable();
@@ -24,14 +31,17 @@ export const handleImageUpload = async (req, res, next) => {
         readable.push(null);
         readable.pipe(stream);
       });
-      urls.push(result.secure_url);
-    }
-    req.cloudinaryUrls = urls;
+    });
+
+    const uploadedUrls = await Promise.all(uploadPromises);
+
+    req.cloudinaryUrls = uploadedUrls; // ARRAY of URLs
     next();
-  } catch (err) {
-    console.error("Cloudinary upload failed:", err);
+  } catch (error) {
+    console.error("Cloudinary upload error:", error);
     res.status(500).json({ message: "Image upload failed" });
   }
 };
+
 
 export default upload;
