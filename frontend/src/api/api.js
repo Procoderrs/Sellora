@@ -29,4 +29,4 @@ export default api;
 
 /* http://localhost:5000/
 
-https://sellora-k59a.vercel.app*/
+https://sellora-316q.vercel.app*/
