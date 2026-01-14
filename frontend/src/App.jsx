@@ -11,6 +11,7 @@ import Categories from "./pages/Categories.jsx";
 import Product from "./pages/Product.jsx";
 import AddProduct from "./pages/AddProduct.jsx";
 import CustomerDashboard from "./pages/CustomerDashboard.jsx";
+import Header from "./components/Header.jsx";
 
 export default function App() {
   return (

@@ -11,11 +11,15 @@ export const createProduct = async (req, res) => {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    const slug = slugify(title, { lower: true });
+    // Base slug from title
+    const baseSlug = slugify(title, { lower: true });
+    let slug = baseSlug;
+    let count = 1;
 
-    const exists = await Product.findOne({ slug });
-    if (exists) {
-      return res.status(400).json({ message: "Product already exists" });
+    // Ensure slug is unique
+    while (await Product.findOne({ slug })) {
+      slug = `${baseSlug}-${count}`;
+      count++;
     }
 
     const product = await Product.create({
@@ -36,22 +40,40 @@ export const createProduct = async (req, res) => {
     });
   } catch (error) {
     console.error("CREATE PRODUCT ERROR:", error);
+
+    if (error.code === 11000) {
+      return res.status(400).json({ message: "Duplicate product slug" });
+    }
+
     res.status(500).json({ message: error.message });
   }
 };
+
 
 
 // UPDATE PRODUCT
 export const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
-
     const updatedData = { ...req.body };
 
+    // Handle slug update safely
     if (req.body.title) {
-      updatedData.slug = slugify(req.body.title, { lower: true });
+      const baseSlug = slugify(req.body.title, { lower: true });
+      let slug = baseSlug;
+      let count = 1;
+
+      while (
+        await Product.findOne({ slug, _id: { $ne: id } })
+      ) {
+        slug = `${baseSlug}-${count}`;
+        count++;
+      }
+
+      updatedData.slug = slug;
     }
 
+    // Handle image updates
     if (req.cloudinaryUrls?.length) {
       updatedData.images = req.cloudinaryUrls;
     }
@@ -75,6 +97,7 @@ export const updateProduct = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 
 

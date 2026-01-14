@@ -12,6 +12,7 @@ export default function Categories() {
 
 	const fetchCategories = async () => {
 		const res = await api.get("/admin/categories");
+		console.log(res);
 		const all = res.data.categories;
 		setCategories(all.filter((c) => c.parent));
 		setParentCategories(all.filter((c) => !c.parent));
@@ -38,7 +39,7 @@ export default function Categories() {
 
 	const handleDeleteConfirmed = async () => {
 		if (!deletingCategory) return;
-		await api.delete(`/categories/${deletingCategory._id}`);
++ await api.delete(`/admin/categories/${deletingCategory._id}`);
 		setDeletingCategory(null);
 		fetchCategories();
 	};

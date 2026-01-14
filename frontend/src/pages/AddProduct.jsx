@@ -21,8 +21,8 @@ export default function AddProduct() {
   const [parentId, setParentId] = useState("");
   const [subcategoryId, setSubcategoryId] = useState("");
 
-  const [images, setImages] = useState(Array(5).fill(null));
-  const [previews, setPreviews] = useState(Array(5).fill(null));
+  const [images, setImages] = useState(Array(2).fill(null));
+  const [previews, setPreviews] = useState(Array(2).fill(null));
 
   const [errors, setErrors] = useState({});
 
@@ -50,7 +50,7 @@ export default function AddProduct() {
         setSubcategoryId(editingProduct.category._id);
       }
 
-      const newPreviews = Array(5).fill(null);
+      const newPreviews = Array(2).fill(null);
       editingProduct.images?.forEach((img, idx) => {
         if (idx < 5) newPreviews[idx] = img;
       });
@@ -252,7 +252,7 @@ export default function AddProduct() {
 
         {/* IMAGES */}
         <div>
-          <label className="block text-sm font-medium text-[#3B2F2F] mb-2">Product Images (Exactly 5)</label>
+          <label className="block text-sm font-medium text-[#3B2F2F] mb-2">Product Images (Exactly 2)</label>
           {errors.images && <p className="text-red-500 text-sm mb-2">{errors.images}</p>}
           <div className="grid grid-cols-5 gap-4">
             {images.map((_, i) => (
@@ -286,7 +286,7 @@ export default function AddProduct() {
         <div className="flex justify-end gap-4 pt-4">
           <button
             type="button"
-            onClick={() => navigate("/products")}
+            onClick={() => navigate("/admin/products")}
             className="px-6 py-3 rounded-lg border border-[#A0522D]
                        text-[#A0522D] hover:bg-[#A0522D]/10"
           >
