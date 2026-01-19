@@ -26,8 +26,6 @@ app.use(cors({
     "https://sellora-egyc.vercel.app",
     "http://localhost:5173"
   ],
-   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
 }));
 
@@ -74,10 +72,4 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Server error", error: err.message });
 });
 
-const PORT = process.env.PORT || 5000;
-
-connectDb().then(() => {
-  app.listen(PORT, () =>
-    console.log(`Server running on port ${PORT}`)
-  );
-});
+export default app;
