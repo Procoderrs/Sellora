@@ -72,4 +72,10 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Server error", error: err.message });
 });
 
-export default app;
+const PORT = process.env.PORT || 5000;
+
+connectDb().then(() => {
+  app.listen(PORT, () =>
+    console.log(`Server running on port ${PORT}`)
+  );
+});
