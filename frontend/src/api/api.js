@@ -31,6 +31,3 @@ http://localhost:5000
 
 
 
-/* http://localhost:5000/
-
-https://sellora-316q.vercel.app*/
