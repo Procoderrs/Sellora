@@ -1,21 +1,21 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import connectDb from "./config/db.js";
+import connectDb from "../config/db.js";
 
 // seed utils
-import createAdmin from "./utils/createAdmin.js";
-import { seedCategories } from "./utils/seedCategories.js";
+import createAdmin from "../utils/createAdmin.js";
+import { seedCategories } from "../utils/seedCategories.js";
 
 // routes
-import authRoutes from "./routes/authRoutes.js";
-import customerDashboardRoutes from "./routes/customerDashboardRoutes.js";
-import categoryRoutes from "./routes/categoryRoutes.js";
-import productRoutes from "./routes/productRoutes.js";
-import publicProductsRoutes from "./routes/publicProductsRoutes.js";
-import cartRoutes from "./routes/cartRoutes.js";
-import orderRoutes from "./routes/orderRoutes.js";
-import adminOrderRoutes from "./routes/adminOrderRoutes.js";
+import authRoutes from "../routes/authRoutes.js";
+import customerDashboardRoutes from "../routes/customerDashboardRoutes.js";
+import categoryRoutes from "../routes/categoryRoutes.js";
+import productRoutes from "../routes/productRoutes.js";
+import publicProductsRoutes from "../routes/publicProductsRoutes.js";
+import cartRoutes from "../routes/cartRoutes.js";
+import orderRoutes from "../routes/orderRoutes.js";
+import adminOrderRoutes from "../routes/adminOrderRoutes.js";
 
 dotenv.config();
 
