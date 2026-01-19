@@ -21,50 +21,41 @@ dotenv.config();
 
 const app = express();
 
-/* ---------------- CORS ---------------- */
-app.use(
-  cors({
-    origin: [
-      "https://sellora-egyc.vercel.app",
-      "http://localhost:5173",
-    ],
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: [
+    "https://sellora-egyc.vercel.app",
+    "http://localhost:5173"
+  ],
+  credentials: true
+}));
 
-/* ---------------- BODY PARSER ---------------- */
 app.use(express.json());
 
-/* ---------------- DB + SEED (CONTROLLED) ---------------- */
+/* DB + Seed */
 let isDbConnected = false;
 let isSeeded = false;
 
 app.use(async (req, res, next) => {
-  try {
-    if (!isDbConnected) {
+  if (!isDbConnected) {
+    try {
       await connectDb();
       isDbConnected = true;
-      console.log("MongoDB connected");
 
-      // ⚠️ RUN SEED ONLY ON FIRST CONNECTION PER INSTANCE
       if (!isSeeded) {
         await createAdmin();
         await seedCategories();
         isSeeded = true;
-        console.log("Admin & categories ensured");
       }
+    } catch (error) {
+      console.error("DB init error:", error);
+      return res.status(500).json({ message: "Server initialization failed" });
     }
-    next();
-  } catch (error) {
-    console.error("Initialization error:", error);
-    res.status(500).json({ message: "Server initialization failed" });
   }
+  next();
 });
 
-/* ---------------- ROUTES ---------------- */
-app.get("/", (req, res) => {
-  res.status(200).json({ message: "API running" });
-});
+/* Routes */
+app.get("/", (req, res) => res.json({ message: "API running" }));
 
 app.use("/api/authentication", authRoutes);
 app.use("/api/customerDashboard", customerDashboardRoutes);
@@ -75,64 +66,10 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/admin/orders", adminOrderRoutes);
 
-/* ---------------- GLOBAL ERROR HANDLER ---------------- */
+/* Global Error Handler */
 app.use((err, req, res, next) => {
   console.error("Unhandled error:", err);
-  res.status(500).json({
-    message: "Server error",
-    error: err.message,
-  });
+  res.status(500).json({ message: "Server error", error: err.message });
 });
 
-/* ---------------- EXPORT FOR VERCEL ---------------- */
 export default app;
-
-
-/* 
-/* 
-
-backend---main-folder
-api-folder-->server.js 
-inside code-
-// backend/api/server.js
-import app from "../index.js"; // path to your exported app
-import { createServer } from "http";
-
-const server = createServer(app);
-
-export default server;
-
-
-config-folder-
-db conection -
-import mongoose from 'mongoose'
-
-const connectDb=async()=>{
-  
-  try {
-    const connection=await mongoose.connect(process.env.MONGO_URI);
-    console.log(`mongodb connected: ${connection.connection.host}`);
-  } catch (error) {
-    console.log('mongodb not connected',error.message);
-    process.exit(1);
-
-  }
-}
-
-export default connectDb;
-
---controllers
---middlewares
---models
---node-modules
---routes
---utils
-env
-gitignore
-indexjs
-packge lock json
-pkg json
-vercel json
-
-
-*/
