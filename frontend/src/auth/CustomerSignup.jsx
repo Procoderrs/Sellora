@@ -30,7 +30,7 @@ export default function Signup() {
     try {
       const { data } = await api.post("/authentication/register", form); // backend register endpoint
       login(data);
-      navigate("/customer/dashboard");
+      navigate("/");
     } catch (err) {
       alert(err?.response?.data?.message || "Signup failed");
     }

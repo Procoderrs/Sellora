@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Header from './Header'
 
 const slides = [
   {
@@ -29,10 +30,12 @@ export default function HeaderHero() {
   }, []);
 
   return (
+
+
+     
     <header className="h-[90vh] bg-[#F5F5DC]">
       {/* RELATIVE WRAPPER */}
       <div className="relative h-full max-w-7xl mx-auto px-12 overflow-hidden">
-
         {slides.map((slide, i) => (
           <div
             key={i}

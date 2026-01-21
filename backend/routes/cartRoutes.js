@@ -12,5 +12,4 @@ router.post("/add", authMiddleware, addToCart);
 router.get("/", authMiddleware, getCart);
 router.put("/update/:productId", authMiddleware, updateCartItem);
 router.delete("/remove/:productId", authMiddleware, removeFromCart);
-
 export default router;

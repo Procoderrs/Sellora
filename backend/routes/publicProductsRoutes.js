@@ -6,7 +6,8 @@ const router = express.Router();
 
 // Public routes (NO AUTH)
 router.get("/", getAllProducts);
-router.get("/:slug", getProductBySlug);
 router.get("/category/:slug", getProductsByCategory);
+router.get("/:slug", getProductBySlug);
+
 
 export default router;

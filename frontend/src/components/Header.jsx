@@ -1,9 +1,13 @@
 import { Link,useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { CartContext } from "../context/CartContext";
 
 export default function Navbar() {
-  const { user,logout } = useContext(AuthContext);
+  const { user,logout} = useContext(AuthContext);
+  const {cart}=useContext(CartContext)
+  console.log(cart);
+
   const [click, setClick] = useState(false);
   const navigate=useNavigate()
   
@@ -34,7 +38,7 @@ export default function Navbar() {
 
         {/* LOGO */}
         <h1 className="text-3xl font-serif font-bold text-[#A0522D] tracking-wide">
-          Sellora
+          <Link to='/'>Sellora</Link>
         </h1>
 
         {/* RIGHT SECTION */}
@@ -94,7 +98,7 @@ export default function Navbar() {
             <span className="absolute -top-2 -right-2 text-xs
                              bg-[#E35336] text-white px-2 py-0.5
                              rounded-full">
-              0
+             {cart.reduce((sum, item) => sum + item.quantity, 0)}
             </span>
           </div>
 

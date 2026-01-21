@@ -6,7 +6,7 @@ export default function CustomerProducts() {
 
   const fetchData = async () => {
     try {
-      const res = await api.get("/admin/products");
+      const res = await api.get("/products");
       setProducts(res.data.products || []);
     } catch (error) {
       console.error(error);

@@ -7,7 +7,7 @@ export default function Topbar() {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate('/login');
   };
 
   return (

@@ -24,7 +24,7 @@ export const addToCart = async (req, res) => {
     cart = await Cart.create({
       user: userId,
       items: [],
-      totalPrice: 0
+      totalPrice: 0,
     });
   }
 
@@ -36,12 +36,14 @@ export const addToCart = async (req, res) => {
     existingItem.quantity += quantity;
   } else {
     cart.items.push({
-      product: productId,
+      product: product._id,
+      title: product.title,
+      images: product.images, // 👈 Save all images here
       quantity,
-      price: product.price
+      price: product.price,
     });
   }
-
+console.log(product.images);
   cart.totalPrice = cart.items.reduce(
     (sum, item) => sum + item.quantity * item.price,
     0
@@ -49,8 +51,12 @@ export const addToCart = async (req, res) => {
 
   await cart.save();
 
-  res.json({ message: "Product added to cart", cart });
+  res.json({
+    message: "Product added to cart",
+    cart,
+  });
 };
+
 
 
 /**
@@ -77,13 +83,16 @@ export const updateCartItem = async (req, res) => {
     return res.status(404).json({ message: "Product not in cart" });
   }
 
+  // Check stock
   const product = await Product.findById(productId);
   if (!product || quantity > product.stock) {
     return res.status(400).json({ message: "Invalid stock quantity" });
   }
 
+  // Update quantity
   item.quantity = quantity;
 
+  // Update total price
   cart.totalPrice = cart.items.reduce(
     (sum, item) => sum + item.quantity * item.price,
     0
@@ -99,15 +108,13 @@ export const updateCartItem = async (req, res) => {
  * GET CART
  */
 export const getCart = async (req, res) => {
-  const cart = await Cart.findOne({ user: req.user._id })
-    .populate("items.product", "title price images");
+  const cart = await Cart.findOne({ user: req.user._id });
 
-  if (!cart) {
-    return res.json({ items: [], totalPrice: 0 });
-  }
+  if (!cart) return res.json({ items: [], totalPrice: 0 });
 
   res.json(cart);
 };
+
 
 /**
  * REMOVE ITEM FROM CART

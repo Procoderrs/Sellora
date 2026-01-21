@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../api/api";
-import CategoryForm from "../components/CategoryForm";
-import ConfirmDelete from "../components/ConfirmDelete";
+import CategoryForm from "./CategoryForm";
+import ConfirmDelete from "./ConfirmDelete";
 
 export default function Categories() {
 	const [categories, setCategories] = useState([]);
@@ -39,7 +39,7 @@ export default function Categories() {
 
 	const handleDeleteConfirmed = async () => {
 		if (!deletingCategory) return;
-+ await api.delete(`/admin/categories/${deletingCategory._id}`);
+		+(await api.delete(`/admin/categories/${deletingCategory._id}`));
 		setDeletingCategory(null);
 		fetchCategories();
 	};

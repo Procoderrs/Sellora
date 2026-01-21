@@ -4,13 +4,18 @@ import Category from "../models/categoryModel.js";
 /**
  * GET ALL ACTIVE PRODUCTS (PUBLIC)
  */
+// GET ALL ACTIVE PRODUCTS
 export const getAllProducts = async (req, res) => {
   try {
     const products = await Product.find({
       status: "active",
       stock: { $gt: 0 }
     })
-      .populate("category", "name slug")
+      .populate({
+        path: "category",
+        select: "name slug parent",
+        populate: { path: "parent", select: "name slug" }
+      })
       .sort({ createdAt: -1 });
 
     res.json({ products });
@@ -18,6 +23,7 @@ export const getAllProducts = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 /**
  * GET SINGLE PRODUCT BY SLUG (PUBLIC)
@@ -67,3 +73,20 @@ export const getProductsByCategory = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+
+
+
+
+export const getPublicCategories = async (req, res) => {
+  try {
+    const categories = await Category.find({ status: "active" })
+      .populate("parent", "name slug")
+      .sort({ createdAt: -1 });
+
+    res.json({ categories });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+

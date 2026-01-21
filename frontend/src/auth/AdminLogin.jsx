@@ -34,7 +34,7 @@ export default function Login() {
 
       // Redirect based on role
       if (data.user.role === "admin") navigate("/admin/dashboard");
-      else navigate("/customer/dashboard");
+      else navigate("/");
     } catch (err) {
       alert(err?.response?.data?.message || "Login failed");
     }

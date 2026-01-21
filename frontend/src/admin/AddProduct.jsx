@@ -29,6 +29,7 @@ export default function AddProduct() {
   useEffect(() => {
     api.get("/admin/categories/category-tree").then(res => {
       setParents(res.data.categories || []);
+      console.log(res.data.categories);
     });
   }, []);
 
@@ -58,6 +59,25 @@ export default function AddProduct() {
     }
   }, [editingProduct, parents]);
 
+
+  useEffect(() => {
+  if (editingProduct) {
+    const newPreviews = Array(2).fill(null);
+    const newImages = Array(2).fill(null);
+
+    editingProduct.images?.forEach((img, idx) => {
+      if (idx < 2) {
+        newPreviews[idx] = img;
+        // Keep URLs as a placeholder for existing images
+        newImages[idx] = img;
+      }
+    });
+
+    setPreviews(newPreviews);
+    setImages(newImages);
+  }
+}, [editingProduct]);
+
   const handleParentChange = (id) => {
     setParentId(id);
     const parent = parents.find(p => p._id === id);
@@ -66,14 +86,15 @@ export default function AddProduct() {
   };
 
   const handleImageChange = (index, file) => {
-    const updatedImages = [...images];
-    updatedImages[index] = file;
-    setImages(updatedImages);
+  const updatedImages = [...images];
+  updatedImages[index] = file; // this will replace the URL with a File object if changed
+  setImages(updatedImages);
 
-    const updatedPreviews = [...previews];
-    updatedPreviews[index] = file ? URL.createObjectURL(file) : null;
-    setPreviews(updatedPreviews);
-  };
+  const updatedPreviews = [...previews];
+  updatedPreviews[index] = file ? URL.createObjectURL(file) : null;
+  setPreviews(updatedPreviews);
+};
+
 
   const validateForm = () => {
     const newErrors = {};
@@ -106,7 +127,17 @@ export default function AddProduct() {
     formData.append("status", status);
     formData.append("category", subcategoryId);
 
-    images.forEach(img => img && formData.append("images", img));
+// Only append files
+images.forEach(img => {
+  if (img instanceof File) formData.append("images", img);
+});
+
+// Send existing URLs too, so server knows which ones to keep
+const existingImages = images
+  .filter(img => typeof img === "string")
+  .map(url => url); 
+formData.append("existingImages", JSON.stringify(existingImages));
+
 
     try {
       setLoading(true);
