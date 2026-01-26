@@ -81,3 +81,25 @@ const startServer = async () => {
 };
 
 startServer();
+
+
+/* 
+
+backend 
+1:api
+2:config
+3:controllers
+4:middleware
+5:models
+6:nodemodules
+7:routes
+8:utils
+env 
+gitignore
+pkg json
+pkg lock json
+vercel json
+
+
+
+*/
