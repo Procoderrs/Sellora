@@ -1,5 +1,5 @@
 import multer from "multer";
-import cloudinary from "../utils/cloudinary";
+import cloudinary from "../utils/cloudinary.js";
 import { Readable } from "stream";
 
 // Multer memory storage
