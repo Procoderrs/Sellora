@@ -65,7 +65,7 @@ export default function CustomerProducts() {
               {/* OVERLAY */}
               <div
                 className="absolute inset-0
-                           bg-gradient-to-t
+                           bg-linear-to-t
                            from-[#3B2F2F]/60 via-[#3B2F2F]/20 to-transparent
                            opacity-0 group-hover:opacity-100
                            transition duration-300
