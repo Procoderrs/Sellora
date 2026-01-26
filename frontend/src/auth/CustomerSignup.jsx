@@ -28,7 +28,7 @@ export default function Signup() {
     if (!validate()) return;
 
     try {
-      const { data } = await api.post("/authentication/register", form); // backend register endpoint
+      const { data } = await api.post("/authentication/register", form);
       login(data);
       navigate("/");
     } catch (err) {
@@ -49,57 +49,101 @@ export default function Signup() {
     form.name && form.email && form.password && Object.keys(errors).length === 0;
 
   return (
-    <div className="min-h-screen flex bg-gray-100">
-      <div className="flex w-full md:w-1/2 justify-center items-center p-8">
+    <div
+      className="min-h-screen flex items-center justify-center"
+      style={{ backgroundColor: "#F5F5DC" }}
+    >
+      <div className="w-full md:w-1/2 p-8">
         <form
           onSubmit={handleSubmit}
-          className="bg-white rounded-lg shadow-lg p-10 w-full max-w-md space-y-6"
+          className="rounded-3xl shadow-2xl p-10 w-full max-w-md space-y-6"
+          style={{ backgroundColor: "#fff" }}
         >
-          <h1 className="text-2xl font-bold text-center">Customer Signup</h1>
+          <h1
+            className="text-3xl font-extrabold text-center mb-6"
+            style={{ color: "#3B2F2F" }}
+          >
+            Customer Signup
+          </h1>
 
+          {/* Name */}
           <input
             placeholder="Name"
             value={form.name}
             onChange={(e) => onChangeField("name", e.target.value)}
-            className={`w-full p-3 border rounded ${
-              errors.name ? "border-red-500" : "border-gray-300"
+            className={`w-full p-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-1 transition-all ${
+              errors.name
+                ? "border-[#E35336] ring-[#E35336]"
+                : "border-[#A0522D] ring-[#A0522D]"
             }`}
           />
-          {errors.name && <p className="text-red-600 text-sm">{errors.name}</p>}
+          {errors.name && (
+            <p className="text-sm font-medium" style={{ color: "#E35336" }}>
+              {errors.name}
+            </p>
+          )}
 
+          {/* Email */}
           <input
             type="email"
             placeholder="Email"
             value={form.email}
             onChange={(e) => onChangeField("email", e.target.value)}
-            className={`w-full p-3 border rounded ${
-              errors.email ? "border-red-500" : "border-gray-300"
+            className={`w-full p-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-1 transition-all ${
+              errors.email
+                ? "border-[#E35336] ring-[#E35336]"
+                : "border-[#A0522D] ring-[#A0522D]"
             }`}
           />
-          {errors.email && <p className="text-red-600 text-sm">{errors.email}</p>}
+          {errors.email && (
+            <p className="text-sm font-medium" style={{ color: "#E35336" }}>
+              {errors.email}
+            </p>
+          )}
 
+          {/* Password */}
           <input
             type="password"
             placeholder="Password"
             value={form.password}
             onChange={(e) => onChangeField("password", e.target.value)}
-            className={`w-full p-3 border rounded ${
-              errors.password ? "border-red-500" : "border-gray-300"
+            className={`w-full p-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-1 transition-all ${
+              errors.password
+                ? "border-[#E35336] ring-[#E35336]"
+                : "border-[#A0522D] ring-[#A0522D]"
             }`}
           />
-          {errors.password && <p className="text-red-600 text-sm">{errors.password}</p>}
+          {errors.password && (
+            <p className="text-sm font-medium" style={{ color: "#E35336" }}>
+              {errors.password}
+            </p>
+          )}
 
+          {/* Submit */}
           <button
             disabled={!isFormValid}
-            className={`w-full py-2 text-white rounded ${
-              isFormValid ? "bg-green-600 hover:bg-green-700" : "bg-gray-500 cursor-not-allowed"
+            className={`w-full py-3 rounded-xl font-bold text-white text-lg transition-all ${
+              isFormValid
+                ? "bg-[#A0522D] hover:bg-[#F4A460] shadow-md hover:shadow-lg"
+                : "bg-gray-400 cursor-not-allowed"
             }`}
           >
             Signup
           </button>
 
-          <p className="text-center text-sm">
-            Already have an account? <a href="/" className="text-blue-600">Login</a>
+          {/* Footer */}
+          <p
+            className="text-center text-sm mt-4"
+            style={{ color: "#3B2F2F" }}
+          >
+            Already have an account?{" "}
+            <a
+              href="/"
+              className="font-semibold hover:underline"
+              style={{ color: "#F4A460" }}
+            >
+              Login
+            </a>
           </p>
         </form>
       </div>

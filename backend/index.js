@@ -17,6 +17,11 @@ import cartRoutes from "./routes/cartRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import adminOrderRoutes from "./routes/adminOrderRoutes.js";
 import publicCategoryRoutes from './routes/publicCategoryRoutes.js'
+import paymentRoutes from "./routes/paymentRoutes.js";
+import adminUserRoutes from "./routes/adminUserRoutes.js";
+import adminAuthRoutes from "./routes/adminAuthRoutes.js";
+
+
 dotenv.config();
 
 const app = express();
@@ -35,6 +40,8 @@ app.use(express.json());
 app.get("/", (req, res) => res.json({ message: "API running" }));
 
 app.use("/api/authentication", authRoutes);
+app.use("/api/admin/users", adminUserRoutes);
+app.use("/api/admin/dashboard", adminAuthRoutes);
 app.use("/api/customerDashboard", customerDashboardRoutes);
 app.use("/api/admin/categories", categoryRoutes);
 app.use("/api/admin/products", productRoutes);
@@ -44,6 +51,7 @@ app.use("/api/categories", publicCategoryRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/admin/orders", adminOrderRoutes);
+app.use("/api/checkout", paymentRoutes);
 
 /* Global Error Handler */
 app.use((err, req, res, next) => {

@@ -5,15 +5,18 @@ import { CartContext } from "../context/CartContext";
 
 export default function Navbar() {
   const { user,logout} = useContext(AuthContext);
-  const {cart}=useContext(CartContext)
+  const {cart,cartCount}=useContext(CartContext)
   console.log(cart);
+  console.log(cartCount);
+  
+
 
   const [click, setClick] = useState(false);
   const navigate=useNavigate()
   
   function HandleLogout(){
     logout();
-    navigate('/')
+    navigate('/login')
   }
 
   return (
@@ -22,19 +25,11 @@ export default function Navbar() {
 
         {/* LEFT NAV */}
         <nav className="flex gap-6 text-[#3B2F2F] font-medium">
-          {["Shop", "Collection", "About", "Features"].map((item) => (
-            <Link
-              key={item}
-              to={`/${item}`}
-              className="relative hover:text-[#A0522D] transition
-                         after:content-[''] after:absolute after:left-0 after:-bottom-1
-                         after:w-0 after:h-[2px] after:bg-[#A0522D]
-                         hover:after:w-full after:transition-all"
-            >
-              {item}
-            </Link>
-          ))}
-        </nav>
+  <Link to="/shop" className="hover:text-[#A0522D]">Shop</Link>
+  <Link to="/collection" className="hover:text-[#A0522D]">Collection</Link>
+  <Link to="/about" className="hover:text-[#A0522D]">About</Link>
+  <Link to="/features" className="hover:text-[#A0522D]">Features</Link>
+</nav>
 
         {/* LOGO */}
         <h1 className="text-3xl font-serif font-bold text-[#A0522D] tracking-wide">
@@ -87,6 +82,10 @@ export default function Navbar() {
             )}
           </div>
 
+<Link to="/my-orders" className="px-4 py-2 hover:bg-[#F5F5DC]">
+  My Orders
+</Link>
+
           {/* CART */}
           <div className="relative cursor-pointer">
             <span className="px-4 py-2 rounded-lg bg-[#A0522D]
@@ -98,7 +97,7 @@ export default function Navbar() {
             <span className="absolute -top-2 -right-2 text-xs
                              bg-[#E35336] text-white px-2 py-0.5
                              rounded-full">
-             {cart.reduce((sum, item) => sum + item.quantity, 0)}
+             {cartCount}
             </span>
           </div>
 

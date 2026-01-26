@@ -18,6 +18,16 @@ import CustomerLayout from "./layout/CustomerLayout.jsx";
 import ProductDetail from "./pages/ProductDetails.jsx";
 import ShoppingCart from "./pages/ShoppingCart.jsx";
 import ShippingDetails from "./pages/ShippingDetails.jsx";
+import CheckoutShipping from "./pages/CheckOutPage.jsx";
+import OrderDetails from "./pages/OrderDetails.jsx";
+import Orders from "./admin/Orders.jsx";
+import PaymentSuccess from "./pages/PaymentSuccessfull.jsx";
+import PaymentCancel from "./pages/PaymentCancel.jsx";
+import Users from "./admin/Users.jsx";
+import MyOrders from "./pages/MyOrders.jsx";
+import Shop from "./pages/Shop.jsx";
+import Collection from "./pages/Collection.jsx";
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -27,15 +37,23 @@ export default function App() {
     {/* PUBLIC */}
     <Route element={<PublicLayout />}>
       <Route path="/" element={<CustomerDashboard />} />
-      <Route path="/category/:id" element={<CategoryProd />} />
+      <Route path="/category/:slug" element={<CategoryProd />} />
       <Route path="/product/:slug" element={<ProductDetail />} />
+      <Route path="/cart" element={<ShoppingCart />} />
+      <Route path="/shop" element={<Shop />} />
+      <Route path="/collection" element={<Collection/>}/>
     </Route>
 
     {/* CUSTOMER */}
     <Route element={<RequireCustomer />}>
       <Route element={<CustomerLayout />}>
-        <Route path="/cart" element={<ShoppingCart />} />
-        <Route path="/checkout/shipping" element={<ShippingDetails />} />
+<Route path="/checkout/shipping" element={<CheckoutShipping />} />
+<Route path="/orders/:id" element={<OrderDetails />} />
+<Route path="/payment-success" element={<PaymentSuccess />} />
+<Route path="/payment-cancel" element={<PaymentCancel />} />
+<Route path="/my-orders" element={<MyOrders/>} />
+
+
 
       </Route>
     </Route>
@@ -47,6 +65,10 @@ export default function App() {
         <Route path="/admin/categories" element={<Categories />} />
         <Route path="/admin/products" element={<Product />} />
         <Route path="/admin/product" element={<AddProduct />} />
+        <Route path="/admin/Orders" element={<Orders />} />
+                <Route path="/admin/Users" element={<Users />} />
+
+
       </Route>
     </Route>
 

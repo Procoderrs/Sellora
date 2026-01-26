@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../api/api";
 
-export default function CategoryProducts() {
-  const { id } = useParams();
+  export default function CategoryProducts() {
+  const { slug } = useParams(); // 🔹 id → slug
   const navigate = useNavigate();
 
   const [products, setProducts] = useState([]);
@@ -16,13 +16,19 @@ export default function CategoryProducts() {
         const prodRes = await api.get("/products");
         const catRes = await api.get("/categories");
 
-        const subcategory = catRes.data.categories.find(c => c._id === id);
+        // 🔹 find category by slug (not _id)
+        const subcategory = catRes.data.categories.find(
+          (c) => c.slug === slug
+        );
+
         setCategoryName(subcategory?.name || "");
         setCategoryDescription(subcategory?.description || "");
 
+        // 🔹 filter products by category.slug
         const filtered = prodRes.data.products.filter(
-          p => p.category?._id === id
+          (p) => p.category?.slug === slug
         );
+
         setProducts(filtered);
         console.log(filtered);
       } catch (err) {
@@ -31,7 +37,7 @@ export default function CategoryProducts() {
     };
 
     fetchProducts();
-  }, [id]);
+  }, [slug]);
 
   return (
     <section className="px-10 py-16 bg-[#F5F5DC] min-h-screen">
@@ -41,7 +47,7 @@ export default function CategoryProducts() {
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-        {products.map(prod => (
+        {products.map((prod) => (
           <div
             key={prod._id}
             className="relative group border rounded-xl shadow-md overflow-hidden bg-white"
@@ -58,7 +64,11 @@ export default function CategoryProducts() {
 
             {/* Quick View Button */}
             <button
-              onClick={() => navigate(`/product/${prod.slug}`, { state: { product: prod,categoryName:categoryName } })}
+              onClick={() =>
+                navigate(`/product/${prod.slug}`, {
+                  state: { product: prod, categoryName: categoryName },
+                })
+              }
               className="
                 absolute left-1/2 bottom-6 -translate-x-1/2
                 translate-y-10 group-hover:translate-y-0

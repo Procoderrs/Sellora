@@ -26,5 +26,11 @@ const cartSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 
+cartSchema.index(
+  { updatedAt: 1 },
+  { expireAfterSeconds: 60 * 60 * 24 * 3 } // 3 days
+);
+
+
 const Cart = mongoose.model("Cart", cartSchema);
 export default Cart;

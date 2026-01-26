@@ -1,13 +1,9 @@
 import express from "express";
-import adminAuth from "../middleware/adminAuth.js";
-import { login, getDashboard } from "../controllers/adminController.js";
+import authMiddleware from "../middleware/authMiddleware.js";
+import { getDashboard } from "../controllers/adminController.js";
 
 const router = express.Router();
 
-// Admin login
-/* router.post("/login", login); */
-
-// Admin dashboard (protected)
-//router.get("/dashboard", adminAuth, getDashboard);
+router.get("/stats", authMiddleware, getDashboard);
 
 export default router;

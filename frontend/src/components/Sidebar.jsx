@@ -45,6 +45,12 @@ export default function Sidebar() {
             Orders
           </Link>
         </li>
+         <li>
+          <Link to="/admin/Users" className={linkClass('/admin/users')}>
+        Users
+          </Link>
+          
+        </li>
       </ul>
     </div>
   )

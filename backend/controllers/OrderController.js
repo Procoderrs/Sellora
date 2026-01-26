@@ -8,15 +8,15 @@ import Product from "../models/productModel.js";
 
 export const createOrder = async (req, res) => {
   const userId = req.user._id;
+  const { shippingAddress } = req.body;
 
-  // 1️⃣ Get cart
   const cart = await Cart.findOne({ user: userId });
 
   if (!cart || cart.items.length === 0) {
     return res.status(400).json({ message: "Cart is empty" });
   }
 
-  // 2️⃣ Validate stock & lock it
+  // Stock validation + lock
   for (const item of cart.items) {
     const product = await Product.findById(item.product);
 
@@ -26,28 +26,27 @@ export const createOrder = async (req, res) => {
       });
     }
 
-    // 🔒 LOCK STOCK
     product.stock -= item.quantity;
     await product.save();
   }
 
-  // 3️⃣ Create order
   const order = await Order.create({
     user: userId,
     items: cart.items,
+    shippingAddress,
     totalAmount: cart.totalPrice,
-    status: "pending",
-    paymentStatus: "unpaid"
+    paymentStatus: "unpaid",
+    status: "pending"
   });
 
-  // 4️⃣ Clear cart
   await Cart.findByIdAndDelete(cart._id);
 
   res.status(201).json({
-    message: "Order created, stock locked",
+    message: "Order created successfully",
     order
   });
 };
+
 
 
 /**
@@ -58,4 +57,25 @@ export const getMyOrders = async (req, res) => {
     .sort({ createdAt: -1 });
 
   res.json({ orders });
+};
+
+
+// controllers/OrderController.js
+export const getOrderById = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    // Make sure the logged-in user owns this order
+    if (order.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+
+    res.json({ order });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
 };

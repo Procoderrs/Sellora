@@ -141,3 +141,49 @@ export const removeFromCart = async (req, res) => {
 
   res.json({ message: "Item removed", cart });
 };
+
+
+export const mergeCart = async (req, res) => {
+  const userId = req.user._id;
+  const { items } = req.body;
+
+  let cart = await Cart.findOne({ user: userId });
+
+  if (!cart) {
+    cart = await Cart.create({
+      user: userId,
+      items: [],
+      totalPrice: 0
+    });
+  }
+
+  items.forEach((guestItem) => {
+    const existingItem = cart.items.find(
+      (item) => item.product.toString() === guestItem.product
+    );
+
+    if (existingItem) {
+      existingItem.quantity += guestItem.quantity;
+    } else {
+      cart.items.push({
+        product: guestItem.product,
+        title: guestItem.title,
+        images: guestItem.images,
+        price: guestItem.price,
+        quantity: guestItem.quantity
+      });
+    }
+  });
+
+  cart.totalPrice = cart.items.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+
+  await cart.save();
+
+  res.json({
+    message: "Cart merged successfully",
+    cart
+  });
+};

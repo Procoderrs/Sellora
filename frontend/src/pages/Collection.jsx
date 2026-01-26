@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import api from "../api/api";
 import { useNavigate } from "react-router-dom";
 
-export default function CategoriesWithSubproducts() {
+export default function Collection() {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [selectedParent, setSelectedParent] = useState(null);

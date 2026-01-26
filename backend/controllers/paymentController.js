@@ -37,8 +37,9 @@ export const createCheckoutSession = async (req, res) => {
         orderId: order._id.toString(),
       },
 
-      success_url: "http://localhost:3000/success",
-      cancel_url: "http://localhost:3000/cancel",
+      success_url: "http://localhost:5173/payment-success?orderId=" + order._id,
+       cancel_url: "http://localhost:5173/payment-cancel",
+ 
     });
 
     // 4️⃣ Return Stripe URL

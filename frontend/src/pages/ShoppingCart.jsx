@@ -6,6 +6,8 @@ import { CartContext } from "../context/CartContext";
 
 export default function ShoppingCart() {
   const { cart, removeFromCart, updateQuantity } = useContext(CartContext);
+    const {user}=useContext(AuthContext);
+  
   console.log(cart);
   const navigate = useNavigate();
 
@@ -13,6 +15,17 @@ export default function ShoppingCart() {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
+const handleCheckout = () => {
+  if (!user) {
+    navigate("/login", {
+      state: { from: "/checkout/shipping" }
+    });
+  } else {
+    navigate("/checkout/shipping");
+  }
+};
+
+  
 
   if (!cart.length) {
     return (
@@ -60,7 +73,7 @@ export default function ShoppingCart() {
                 </p>
 
                 <button
-                  onClick={() => removeFromCart(item._id)}
+                  onClick={() => removeFromCart(item.product)}
                   className="text-sm text-red-600 hover:underline"
                 >
                   Remove
@@ -73,7 +86,7 @@ export default function ShoppingCart() {
                   <button
                     onClick={() =>
                       item.quantity > 1 &&
-                      updateQuantity(item._id, item.quantity - 1)
+                      updateQuantity(item.product, item.quantity - 1)
                     }
                     className="px-3 py-1 border-r hover:bg-gray-100"
                   >
@@ -82,7 +95,7 @@ export default function ShoppingCart() {
                   <span className="px-4">{item.quantity}</span>
                   <button
                     onClick={() =>
-                      updateQuantity(item._id, item.quantity + 1)
+                      updateQuantity(item.product, item.quantity + 1)
                     }
                     className="px-3 py-1 border-l hover:bg-gray-100"
                   >
@@ -123,7 +136,7 @@ export default function ShoppingCart() {
             </span>
           </div>
 
-          <button onClick={()=>navigate('/checkout/shipping')} className="w-full bg-[#A0522D] text-white py-3 rounded-lg font-semibold hover:bg-[#8B4513] transition">
+          <button onClick={handleCheckout} className="w-full bg-[#A0522D] text-white py-3 rounded-lg font-semibold hover:bg-[#8B4513] transition">
             Proceed to Checkout
           </button>
         </div>

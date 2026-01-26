@@ -10,7 +10,6 @@ export default function ProductDetail() {
   const categoryName = state?.categoryName;
 
 
-  const {user}=useContext(AuthContext);
   const {addToCart}=useContext(CartContext)
   console.log(addToCart);
   const navigate=useNavigate();
@@ -20,11 +19,7 @@ export default function ProductDetail() {
   const [count, setCount] = useState(1);
 
 const handleAddToCart = () => {
-  if (!user) {
-    navigate("/"); // or "/login"
-    return;
-  }
-  addToCart(product._id, 1);
+  addToCart(product, count);
   navigate("/cart");
 };
 
