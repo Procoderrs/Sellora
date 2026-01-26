@@ -63,7 +63,7 @@ export default function CustomerProducts() {
               />
 
               {/* OVERLAY */}
-              <div
+              <div 
                 className="absolute inset-0
                            bg-linear-to-t
                            from-[#3B2F2F]/60 via-[#3B2F2F]/20 to-transparent
