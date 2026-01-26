@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom"; // <--- import Link
 import Header from './Header'
 
 const slides = [
@@ -30,10 +31,7 @@ export default function HeaderHero() {
   }, []);
 
   return (
-
-
-     
-    <header className="h-[90vh] bg-[#F5F5DC]">
+    <header className="h-[90vh] bg-[#F5F5DC] px-12">
       {/* RELATIVE WRAPPER */}
       <div className="relative h-full max-w-7xl mx-auto px-12 overflow-hidden">
         {slides.map((slide, i) => (
@@ -42,7 +40,6 @@ export default function HeaderHero() {
             className={`absolute inset-0 flex items-center transition-opacity duration-700
               ${i === index ? "opacity-100" : "opacity-0 pointer-events-none"}`}
           >
-
             {/* LEFT — TEXT */}
             <div
               className={`w-1/2 pr-12 transform transition-all duration-700
@@ -56,13 +53,14 @@ export default function HeaderHero() {
                 {slide.desc}
               </p>
 
-              <button
-                className="mt-8 px-8 py-3 rounded-lg
+              <Link 
+                to="/shop" // <-- attach to /shop
+                className="mt-8 inline-block px-8 py-3 rounded-lg
                            bg-[#A0522D] text-[#F5F5DC]
                            hover:bg-[#8B4513] transition"
               >
                 Shop Collection
-              </button>
+              </Link>
             </div>
 
             {/* RIGHT — IMAGE */}
@@ -76,7 +74,6 @@ export default function HeaderHero() {
                 className="w-full h-full object-cover rounded-xl shadow-lg"
               />
             </div>
-
           </div>
         ))}
 
@@ -91,7 +88,6 @@ export default function HeaderHero() {
             />
           ))}
         </div>
-
       </div>
     </header>
   );
