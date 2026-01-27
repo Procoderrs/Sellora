@@ -1,4 +1,3 @@
-// api/api.js
 
 // api/api.js
 import axios from "axios";
