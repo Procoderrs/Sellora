@@ -42,6 +42,10 @@ app.use(express.json());
 /* Routes */
 app.get("/", (req, res) => res.json({ message: "API running" }));
 
+
+/*  */
+
+
 app.use("/api/authentication", authRoutes);
 app.use("/api/admin/users", adminUserRoutes);
 app.use("/api/admin/dashboard", adminAuthRoutes);
