@@ -67,28 +67,29 @@ app.use((err, req, res, next) => {
 });
 
 /* DB + Seed */
-const startServer = async () => {
-  try {
-    await connectDb();
+connectDb()
+  .then(async () => {
     console.log("Database connected");
-
-    // Seed admin and categories on every server start
     await createAdmin();
     await seedCategories();
     console.log("Admin and categories seeded");
+  })
+  .catch((error) => {
+    console.error("Server startup error:", error);
+  });
 
+// 2. Export the app for Vercel
+export default app;
+
+// 3. Keep app.listen only for local development
+if (process.env.NODE_ENV !== 'production') {
     const PORT = process.env.PORT || 5000;
     app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
+        console.log(`Server running on port ${PORT}`);
     });
-  } catch (error) {
-    console.error("Server startup error:", error);
-    process.exit(1); // stop server if DB fails
-  }
-};
+}
 
 startServer();
-export default app;
 /* 
 
 backend 
