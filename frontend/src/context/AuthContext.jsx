@@ -1,11 +1,11 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import api from "../api/api"; // make sure api is imported
+import api from "../api/api";
 
-export const AuthContext = createContext();
+const AuthContext = createContext(null);
 
-export function useAuth() {
+export const useAuth = () => {
   return useContext(AuthContext);
-}
+};
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -18,23 +18,18 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = async (data) => {
-    // 1️⃣ Set user in state and localStorage
     setUser(data.user);
     localStorage.setItem("auth", JSON.stringify(data.user));
     localStorage.setItem("authToken", data.token);
 
-    // 2️⃣ Merge guest cart if exists
     const guestCart = JSON.parse(localStorage.getItem("guestCart") || "[]");
 
-    if (guestCart.length > 0) {
+    if (guestCart.length) {
       try {
-        // Send guest cart to backend merge API
         await api.post("/cart/merge", { items: guestCart });
-
-        // Clear guest cart from localStorage
         localStorage.removeItem("guestCart");
       } catch (err) {
-        console.error("Cart merge failed:", err.response?.data || err.message);
+        console.error("Cart merge failed", err);
       }
     }
   };
