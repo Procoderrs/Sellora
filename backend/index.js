@@ -55,7 +55,6 @@ app.get("/", (req, res) => res.json({ message: "API running" }));
 
 
 /*  */
-app.options("*", cors());
 
 
 app.use("/authentication", authRoutes);
