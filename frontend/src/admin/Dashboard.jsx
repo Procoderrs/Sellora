@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import api from '../api/api'
-import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
+import {PieChart,Pie,Cell,Legend} from "recharts";
+import {BarChart,Bar,XAxis,YAxis,Tooltip,ResponsiveContainer,} from "recharts";
+
 
 export default function Dashboard() {
 
@@ -15,6 +10,10 @@ export default function Dashboard() {
 
 
   const [categoryStats, setCategoryStats] = useState([]);
+  const [topProducts, setTopProducts] = useState([]);
+  const [topCustomers,setTopCustomers]=useState([])
+  const [recentOrders,setRecentOrders]=useState([])
+
 
   const [stats, setStats] = useState({
     products: 0,
@@ -32,9 +31,15 @@ export default function Dashboard() {
     const ordersRes = await api.get("/admin/orders");
     const customers = await api.get("/admin/users");
     const dashboardStats = await api.get("/admin/dashboard/stats")
+const topProductsRes = await api.get("/admin/dashboard/top-products");
+setTopProducts(topProductsRes.data);
+
+const topCustomerRes=await api.get('/admin/dashboard/top-customer');
+    setTopCustomers(topCustomerRes.data)
     console.log(dashboardStats);;
 
     const orders = ordersRes.data.orders;
+    setRecentOrders(ordersRes.data.orders.slice(0,5))
 
     const totalRevenue = orders
       .filter(order => order.paymentStatus === "paid")
@@ -45,7 +50,7 @@ export default function Dashboard() {
       categories: categories.data.categories.length,
       orders: orders.length,
       customers: customers.data.users.length,
-      revenue: totalRevenue,
+      revenue: totalRevenue, 
     });
 
    setCategoryStats([
@@ -182,6 +187,130 @@ export default function Dashboard() {
             </PieChart>
           </ResponsiveContainer>
         </div>
+{/* chart */}
+<div className="bg-white rounded-2xl shadow-lg p-6 md:col-span-2">
+  <h2 className="text-xl font-bold mb-4 text-[#3B2F2F]">
+    Top Selling Products
+  </h2>
+
+  <ResponsiveContainer width="100%" height={300}>
+    <BarChart data={topProducts}>
+      <XAxis dataKey="name" />
+      <YAxis allowDecimals={false} />
+      <Tooltip />
+      <Bar dataKey="totalSold" fill="#A0522D" />
+    </BarChart>
+  </ResponsiveContainer>
+</div>
+{/* chart */}
+
+<div className="bg-white rounded-2xl shadow-lg p-6 md:col-span-2">
+  <h2 className="text-xl font-bold mb-4 text-[#3B2F2F]">
+    Top Customers
+  </h2>
+
+  <div className="overflow-x-auto">
+    <table className="w-full border-collapse">
+      <thead>
+        <tr className="bg-[#F5F5DC] text-left text-sm text-[#3B2F2F]">
+          <th className="p-3">#</th>
+          <th className="p-3">Name</th>
+          <th className="p-3">Email</th>
+          <th className="p-3 text-right">Total Spent</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {topCustomers.map((user, index) => (
+          <tr
+            key={index}
+            className="border-b text-sm hover:bg-[#FAF8F2]"
+          >
+            <td className="p-3">{index + 1}</td>
+            <td className="p-3 font-medium">{user.name}</td>
+            <td className="p-3 text-gray-600">{user.email}</td>
+            <td className="p-3 text-right font-semibold">
+              ${user.totalSpent.toLocaleString()}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{/* recent orders */}
+<div className="bg-white rounded-2xl shadow-lg p-6 md:col-span-3">
+  <h2 className="text-xl font-bold mb-4 text-[#3B2F2F]">
+    Recent Orders
+  </h2>
+
+  <div className="overflow-x-auto">
+    <table className="w-full border-collapse">
+      <thead>
+        <tr className="bg-[#F5F5DC] text-sm text-[#3B2F2F]">
+          <th className="p-3">Order ID</th>
+          <th className="p-3">Customer</th>
+          <th className="p-3">Amount</th>
+          <th className="p-3">Payment</th>
+          <th className="p-3">Status</th>
+          <th className="p-3">Date</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {recentOrders.map(order => (
+          <tr
+            key={order._id}
+            className="border-b text-sm hover:bg-[#FAF8F2]"
+          >
+            <td className="p-3 font-mono">
+              {order._id.slice(-6)}
+            </td>
+
+            <td className="p-3">
+              {order.user?.name || "Guest"}
+            </td>
+
+            <td className="p-3 font-semibold">
+              ${order.totalAmount.toLocaleString()}
+            </td>
+
+            <td className="p-3">
+              <span
+                className={`px-2 py-1 rounded-full text-xs font-semibold
+                  ${order.paymentStatus === "paid"
+                    ? "bg-green-100 text-green-700"
+                    : "bg-yellow-100 text-yellow-700"}
+                `}
+              >
+                {order.paymentStatus}
+              </span>
+            </td>
+
+            <td className="p-3">
+              <span
+                className={`px-2 py-1 rounded-full text-xs font-semibold
+                  ${order.status === "delivered"
+                    ? "bg-green-100 text-green-700"
+                    : order.status === "cancelled"
+                    ? "bg-red-100 text-red-700"
+                    : "bg-blue-100 text-blue-700"}
+                `}
+              >
+                {order.status}
+              </span>
+            </td>
+
+            <td className="p-3 text-gray-500">
+              {new Date(order.createdAt).toLocaleDateString()}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>
 
 
       </div>
