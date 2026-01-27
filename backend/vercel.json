@@ -1,8 +1,7 @@
 {
   "version": 2,
-  
   "functions": {
-    "/**/*.js": {
+    "**/*.js": {
       "includeFiles": "node_modules/cloudinary/lib/utils/analytics/**"
     }
   }
