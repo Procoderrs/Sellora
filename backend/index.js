@@ -26,16 +26,22 @@ dotenv.config();
 
 const app = express();
 
+const allowedOrigins = [
+  "https://sellora-kappa.vercel.app",
+  "http://localhost:5173"
+];
+
 app.use(cors({
-  origin: [
-    "https://sellora-kappa.vercel.app",
-    "http://localhost:5173"
-  ],
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
-);
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true); // allow server-to-server
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true
+}));
+
 
 app.use(express.json());
 
