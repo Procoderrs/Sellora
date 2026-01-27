@@ -7,7 +7,7 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL + "/api",
 });
 
-/* // Request interceptor to attach auth token
+ // Request interceptor to attach auth token
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("authToken"); // jo tum login me save kiya tha
   if (token) {
@@ -16,11 +16,11 @@ api.interceptors.request.use((config) => {
   return config;
 }, (error) => {
   return Promise.reject(error);
-}); */
+}); 
 
 export default api;
 
-/* https://sellora-blond.vercel.app
+/* https://sellora-gc32.vercel.app
 
 http://localhost:5000
 
