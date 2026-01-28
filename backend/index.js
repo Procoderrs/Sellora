@@ -45,10 +45,6 @@ app.use((req, res, next) => {
 });
 
 // Handle preflight requests for all routes
-app.options("*", cors({
-  origin: allowedOrigins,
-  credentials: true,
-}));
 
 // ----- Middleware -----
 app.use(express.json());
