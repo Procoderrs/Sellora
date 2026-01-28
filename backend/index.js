@@ -27,15 +27,10 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-  origin: [
-    "https://sellora-4ta9.vercel.app",
-    "http://localhost:5173"
-  ],
+  origin: "*", // Allow all origins
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
 }));
-
 /* "routes": [
     {
       "src": "/(.*)",
