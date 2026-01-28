@@ -39,6 +39,13 @@ app.use(cors({
   ],
 
  */
+// Add this after CORS but before routes
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+  console.log('Origin:', req.headers.origin);
+  console.log('Headers:', req.headers);
+  next();
+});
 
 /* Routes */
 app.get("/", (req, res) => res.json({ message: "API running" }));
