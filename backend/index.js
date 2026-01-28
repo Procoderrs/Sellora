@@ -18,8 +18,8 @@ import adminUserRoutes from "./routes/adminUserRoutes.js";
 import adminAuthRoutes from "./routes/adminAuthRoutes.js";
 
 // Seed utils
-import createAdmin from "../utils/createAdmin.js";
-import { seedCategories } from "../utils/seedCategories.js";
+import createAdmin from "./utils/createAdmin.js";
+import { seedCategories } from "./utils/seedCategories.js";
 
 dotenv.config();
 const app = express();
