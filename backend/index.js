@@ -25,26 +25,25 @@ dotenv.config();
 const app = express();
 
 // ----- CORS Setup -----
-const allowedOrigins = [
-  "https://sellora-4ta9.vercel.app", 
-  "http://localhost:5173"
-];
-
 app.use((req, res, next) => {
   const origin = req.headers.origin;
+  const allowedOrigins = [
+    "https://sellora-4ta9.vercel.app",
+    "http://localhost:5173"
+  ];
+
   if (allowedOrigins.includes(origin)) {
     res.setHeader("Access-Control-Allow-Origin", origin);
   }
   res.setHeader("Access-Control-Allow-Credentials", "true");
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization"
-  );
-  // Preflight
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
   if (req.method === "OPTIONS") return res.sendStatus(204);
+
   next();
 });
+
 // Handle preflight requests for all routes
 app.options("*", cors({
   origin: allowedOrigins,
