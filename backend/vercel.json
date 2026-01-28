@@ -16,6 +16,9 @@
 
 
   
+
+
+  
   "functions": {
     "/**/*.js": {
       "includeFiles": "node_modules/cloudinary/lib/utils/analytics/**"
