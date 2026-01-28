@@ -32,20 +32,14 @@ const allowedOrigins = [
 ];
 
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
-
-    if (
-      origin.includes("vercel.app") ||
-      origin === "http://localhost:5173"
-    ) {
-      return callback(null, true);
-    }
-
-    callback(new Error("Not allowed by CORS"));
-  },
-  credentials: true
+  origin: "*", // testing ke liye
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
+app.options("*", (req, res) => {
+  res.sendStatus(200);
+});
 
 
 
