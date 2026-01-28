@@ -48,18 +48,18 @@ app.use(cors({
 /* Routes */
 app.get("/", (req, res) => res.json({ message: "API running" }));
 
-app.use("/api/authentication", authRoutes);
-app.use("/api/admin/users", adminUserRoutes);
-app.use("/api/admin/dashboard", adminAuthRoutes);
-app.use("/api/customerDashboard", customerDashboardRoutes);
-app.use("/api/admin/categories", categoryRoutes);
-app.use("/api/admin/products", productRoutes);
-app.use("/api/products", publicProductsRoutes);
-app.use("/api/categories", publicCategoryRoutes);
-app.use("/api/cart", cartRoutes);
-app.use("/api/orders", orderRoutes);
-app.use("/api/admin/orders", adminOrderRoutes);
-app.use("/api/checkout", paymentRoutes);
+app.use("/authentication", authRoutes);
+app.use("/admin/users", adminUserRoutes);
+app.use("/admin/dashboard", adminAuthRoutes);
+app.use("/customerDashboard", customerDashboardRoutes);
+app.use("/admin/categories", categoryRoutes);
+app.use("/admin/products", productRoutes);
+app.use("/products", publicProductsRoutes);
+app.use("/categories", publicCategoryRoutes);
+app.use("/cart", cartRoutes);
+app.use("/orders", orderRoutes);
+app.use("/admin/orders", adminOrderRoutes);
+app.use("/checkout", paymentRoutes);
 
 /* Global Error Handler */
 app.use((err, req, res, next) => {
