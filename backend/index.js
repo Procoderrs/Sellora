@@ -27,10 +27,15 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-  origin: "*", // Allow all origins
+  origin: [
+    "https://sellora-4ta9.vercel.app",
+    "http://localhost:5173"
+  ],
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
 /* "routes": [
     {
       "src": "/(.*)",
@@ -39,13 +44,6 @@ app.use(cors({
   ],
 
  */
-// Add this after CORS but before routes
-app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
-  console.log('Origin:', req.headers.origin);
-  console.log('Headers:', req.headers);
-  next();
-});
 
 /* Routes */
 app.get("/", (req, res) => res.json({ message: "API running" }));
