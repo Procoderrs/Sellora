@@ -30,19 +30,21 @@ const allowedOrigins = [
   "http://localhost:5173"
 ];
 
-app.use(cors({
-  origin: function(origin, callback) {
-    if (!origin) return callback(null, true); // allow server-to-server or Postman
-    if (!allowedOrigins.includes(origin)) {
-      return callback(new Error(`CORS not allowed for origin ${origin}`), false);
-    }
-    return callback(null, true);
-  },
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
-
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization"
+  );
+  // Preflight
+  if (req.method === "OPTIONS") return res.sendStatus(204);
+  next();
+});
 // Handle preflight requests for all routes
 app.options("*", cors({
   origin: allowedOrigins,
