@@ -4,18 +4,18 @@ import connectDb from "../config/db.js";
 import cors from "cors";
 
 // Routes
-import authRoutes from "../routes/authRoutes.js";
-import customerDashboardRoutes from "../routes/customerDashboardRoutes.js";
-import categoryRoutes from "../routes/categoryRoutes.js";
-import productRoutes from "../routes/productRoutes.js";
-import publicProductsRoutes from "../routes/publicProductsRoutes.js";
-import cartRoutes from "../routes/cartRoutes.js";
-import orderRoutes from "../routes/orderRoutes.js";
-import adminOrderRoutes from "../routes/adminOrderRoutes.js";
-import publicCategoryRoutes from "../routes/publicCategoryRoutes.js";
-import paymentRoutes from "../routes/paymentRoutes.js";
-import adminUserRoutes from "../routes/adminUserRoutes.js";
-import adminAuthRoutes from "../routes/adminAuthRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
+import customerDashboardRoutes from "./routes/customerDashboardRoutes.js";
+import categoryRoutes from "./routes/categoryRoutes.js";
+import productRoutes from "./routes/productRoutes.js";
+import publicProductsRoutes from "./routes/publicProductsRoutes.js";
+import cartRoutes from "./routes/cartRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
+import adminOrderRoutes from "./routes/adminOrderRoutes.js";
+import publicCategoryRoutes from "./routes/publicCategoryRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
+import adminUserRoutes from "./routes/adminUserRoutes.js";
+import adminAuthRoutes from "./routes/adminAuthRoutes.js";
 
 // Seed utils
 import createAdmin from "../utils/createAdmin.js";
