@@ -27,7 +27,7 @@ dotenv.config();
 const app = express();
 
 const allowedOrigins = [
-  "https://sellora-kappa.vercel.app",
+  "https://sellora-4ta9.vercel.app",
   "http://localhost:5173"
 ];
 

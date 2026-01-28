@@ -19,7 +19,7 @@ api.interceptors.request.use((config) => {
 
 export default api;
 
-/* https://sellora-gc32.vercel.app
+/* https://sellora-drab.vercel.app
 
 http://localhost:5000
 
