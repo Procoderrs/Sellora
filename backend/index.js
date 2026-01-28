@@ -78,3 +78,26 @@ if (process.env.NODE_ENV !== 'production') {
     const PORT = process.env.PORT || 5000;
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }
+
+/* 
+
+main folder
+1: backend folder
+2: frontend folder
+backend folder mein -
+--api folder
+--config folder
+--middleware folder
+--models-folder
+--routes folder
+-- utils folder
+-- env file
+-- gitignore
+-- index js
+--package json
+--package lock json
+....
+
+
+
+*/
