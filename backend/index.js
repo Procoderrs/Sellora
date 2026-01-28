@@ -31,11 +31,6 @@ const allowedOrigins = [
   "http://localhost:5173"
 ];
 
-app.use(cors({
-  origin: "*", // testing ke liye
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
 
 
 
