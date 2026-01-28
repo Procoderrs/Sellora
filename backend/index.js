@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import connectDb from './config/db.js';
-
+import cors from 'cors'
 // seed utils
 import createAdmin from "./utils/createAdmin.js";
 import { seedCategories } from "./utils/seedCategories.js";
@@ -25,6 +25,14 @@ dotenv.config();
 const app = express();
 
 app.use(express.json());
+
+app.use(cors({
+  origin: [
+    "https://sellora-ifou.vercel.app",
+    "http://localhost:5173"
+  ],
+  credentials: true
+}));
 
 /* Routes */
 app.get("/", (req, res) => res.json({ message: "API running" }));

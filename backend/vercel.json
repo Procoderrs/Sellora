@@ -1,9 +1,9 @@
 {
   "version": 2,
   "functions": {
-  "**/*.js": {
-    "includeFiles": "node_modules/cloudinary/lib/utils/analytics/**"
+    "api/**/*.js": {
+      "includeFiles": "node_modules/cloudinary/lib/utils/analytics/**",
+      "runtime": "nodejs18.x"
+    }
   }
-}
-
 }
