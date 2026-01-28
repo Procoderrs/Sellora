@@ -1,17 +1,5 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "index.js",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "index.js"
-    }
-  ],
   "functions": {
     "/**/*.js": {
       "includeFiles": "node_modules/cloudinary/lib/utils/analytics/**"
