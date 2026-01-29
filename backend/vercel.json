@@ -2,7 +2,7 @@
   "version": 2,
   
   "functions": {
-    "api/**/*.js": {
+    "/**/*.js": {
       "includeFiles": "node_modules/cloudinary/lib/utils/analytics/**"
     }
   }
