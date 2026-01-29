@@ -1,4 +1,4 @@
-/* import { createServer } from "vercel-node-server";
+import { createServer } from "vercel-node-server";
 import express from "express";
 import cors from "cors";
 import app from "../index.js"; // Make sure this path is correct
@@ -21,4 +21,3 @@ server.options("*", cors({
 }));
 
 export default createServer(server);
- */
