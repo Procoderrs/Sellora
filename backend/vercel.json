@@ -12,7 +12,13 @@
       "src": "/api/(.*)",
       "dest": "api/index.js"
     }
-  ]
+  ],
+
+  "functions": {
+    "/**/*.js": {
+      "includeFiles": "node_modules/cloudinary/lib/utils/analytics/**"
+    }
+  }
 }
 
 

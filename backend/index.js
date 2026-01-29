@@ -31,8 +31,16 @@ const allowedOrigins = [
 ];
 
 app.use(cors({
-  origin: allowedOrigins,
-  credentials: true
+  origin: function(origin, callback) {
+    // allow requests with no origin (like Postman or curl)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = `CORS policy: The origin ${origin} is not allowed.`;
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true,
 }));
 
 // Handle preflight requests for all routes
@@ -42,7 +50,7 @@ app.use(express.json());
 
 // ----- Routes -----
 app.get("/", (req, res) => res.json({ message: "API running" }));
-app.get("/api/test", (req, res) => res.json({ ok: true }));
+//app.get("/api/test", (req, res) => res.json({ ok: true }));
 
 
 app.use("/api/authentication", authRoutes);
@@ -77,7 +85,7 @@ connectDb()
   });
 
 // ----- Export for Vercel -----
-export default app;
+//export default app;
 
 // ----- Local dev -----
 if (process.env.NODE_ENV !== "production") {
