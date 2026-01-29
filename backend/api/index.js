@@ -5,14 +5,14 @@ import app from "../index.js"; // Original Express app
 
 const server = express();
 
-// --- Apply CORS first ---
+// Apply CORS
 server.use(cors({
-  origin: "https://sellora-omega.vercel.app", // your frontend
+  origin: "https://sellora-omega.vercel.app",
   credentials: true
 }));
 
-// Use original app routes
-server.use("/api", app);  // Important: prefix with /api
+// Mount app directly (no extra /api)
+server.use(app);
 
 // Handle OPTIONS preflight
 server.options("*", cors({
