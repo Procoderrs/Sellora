@@ -50,7 +50,7 @@ app.use(express.json());
 
 // ----- Routes -----
 app.get("/", (req, res) => res.json({ message: "API running" }));
-//app.get("/api/test", (req, res) => res.json({ ok: true }));
+app.get("/api/test", (req, res) => res.json({ ok: true }));
 
 
 app.use("/api/authentication", authRoutes);
