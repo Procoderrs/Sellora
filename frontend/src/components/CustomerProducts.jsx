@@ -8,6 +8,7 @@ export default function CustomerProducts() {
     try {
       const res = await api.get("/products");
       setProducts(res.data.products || []);
+      console.log(res);
     } catch (error) {
       console.error(error);
     }
