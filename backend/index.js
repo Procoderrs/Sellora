@@ -25,10 +25,10 @@ dotenv.config();
 const app = express();
 
 // ----- CORS Setup -----
-app.use(cors({
-  origin: true,          // allow all origins
-  credentials: true,     // allow cookies
-}));
+const allowedOrigins = [
+  "https://sellora-omega.vercel.app",
+  "http://localhost:5173"
+];
 
 app.use(cors({
   origin: function(origin, callback) {
