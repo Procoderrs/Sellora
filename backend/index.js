@@ -85,7 +85,7 @@ connectDb()
   });
 
 // ----- Export for Vercel -----
-//export default app;
+export default app;
 
 // ----- Local dev -----
 if (process.env.NODE_ENV !== "production") {
