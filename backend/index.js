@@ -66,6 +66,12 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/admin/orders", adminOrderRoutes);
 app.use("/api/checkout", paymentRoutes);
 
+
+app.use((req, res, next) => {
+  console.log("REQ:", req.method, req.url);
+  next();
+});
+
 // ----- Global Error Handler -----
 app.use((err, req, res, next) => {
   console.error("Unhandled error:", err);
