@@ -13,8 +13,11 @@ export const createCheckoutSession = async (req, res) => {
     return res.status(500).json({
       message: "Invalid FRONTEND_URL on server",
       value: process.env.FRONTEND_URL,
+      
     });
   }
+
+      console.log(process.env.FRONTEND_URL);
 
   const order = await Order.findById(req.params.orderId);
   if (!order) return res.status(404).json({ message: "Order not found" });
