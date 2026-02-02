@@ -46,6 +46,9 @@ app.use(cors({
 
 // Handle preflight requests for all routes
 
+app.use("/stripe", stripeWebhook);
+
+
 // ----- Middleware -----
 app.use(express.json());
 
@@ -66,7 +69,6 @@ app.use("/cart", cartRoutes);
 app.use("/orders", orderRoutes);
 app.use("/admin/orders", adminOrderRoutes);
 app.use("/checkout", paymentRoutes);
-app.use("/stripe", stripeWebhook);
 
 
 
