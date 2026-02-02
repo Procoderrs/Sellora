@@ -15,7 +15,7 @@ router.get("/:id", authMiddleware, getOrderById); // <--- Add this
 // Create new order
 
 // ✅ Mark order as paid (learning mode, no webhook)
-router.put("/:id/mark-paid", authMiddleware, async (req, res) => {
+/* router.put("/:id/mark-paid", authMiddleware, async (req, res) => {
   const order = await Order.findById(req.params.id);
   if (!order) return res.status(404).json({ message: "Order not found" });
 
@@ -24,7 +24,7 @@ router.put("/:id/mark-paid", authMiddleware, async (req, res) => {
   await order.save();
 
   res.json({ message: "Order marked as paid" });
-});
+}); */
 
 
 

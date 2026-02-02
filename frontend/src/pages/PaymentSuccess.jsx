@@ -11,24 +11,11 @@ export default function PaymentSuccess() {
   const orderId = params.get("orderId");
 
   useEffect(() => {
-    const markPaid = async () => {
-      if (!orderId) {
-        setError("Order ID missing in URL");
-        setLoading(false);
-        return;
-      }
-
-      try {
-        await api.put(`/orders/${orderId}/mark-paid`);
-        navigate(`/orders/${orderId}`); // go to order details
-      } catch (err) {
-        setError(err.response?.data?.message || "Failed to confirm payment");
-        setLoading(false);
-      }
-    };
-
-    markPaid();
-  }, [orderId, navigate]);
+  // just redirect after few seconds
+  setTimeout(() => {
+    navigate(`/orders/${orderId}`);
+  }, 2000);
+}, [orderId]);
 
   if (loading) {
     return (

@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import api from "../api/api.js";
+import {  useNavigate } from "react-router-dom";
 
 export default function CustomerProducts() {
   const [products, setProducts] = useState([]);
+  const navigate=useNavigate()
 
   const fetchData = async () => {
     try {
@@ -72,7 +74,14 @@ export default function CustomerProducts() {
                            transition duration-300
                            flex items-end justify-center pb-6"
               >
-                <button
+                <button onClick={() =>
+    navigate(`/product/${product.slug}`, {
+      state: {
+        product,
+        categoryName: product.category?.name || "",
+      },
+    })
+  }
                   className="px-6 py-2 rounded-full
                              bg-[#A0522D] text-[#F5F5DC]
                              text-sm font-medium tracking-wide

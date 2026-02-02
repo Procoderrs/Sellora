@@ -28,7 +28,6 @@ export default function Navbar() {
   <Link to="/shop" className="hover:text-[#A0522D]">Shop</Link>
   <Link to="/collection" className="hover:text-[#A0522D]">Collection</Link>
   <Link to="/about" className="hover:text-[#A0522D]">About</Link>
-  <Link to="/features" className="hover:text-[#A0522D]">Features</Link>
 </nav>
 
         {/* LOGO */}

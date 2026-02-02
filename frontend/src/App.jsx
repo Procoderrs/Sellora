@@ -21,13 +21,13 @@ import ShippingDetails from "./pages/ShippingDetails.jsx";
 import CheckoutShipping from "./pages/CheckOutPage.jsx";
 import OrderDetails from "./pages/OrderDetails.jsx";
 import Orders from "./admin/Orders.jsx";
-import PaymentSuccess from "./pages/PaymentSuccessfull.jsx";
+import PaymentSuccess from "./pages/PaymentSuccess.jsx";
 import PaymentCancel from "./pages/PaymentCancel.jsx";
 import Users from "./admin/Users.jsx";
 import MyOrders from "./pages/MyOrders.jsx";
 import Shop from "./pages/Shop.jsx";
 import Collection from "./pages/Collection.jsx";
-
+import About from "./pages/about.jsx";
 export default function App() {
   return (
     <BrowserRouter>
@@ -42,8 +42,10 @@ export default function App() {
       <Route path="/cart" element={<ShoppingCart />} />
       <Route path="/shop" element={<Shop />} />
       <Route path="/collection" element={<Collection/>}/>
-    </Route>
+      <Route path="/About" element={<About/>}/>
 
+    </Route>
+{/* acct_1Sl3ZYIg6uvxAtIG */}
     {/* CUSTOMER */}
     <Route element={<RequireCustomer />}>
       <Route element={<CustomerLayout />}>

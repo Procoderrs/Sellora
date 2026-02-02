@@ -16,6 +16,7 @@ import publicCategoryRoutes from "./routes/publicCategoryRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import adminUserRoutes from "./routes/adminUserRoutes.js";
 import adminAuthRoutes from "./routes/adminAuthRoutes.js";
+import stripeWebhook from "./routes/stripeWebhook.js";
 
 // Seed utils
 import createAdmin from "./utils/createAdmin.js";
@@ -65,6 +66,8 @@ app.use("/cart", cartRoutes);
 app.use("/orders", orderRoutes);
 app.use("/admin/orders", adminOrderRoutes);
 app.use("/checkout", paymentRoutes);
+app.use("/stripe", stripeWebhook);
+
 
 
 app.use((req, res, next) => {
