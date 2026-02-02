@@ -1,6 +1,9 @@
 import stripe from "../config/stripe.js";
 import Order from "../models/orderModel.js";
 
+console.log("FRONTEND_URL =", process.env.FRONTEND_URL);
+console.log("Success URL =", `${process.env.FRONTEND_URL}/payment-success?orderId=${order._id}`);
+console.log("Cancel URL =", `${process.env.FRONTEND_URL}/payment-cancel`);
 
 
 export const createCheckoutSession = async (req, res) => {
