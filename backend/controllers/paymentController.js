@@ -1,9 +1,7 @@
 import stripe from "../config/stripe.js";
 import Order from "../models/orderModel.js";
 
-console.log("FRONTEND_URL =", process.env.FRONTEND_URL);
-console.log("Success URL =", `${process.env.FRONTEND_URL}/payment-success?orderId=${order._id}`);
-console.log("Cancel URL =", `${process.env.FRONTEND_URL}/payment-cancel`);
+
 
 
 export const createCheckoutSession = async (req, res) => {
@@ -24,6 +22,12 @@ export const createCheckoutSession = async (req, res) => {
 
   const order = await Order.findById(req.params.orderId);
   if (!order) return res.status(404).json({ message: "Order not found" });
+
+console.log("FRONTEND_URL =", process.env.FRONTEND_URL);
+console.log("Success URL =", `${process.env.FRONTEND_URL}/payment-success?orderId=${order._id}`);
+console.log("Cancel URL =", `${process.env.FRONTEND_URL}/payment-cancel`);
+
+
 
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
