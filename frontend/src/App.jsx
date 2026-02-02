@@ -27,7 +27,7 @@ import Users from "./admin/Users.jsx";
 import MyOrders from "./pages/MyOrders.jsx";
 import Shop from "./pages/Shop.jsx";
 import Collection from "./pages/Collection.jsx";
-import About from "./pages/about.jsx";
+import About from './pages/About.jsx';
 export default function App() {
   return (
     <BrowserRouter>
