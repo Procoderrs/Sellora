@@ -12,6 +12,7 @@ export default function OrderDetails() {
       try {
         const res = await api.get(`/orders/${id}`);
         setOrder(res.data.order);
+        console.log(res);
       } catch (err) {
         alert(err.response?.data?.message || "Failed to load order");
       } finally {
@@ -28,9 +29,12 @@ export default function OrderDetails() {
   const handlePayNow = async () => {
   try {
     const res = await api.post(`/checkout/${order._id}`);
+    console.log(res);
     window.location.href = res.data.url;
+    console.log(window.location.href);
   } catch (err) {
     alert("Payment initiation failed");
+    console.log(err);
   }
 };
 

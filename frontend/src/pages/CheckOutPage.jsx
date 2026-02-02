@@ -14,6 +14,7 @@ export default function CheckoutShipping() {
       const res = await api.post("/orders", {
         shippingAddress: shippingData
       });
+      console.log(res);
 
       // Order created successfully
       navigate(`/orders/${res.data.order._id}`);
