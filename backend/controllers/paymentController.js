@@ -23,9 +23,9 @@ export const createCheckoutSession = async (req, res) => {
   const order = await Order.findById(req.params.orderId);
   if (!order) return res.status(404).json({ message: "Order not found" });
 
-console.log("FRONTEND_URL =", process.env.FRONTEND_URL);
-console.log("Success URL =", `${process.env.FRONTEND_URL}/payment-success?orderId=${order._id}`);
-console.log("Cancel URL =", `${process.env.FRONTEND_URL}/payment-cancel`);
+console.log("FRONTEND_URL =", import.meta.FRONTEND_URL);
+console.log("Success URL =", `${import.meta.FRONTEND_URL}/payment-success?orderId=${order._id}`);
+console.log("Cancel URL =", `${import.meta.FRONTEND_URL}/payment-cancel`);
 
 
 
