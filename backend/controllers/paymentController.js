@@ -32,8 +32,8 @@ export const createCheckoutSession = async (req, res) => {
       quantity: item.quantity,
     })),
 
-    success_url: `${process.env.FRONTEND_URL}/payment-success?orderId=${order._id}`,
-    cancel_url: `${process.env.FRONTEND_URL}/payment-cancel`,
+   success_url: "https://sellora-omega.vercel.app/payment-success?orderId=" + order._id,
+cancel_url: "https://sellora-omega.vercel.app/payment-cancel",
 
     metadata: { orderId: order._id.toString() },
   });
