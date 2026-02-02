@@ -32,6 +32,7 @@ export const createCheckoutSession = async (req, res) => {
       orderId: order._id.toString(), // ✅ webhook needs this
     },
   });
+console.log("FRONTEND_URL =", process.env.FRONTEND_URL);
 
   res.json({ url: session.url });
 };
