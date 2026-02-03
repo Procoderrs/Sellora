@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.post("/", authMiddleware, createOrder);
 router.get("/my-orders", authMiddleware, getMyOrders);
+router.get("/payment-status/:id", getOrderPaymentStatus);
 router.get("/:id", authMiddleware, getOrderById); // <--- Add this
 // routes/orderRoutes.js
 

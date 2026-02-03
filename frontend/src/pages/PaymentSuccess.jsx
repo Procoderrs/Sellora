@@ -15,7 +15,7 @@ export default function PaymentSuccess() {
 
     const fetchOrderStatus = async () => {
       try {
-        const res = await api.get(`/orders/${orderId}`);
+        const res = await api.get(`/orders/payment-status/${orderId}`);
         setOrder(res.data.order);
         console.log(res)
         setLoading(false);
