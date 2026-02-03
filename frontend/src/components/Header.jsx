@@ -2,10 +2,13 @@ import { Link,useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { CartContext } from "../context/CartContext";
+import { OrdersContext } from "../context/OrderContext";
+import { useEffect } from "react";
 
 export default function Navbar() {
   const { user,logout} = useContext(AuthContext);
   const {cart,cartCount}=useContext(CartContext)
+  const {orders}=useContext(OrdersContext)
   console.log(cart);
   console.log(cartCount);
   
@@ -82,8 +85,9 @@ export default function Navbar() {
           </div>
 
 <Link to="/my-orders" className="px-4 py-2 hover:bg-[#F5F5DC]">
-  My Orders
+  My Orders ({orders.length})
 </Link>
+
 
           {/* CART */}
           <div className="relative cursor-pointer">
@@ -94,10 +98,9 @@ export default function Navbar() {
 
             {/* Badge */}
             <span className="absolute -top-2 -right-2 text-xs
-                             bg-[#E35336] text-white px-2 py-0.5
-                             rounded-full">
-             {cartCount}
-            </span>
+  bg-[#E35336] text-white px-2 py-0.5 rounded-full">
+  {cartCount || 0} {/* always shows updated count */}
+</span>
           </div>
 
         </div>

@@ -11,6 +11,19 @@ export function CartProvider({ children }) {
   const [totalPrice, setTotalPrice] = useState(0);
   const [loading, setLoading] = useState(false);
 
+
+
+  useEffect(() => {
+  // Run once on mount
+  fetchCart();
+
+  // Optional: subscribe to storage events (for multiple tabs)
+  const handleStorage = () => fetchCart();
+  window.addEventListener("storage", handleStorage);
+  return () => window.removeEventListener("storage", handleStorage);
+}, []);
+
+
   // ----------------------------
   // HELPER: Persist cart for guests
   // ----------------------------
@@ -62,50 +75,43 @@ export function CartProvider({ children }) {
   // ADD TO CART
   // ----------------------------
   const addToCart = async (product, quantity = 1) => {
-    if (user) {
-      try {
-        const { data } = await api.post("/cart/add", {
-          productId: product._id,
-          quantity
-        });
-        setCart(data.cart.items);
-        setTotalPrice(data.cart.totalPrice);
-      } catch (error) {
-        console.error("Add to cart failed", error.response?.data);
-      }
+  let newCart;
+
+  if (user) {
+    const { data } = await api.post("/cart/add", {
+      productId: product._id,
+      quantity,
+    });
+    newCart = data.cart.items;
+    setTotalPrice(data.cart.totalPrice);
+  } else {
+    const existing = cart.find((p) => p.product === product._id);
+
+    if (existing) {
+      newCart = cart.map((p) =>
+        p.product === product._id
+          ? { ...p, quantity: p.quantity + quantity }
+          : p
+      );
     } else {
-      const existing = cart.find(
-        (p) => p.product === product._id
-      );
-
-      let newCart;
-
-      if (existing) {
-        newCart = cart.map((p) =>
-          p.product === product._id
-            ? { ...p, quantity: p.quantity + quantity }
-            : p
-        );
-      } else {
-        newCart = [
-          ...cart,
-          {
-            product: product._id,
-            title: product.title,
-            images: product.images,
-            price: product.price,
-            quantity
-          }
-        ];
-      }
-
-      setCart(newCart);
-      setTotalPrice(
-        newCart.reduce((acc, item) => acc + item.price * item.quantity, 0)
-      );
-      saveGuestCart(newCart);
+      newCart = [
+        ...cart,
+        {
+          product: product._id,
+          title: product.title,
+          images: product.images,
+          price: product.price,
+          quantity,
+        },
+      ];
     }
-  };
+    saveGuestCart(newCart);
+    setTotalPrice(newCart.reduce((sum, i) => sum + i.price * i.quantity, 0));
+  }
+
+  setCart(newCart); // important: update context immediately
+};
+
 
   // ----------------------------
   // UPDATE QUANTITY
