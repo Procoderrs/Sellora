@@ -17,6 +17,7 @@ export default function PaymentSuccess() {
       try {
         const res = await api.get(`/orders/${orderId}`);
         setOrder(res.data.order);
+        console.log(res)
         setLoading(false);
 
         // Stop polling if payment is confirmed
