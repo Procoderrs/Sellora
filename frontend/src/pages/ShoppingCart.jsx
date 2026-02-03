@@ -1,35 +1,32 @@
-import React from "react";
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 import { CartContext } from "../context/CartContext";
+import { useNavigate } from "react-router-dom";
 
 export default function ShoppingCart() {
   const { cart, removeFromCart, updateQuantity } = useContext(CartContext);
-    const {user}=useContext(AuthContext);
-  
-  console.log(cart);
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const subtotal = cart.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-const handleCheckout = () => {
-  if (!user) {
-    navigate("/login", {
-      state: { from: "/checkout/shipping" }
-    });
-  } else {
-    navigate("/checkout/shipping");
-  }
-};
 
-  
+  const handleCheckout = () => {
+    if (!user) {
+      navigate("/login", {
+        state: { from: "/checkout/shipping" }
+      });
+    } else {
+      navigate("/checkout/shipping");
+    }
+  };
 
+  /* ================= EMPTY CART ================= */
   if (!cart.length) {
     return (
-      <section className="px-10 py-16 bg-[#F5F5DC] min-h-screen">
+      <section className="px-4 sm:px-10 py-16 bg-[#F5F5DC] min-h-screen">
         <div className="max-w-4xl mx-auto bg-white border rounded-xl p-10 text-center">
           <h2 className="text-2xl font-bold mb-4">Your cart is empty</h2>
           <button
@@ -43,11 +40,12 @@ const handleCheckout = () => {
     );
   }
 
+  /* ================= CART ================= */
   return (
-    <section className="px-10 py-16 bg-[#F5F5DC] min-h-screen">
+    <section className="px-4 sm:px-10 py-16 pb-28 bg-[#F5F5DC] min-h-screen">
       <div className="max-w-7xl mx-auto grid md:grid-cols-[70%_30%] gap-10">
 
-        {/* LEFT: CART ITEMS */}
+        {/* LEFT — CART ITEMS */}
         <div className="bg-white border rounded-2xl shadow-sm p-6 space-y-6">
           <h2 className="text-2xl font-bold border-b pb-4">
             Shopping Cart
@@ -56,32 +54,36 @@ const handleCheckout = () => {
           {cart.map(item => (
             <div
               key={item._id}
-              className="grid grid-cols-[120px_1fr_150px] gap-6 border-b pb-6"
+              className="flex flex-col sm:flex-row md:grid
+                         md:grid-cols-[120px_1fr_150px]
+                         gap-6 border-b pb-6"
             >
               {/* IMAGE */}
               <img
-  src={item.images?.[0] || "/placeholder.jpg"} // first image
-  alt={item.title}
-  className="w-full h-32 object-cover rounded-lg border"
-/>
+                src={item.images?.[0] || "/placeholder.jpg"}
+                alt={item.title}
+                className="w-full sm:w-32 h-40 sm:h-32 object-cover rounded-lg border"
+              />
 
               {/* INFO */}
-              <div>
-                <h3 className="text-lg font-semibold">{item.title}</h3>
-                <p className="text-sm text-gray-500 mb-2">
-                  ${item.price} each
-                </p>
+              <div className="flex flex-col justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold">{item.title}</h3>
+                  <p className="text-sm text-gray-500 mb-2">
+                    ${item.price} each
+                  </p>
+                </div>
 
                 <button
                   onClick={() => removeFromCart(item.product)}
-                  className="text-sm text-red-600 hover:underline"
+                  className="text-sm text-red-600 hover:underline self-start"
                 >
                   Remove
                 </button>
               </div>
 
               {/* QUANTITY + PRICE */}
-              <div className="flex flex-col items-end justify-between">
+              <div className="flex flex-row sm:flex-col justify-between sm:items-end gap-4">
                 <div className="flex items-center border rounded-lg overflow-hidden">
                   <button
                     onClick={() =>
@@ -103,7 +105,7 @@ const handleCheckout = () => {
                   </button>
                 </div>
 
-                <p className="font-semibold text-[#A0522D]">
+                <p className="font-semibold text-[#A0522D] text-right">
                   ${(item.price * item.quantity).toFixed(2)}
                 </p>
               </div>
@@ -111,8 +113,8 @@ const handleCheckout = () => {
           ))}
         </div>
 
-        {/* RIGHT: SUMMARY */}
-        <div className="bg-white border rounded-2xl shadow-sm p-6 h-fit">
+        {/* RIGHT — ORDER SUMMARY (DESKTOP) */}
+        <div className="bg-white border rounded-2xl shadow-sm p-6 h-fit md:sticky md:top-24">
           <h3 className="text-xl font-bold mb-4 border-b pb-3">
             Order Summary
           </h3>
@@ -136,10 +138,26 @@ const handleCheckout = () => {
             </span>
           </div>
 
-          <button onClick={handleCheckout} className="w-full bg-[#A0522D] text-white py-3 rounded-lg font-semibold hover:bg-[#8B4513] transition">
+          {/* DESKTOP CHECKOUT */}
+          <button
+            onClick={handleCheckout}
+            className="hidden md:block w-full bg-[#A0522D]
+                       text-white py-3 rounded-lg font-semibold
+                       hover:bg-[#8B4513] transition"
+          >
             Proceed to Checkout
           </button>
         </div>
+      </div>
+
+      {/* MOBILE FIXED CHECKOUT BAR */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t p-4 z-50">
+        <button
+          onClick={handleCheckout}
+          className="w-full bg-[#A0522D] text-white py-3 rounded-lg font-semibold"
+        >
+          Checkout · ${subtotal.toFixed(2)}
+        </button>
       </div>
     </section>
   );
