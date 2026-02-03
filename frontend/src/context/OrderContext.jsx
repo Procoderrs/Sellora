@@ -19,6 +19,7 @@ export function OrdersProvider({ children }) {
     try {
       const { data } = await api.get("/orders/my"); // your API endpoint
       setOrders(data);
+      console.log(data);
     } catch (err) {
       console.error(err);
     }

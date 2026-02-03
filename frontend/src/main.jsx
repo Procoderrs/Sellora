@@ -11,7 +11,7 @@ createRoot(document.getElementById('root')).render(
     <AuthProvider>
       <CartProvider>
         <OrdersProvider>
-<App />
+             <App />
         </OrdersProvider>
 
       </CartProvider>
