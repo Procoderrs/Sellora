@@ -1,9 +1,7 @@
-import { useContext } from "react";
-import { createContext } from "react";
-import { AuthContext } from "./AuthContext";
+import { createContext, useEffect, useState, useContext } from "react";
 import api from "../api/api";
-import { useState } from "react";
-import { useEffect } from "react";
+import { AuthContext } from "./AuthContext";
+
 export const OrdersContext = createContext();
 
 export function OrdersProvider({ children }) {
@@ -11,22 +9,25 @@ export function OrdersProvider({ children }) {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      setOrders([]);
+      return;
+    }
+
+    const fetchOrders = async () => {
+      try {
+        const { data } = await api.get("/orders/my-orders");
+        setOrders(data.orders || []);
+      } catch (err) {
+        console.error("Failed to fetch orders", err);
+      }
+    };
+
     fetchOrders();
   }, [user]);
 
-  const fetchOrders = async () => {
-    try {
-      const { data } = await api.get("/orders/my"); // your API endpoint
-      setOrders(data);
-      console.log(data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   return (
-    <OrdersContext.Provider value={{ orders, fetchOrders }}>
+    <OrdersContext.Provider value={{ orders, setOrders }}>
       {children}
     </OrdersContext.Provider>
   );

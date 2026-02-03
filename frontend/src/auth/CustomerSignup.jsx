@@ -49,98 +49,108 @@ export default function Signup() {
     form.name && form.email && form.password && Object.keys(errors).length === 0;
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center"
-      style={{ backgroundColor: "#F5F5DC" }}
-    >
-      <div className="w-full md:w-1/2 p-8">
+    <div className="relative min-h-screen flex items-center justify-center">
+
+      {/* BACKGROUND IMAGE */}
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: "url('/bg.jpg')" }}
+      />
+
+      {/* OVERLAY */}
+      <div className="absolute inset-0 bg-black/50" />
+
+      {/* SIGNUP FORM */}
+      <div className="relative z-10 w-full px-4 sm:px-0 sm:w-[440px]">
         <form
           onSubmit={handleSubmit}
-          className="rounded-3xl shadow-2xl p-10 w-full max-w-md space-y-6"
-          style={{ backgroundColor: "#fff" }}
+          className="bg-white/95 backdrop-blur rounded-3xl shadow-2xl p-8 sm:p-10 space-y-6"
         >
-          <h1
-            className="text-3xl font-extrabold text-center mb-6"
-            style={{ color: "#3B2F2F" }}
-          >
+          <h1 className="text-3xl font-extrabold text-center text-[#3B2F2F]">
             Customer Signup
           </h1>
 
-          {/* Name */}
-          <input
-            placeholder="Name"
-            value={form.name}
-            onChange={(e) => onChangeField("name", e.target.value)}
-            className={`w-full p-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-1 transition-all ${
-              errors.name
-                ? "border-[#E35336] ring-[#E35336]"
-                : "border-[#A0522D] ring-[#A0522D]"
-            }`}
-          />
-          {errors.name && (
-            <p className="text-sm font-medium" style={{ color: "#E35336" }}>
-              {errors.name}
-            </p>
-          )}
+          {/* NAME */}
+          <div>
+            <input
+              placeholder="Name"
+              value={form.name}
+              onChange={(e) => onChangeField("name", e.target.value)}
+              className={`w-full p-4 border rounded-xl focus:outline-none focus:ring-2 transition
+                ${
+                  errors.name
+                    ? "border-[#E35336] ring-[#E35336]"
+                    : "border-[#A0522D] ring-[#A0522D]"
+                }`}
+            />
+            {errors.name && (
+              <p className="text-sm mt-1 text-[#E35336]">
+                {errors.name}
+              </p>
+            )}
+          </div>
 
-          {/* Email */}
-          <input
-            type="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={(e) => onChangeField("email", e.target.value)}
-            className={`w-full p-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-1 transition-all ${
-              errors.email
-                ? "border-[#E35336] ring-[#E35336]"
-                : "border-[#A0522D] ring-[#A0522D]"
-            }`}
-          />
-          {errors.email && (
-            <p className="text-sm font-medium" style={{ color: "#E35336" }}>
-              {errors.email}
-            </p>
-          )}
+          {/* EMAIL */}
+          <div>
+            <input
+              type="email"
+              placeholder="Email"
+              value={form.email}
+              onChange={(e) => onChangeField("email", e.target.value)}
+              className={`w-full p-4 border rounded-xl focus:outline-none focus:ring-2 transition
+                ${
+                  errors.email
+                    ? "border-[#E35336] ring-[#E35336]"
+                    : "border-[#A0522D] ring-[#A0522D]"
+                }`}
+            />
+            {errors.email && (
+              <p className="text-sm mt-1 text-[#E35336]">
+                {errors.email}
+              </p>
+            )}
+          </div>
 
-          {/* Password */}
-          <input
-            type="password"
-            placeholder="Password"
-            value={form.password}
-            onChange={(e) => onChangeField("password", e.target.value)}
-            className={`w-full p-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-1 transition-all ${
-              errors.password
-                ? "border-[#E35336] ring-[#E35336]"
-                : "border-[#A0522D] ring-[#A0522D]"
-            }`}
-          />
-          {errors.password && (
-            <p className="text-sm font-medium" style={{ color: "#E35336" }}>
-              {errors.password}
-            </p>
-          )}
+          {/* PASSWORD */}
+          <div>
+            <input
+              type="password"
+              placeholder="Password"
+              value={form.password}
+              onChange={(e) => onChangeField("password", e.target.value)}
+              className={`w-full p-4 border rounded-xl focus:outline-none focus:ring-2 transition
+                ${
+                  errors.password
+                    ? "border-[#E35336] ring-[#E35336]"
+                    : "border-[#A0522D] ring-[#A0522D]"
+                }`}
+            />
+            {errors.password && (
+              <p className="text-sm mt-1 text-[#E35336]">
+                {errors.password}
+              </p>
+            )}
+          </div>
 
-          {/* Submit */}
+          {/* SUBMIT */}
           <button
             disabled={!isFormValid}
-            className={`w-full py-3 rounded-xl font-bold text-white text-lg transition-all ${
-              isFormValid
-                ? "bg-[#A0522D] hover:bg-[#F4A460] shadow-md hover:shadow-lg"
-                : "bg-gray-400 cursor-not-allowed"
-            }`}
+            className={`w-full py-3 rounded-xl font-bold text-lg text-white transition
+              ${
+                isFormValid
+                  ? "bg-[#A0522D] hover:bg-[#F4A460]"
+                  : "bg-gray-400 cursor-not-allowed"
+              }`}
           >
             Signup
           </button>
 
-          {/* Footer */}
-          <p
-            className="text-center text-sm mt-4"
-            style={{ color: "#3B2F2F" }}
-          >
+          {/* FOOTER */}
+          <p className="text-center text-sm text-[#3B2F2F]">
             Already have an account?{" "}
             <a
-              href="/"
-              className="font-semibold hover:underline"
-              style={{ color: "#F4A460" }}
+              href="/login"
+              className="font-semibold text-[#F4A460] hover:underline"
             >
               Login
             </a>
