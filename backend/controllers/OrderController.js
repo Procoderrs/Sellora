@@ -89,7 +89,8 @@ export const getOrderById = async (req, res) => {
 export const getOrderPaymentStatus = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id)
-      .select("paymentStatus status totalAmount");
+      .select("_id paymentStatus status totalAmount")
+
 
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
