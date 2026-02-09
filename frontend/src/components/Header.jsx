@@ -27,18 +27,42 @@ export default function Navbar() {
   };
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchData = async () => {
       try {
-        const res = await api.get("/admin/categories");
-        const allCategories = res.data.categories || [];
-        const parents = allCategories.filter(c => !c.parent);
-        setCategories(parents);
+        const catRes = await api.get("/admin/categories");
+        const prodRes = await api.get("/admin/products");
+
+        const allCategories = catRes.data.categories || [];
+        const allProducts = prodRes.data.products || [];
+
+        setProducts(allProducts);
+
+        // Only parent categories
+        const parents = allCategories.filter((c) => !c.parent);
+
+        // Map each parent category to first product + total count
+        const categoriesWithInfo = parents.map((parent) => {
+          // Filter products belonging to this category or its children
+          const parentProducts = allProducts.filter(
+            (p) => p.category?._id === parent._id || p.category?.parent?._id === parent._id
+          );
+
+          return {
+            ...parent,
+            productCount: parentProducts.length,
+            image: parentProducts[0]?.images?.[0] || "/placeholder.jpg",
+          };
+        });
+
+        setCategories(categoriesWithInfo);
       } catch (err) {
         console.error(err);
       }
     };
-    fetchCategories();
+
+    fetchData();
   }, []);
+
 
   return (
     <header className="bg-white shadow-md sticky top-0 z-50 font-playfair">
