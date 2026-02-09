@@ -11,6 +11,7 @@ export default function Navbar() {
   const { cartCount } = useContext(CartContext);
   const navigate = useNavigate();
 
+  const [products, setProducts] = useState([]);
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [categories, setCategories] = useState([]);
