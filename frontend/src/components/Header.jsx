@@ -41,7 +41,7 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header className="bg-white shadow-md sticky top-0 z-50 font-sans">
+    <header className="bg-white shadow-md sticky top-0 z-50 font-playfair">
       <TopCrousel />
 
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center">
@@ -80,10 +80,8 @@ export default function Navbar() {
         </nav>
 
         {/* CENTER: Logo */}
-        <div className="flex justify-center flex-1">
-          <Link to="/" className="text-3xl font-bold text-primary tracking-wide">
-            Cake<span className="text-danger">🧁</span>let
-          </Link>
+        <div className="flex justify-center font-logo flex-1">
+          <Link to="/" className="text-3xl font-logo font-bold text-primary">Cake<span className="text-danger">🧁</span>let</Link>
         </div>
 
         {/* RIGHT: Profile + Cart */}
