@@ -47,37 +47,53 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center">
 
         {/* LEFT: Navigation Links */}
-        <nav className="hidden md:flex flex-1 items-center gap-6 text-gray-700 font-medium">
-          <Link to="/" className="hover:text-primary transition">Home</Link>
-          <Link to="/menu" className="hover:text-primary transition">Menu</Link>
-          <Link to="/about" className="hover:text-primary transition">About</Link>
+        <nav className="flex gap-8 text-text-main font-medium relative">
+              {["Home", "Menu", "About"].map((item) => (
+                <div key={item} className="relative">
+                  {item === "Menu" ? (
+                    <>
+                      <button
+                        className="flex items-center gap-1 hover:text-primary transition"
+                        onClick={() => setDropdownOpen(!dropdownOpen)}
+                      >
+                        {item} <RiArrowDownSLine size={18} />
+                      </button>
 
-          {/* Categories Dropdown */}
-          {categories.length > 0 && (
-            <div className="relative">
-              <button
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="flex items-center gap-1 hover:text-primary transition"
-              >
-                Categories <RiArrowDownSLine size={18} />
-              </button>
-              {dropdownOpen && (
-                <div className="absolute top-full left-0 mt-2 bg-white shadow-lg rounded-xl w-64 p-4 z-50">
-                  {categories.map(cat => (
-                    <Link
-                      key={cat._id}
-                      to={`/category/${cat.slug}`}
-                      className="block px-2 py-1 hover:bg-gray-100 rounded"
-                      onClick={() => setDropdownOpen(false)}
-                    >
-                      {cat.name}
-                    </Link>
-                  ))}
+                      {dropdownOpen && (
+  <div className="absolute top-full left-0 mt-2 bg-white shadow-lg rounded-xl w-[80rem] p-4 z-50">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      {categories.map((cat) => (
+        <Link
+          key={cat._id}
+          to={`/category/${cat.slug}`}
+          className="flex flex-col items-center bg-gray-50 p-4 rounded-xl hover:shadow-lg transition cursor-pointer"
+          onClick={() => setDropdownOpen(false)}
+        >
+          {/* IMAGE */}
+          <img
+            src={cat.image}
+            alt={cat.name}
+            className="w-36 h-36 object-cover rounded-lg mb-3"
+          />
+
+          {/* CATEGORY NAME */}
+          <p className="font-semibold text-text-main text-center">{cat.name}</p>
+
+          {/* PRODUCT COUNT */}
+          <p className="text-xs text-gray-500">{cat.productCount} products</p>
+        </Link>
+      ))}
+    </div>
+  </div>
+)}
+
+                    </>
+                  ) : (
+                    <Link to={`/${item.toLowerCase()}`} className="hover:text-primary transition">{item}</Link>
+                  )}
                 </div>
-              )}
-            </div>
-          )}
-        </nav>
+              ))}
+            </nav>
 
         {/* CENTER: Logo */}
         <div className="flex justify-center font-logo flex-1">
