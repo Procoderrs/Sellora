@@ -28,9 +28,12 @@ import MyOrders from "./pages/MyOrders.jsx";
 import Shop from "./pages/Shop.jsx";
 import Collection from "./pages/Collection.jsx";
 import About from './pages/About.jsx';
+import { AuthProvider } from "./context/AuthContext.jsx";
 export default function App() {
   return (
-    <BrowserRouter>
+    <AuthProvider>
+
+ <BrowserRouter>
   <Routes>
  <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
@@ -76,6 +79,9 @@ export default function App() {
 
   </Routes>
 </BrowserRouter>
+    </AuthProvider>
+    
+   
 
   );
 }
