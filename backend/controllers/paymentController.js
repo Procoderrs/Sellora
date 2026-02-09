@@ -42,8 +42,8 @@ console.log("Cancel URL =", `${import.meta.FRONTEND_URL}/payment-cancel`);
       quantity: item.quantity,
     })),
 
-   success_url: "https://sellora-omega.vercel.app/payment-success?orderId=" + order._id,
-cancel_url: "https://sellora-omega.vercel.app/payment-cancel",
+   success_url: `${frontendUrl}/payment-success?orderId=${order._id}`,
+  cancel_url: `${frontendUrl}/payment-cancel`,
 
     metadata: { orderId: order._id.toString() },
   });
