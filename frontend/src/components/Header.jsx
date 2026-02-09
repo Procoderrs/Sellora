@@ -7,7 +7,7 @@ import { RiUser3Line, RiShoppingBagLine, RiArrowDownSLine } from "@remixicon/rea
 import api from "../api/api";
 
 export default function Navbar() {
-  const { user, logout, loading } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
   const { cartCount } = useContext(CartContext);
   const navigate = useNavigate();
 
@@ -22,10 +22,10 @@ export default function Navbar() {
   };
 
   const handleCartClick = () => {
-    navigate("/cart");
+    if (!user) navigate("/login");
+    else navigate("/cart");
   };
 
-  // Fetch categories for dropdown
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -41,27 +41,23 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header className="bg-[#F5F5DC] shadow-md sticky top-0 z-50">
+    <header className="bg-white shadow-md sticky top-0 z-50 font-sans">
       <TopCrousel />
 
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        {/* Logo */}
-        <h1 className="text-3xl font-serif font-bold text-[#A0522D] tracking-wide">
-          <Link to="/">Sellora</Link>
-        </h1>
+      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center">
 
-        {/* Desktop Menu */}
-        <nav className="hidden md:flex items-center gap-6 text-[#3B2F2F] font-medium relative">
-          <Link to="/shop" className="hover:text-[#A0522D]">Shop</Link>
-          <Link to="/collection" className="hover:text-[#A0522D]">Collection</Link>
-          <Link to="/about" className="hover:text-[#A0522D]">About</Link>
+        {/* LEFT: Navigation Links */}
+        <nav className="hidden md:flex flex-1 items-center gap-6 text-gray-700 font-medium">
+          <Link to="/" className="hover:text-primary transition">Home</Link>
+          <Link to="/menu" className="hover:text-primary transition">Menu</Link>
+          <Link to="/about" className="hover:text-primary transition">About</Link>
 
           {/* Categories Dropdown */}
           {categories.length > 0 && (
             <div className="relative">
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="flex items-center gap-1 hover:text-[#A0522D] transition"
+                className="flex items-center gap-1 hover:text-primary transition"
               >
                 Categories <RiArrowDownSLine size={18} />
               </button>
@@ -71,7 +67,7 @@ export default function Navbar() {
                     <Link
                       key={cat._id}
                       to={`/category/${cat.slug}`}
-                      className="block px-2 py-1 hover:bg-[#F4A460]/20 rounded"
+                      className="block px-2 py-1 hover:bg-gray-100 rounded"
                       onClick={() => setDropdownOpen(false)}
                     >
                       {cat.name}
@@ -81,67 +77,68 @@ export default function Navbar() {
               )}
             </div>
           )}
+        </nav>
 
-          {/* Profile */}
-          {!loading && (
+        {/* CENTER: Logo */}
+        <div className="flex justify-center flex-1">
+          <Link to="/" className="text-3xl font-bold text-primary tracking-wide">
+            Cake<span className="text-danger">🧁</span>let
+          </Link>
+        </div>
+
+        {/* RIGHT: Profile + Cart */}
+        <div className="flex justify-end items-center gap-4 flex-1">
+          {!user ? (
+            <Link
+              to="/login"
+              className="px-3 py-1 rounded-lg bg-primary/10 hover:bg-primary/20 transition text-sm"
+            >
+              Login
+            </Link>
+          ) : (
             <div className="relative">
               <button
                 onClick={() => setProfileOpen(!profileOpen)}
-                className="px-3 py-1 rounded-lg bg-[#F4A460]/40 hover:bg-[#F4A460]/70 transition"
+                className="p-2 rounded-lg hover:bg-gray-100 transition"
               >
                 <RiUser3Line size={20} />
               </button>
               {profileOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-[#F4A460]/40 overflow-hidden text-sm">
-                  <div className="px-4 py-3 text-sm">
-                    <p className="font-semibold">{user?.name || "Guest"}</p>
-                  </div>
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg overflow-hidden text-sm">
+                  <div className="px-4 py-2 font-semibold">{user.name}</div>
                   <hr />
-                  {user && (
-                    <>
-                      <button
-                        className="w-full text-left px-4 py-2 text-sm hover:bg-[#F5F5DC]"
-                        onClick={() => navigate("/my-orders")}
-                      >
-                        My Orders
-                      </button>
-                      <button
-                        onClick={handleLogout}
-                        className="w-full text-left px-4 py-2 text-sm text-[#E35336] hover:bg-[#E35336]/10"
-                      >
-                        Logout
-                      </button>
-                    </>
-                  )}
-                  {!user && (
-                    <Link
-                      to="/login"
-                      className="block px-4 py-2 text-sm hover:bg-[#F5F5DC]"
-                    >
-                      Login
-                    </Link>
-                  )}
+                  <button
+                    onClick={() => navigate("/my-orders")}
+                    className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                  >
+                    My Orders
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left px-4 py-2 text-danger hover:bg-danger/10"
+                  >
+                    Logout
+                  </button>
                 </div>
               )}
             </div>
           )}
 
-          {/* Cart */}
           <div
-            className="relative cursor-pointer ml-4"
+            className="relative cursor-pointer"
             onClick={handleCartClick}
           >
             <RiShoppingBagLine size={22} />
             {cartCount > 0 && (
-              <span className="absolute -top-2 -right-2 text-xs bg-[#E35336] text-white px-2 py-0.5 rounded-full">
+              <span className="absolute -top-2 -right-2 text-xs bg-danger text-white px-2 py-0.5 rounded-full">
                 {cartCount > 99 ? "99+" : cartCount}
               </span>
             )}
           </div>
-        </nav>
+        </div>
 
-        {/* Mobile menu button */}
-        <div className="md:hidden flex items-center gap-4">
+        {/* Mobile Menu Button */}
+        <div className="md:hidden flex items-center gap-4 ml-auto">
           <button onClick={() => setMenuOpen(true)}>
             <svg
               className="w-6 h-6"
@@ -157,18 +154,8 @@ export default function Navbar() {
               />
             </svg>
           </button>
-          <div
-            className="relative cursor-pointer"
-            onClick={handleCartClick}
-          >
-            <RiShoppingBagLine size={22} />
-            {cartCount > 0 && (
-              <span className="absolute -top-2 -right-2 text-xs bg-[#E35336] text-white px-2 py-0.5 rounded-full">
-                {cartCount > 99 ? "99+" : cartCount}
-              </span>
-            )}
-          </div>
         </div>
+
       </div>
     </header>
   );
