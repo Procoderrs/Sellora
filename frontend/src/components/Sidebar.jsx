@@ -7,14 +7,14 @@ export default function Sidebar() {
   `block px-4 py-3 rounded-lg transition font-medium
    ${
      location.pathname.startsWith(path)
-       ? 'bg-[#F4A460] text-[#3B2F2F]'
-       : 'text-[#F5F5DC] hover:bg-[#F4A460]/80 hover:text-[#3B2F2F]'
+       ? 'bg-accent/80 text-[#3B2F2F]'
+       : 'text-text-main] hover:bg-accent/60 hover:text-[#3B2F2F]'
    }`
 
   return (
-    <div className="w-64 h-screen bg-[#A0522D] p-6 shadow-lg">
+    <div className="w-64 h-screen font-Oswald  bg-sidebar  p-6 shadow-lg">
       {/* Logo / Title */}
-      <h1 className="text-2xl font-bold text-[#F5F5DC] mb-10 tracking-wide">
+      <h1 className="text-2xl font-bold text-text-main mb-10 tracking-wide">
         Admin Panel
       </h1>
 

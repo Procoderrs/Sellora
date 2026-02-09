@@ -1,15 +1,22 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useContext, useState, useCallback } from "react";
+import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
-import api from "../api/api";
-import _ from "lodash";
+import { CartContext } from "../context/CartContext";
 
+import TopCrousel from "./TopCrousel";
+import { RiUser3Line, RiShoppingBagLine, RiArrowDownSLine } from "@remixicon/react";
+import api from "../api/api";
+/* import { RiCake2Line, RiCoffeeLine, RiCookieLine, RiCupLine } from "@remixicon/react"; // Remix icons
+ */
 export default function PublicHeader() {
-  const { user, logout, cart } = useContext(AuthContext);
+  const { user, logout,  } = useContext(AuthContext);
+  const { cartCount } = useContext(CartContext);
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -22,161 +29,161 @@ export default function PublicHeader() {
     else navigate("/cart");
   };
 
-  // ---------------- Debounced Search ----------------
-  const fetchSearchResults = async (query) => {
-    if (!query) {
-      setSearchResults([]);
-      return;
-    }
-    try {
-      const { data } = await api.get(`/products?search=${query}`);
-      setSearchResults(data.products || []);
-    } catch (error) {
-      console.error("Search failed", error);
-    }
-  };
+  // Fetch categories and products
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const catRes = await api.get("/admin/categories");
+        const prodRes = await api.get("/admin/products");
 
-  const debouncedSearch = useCallback(_.debounce(fetchSearchResults, 500), []);
+        const allCategories = catRes.data.categories || [];
+        const allProducts = prodRes.data.products || [];
 
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-    debouncedSearch(e.target.value);
-  };
+        setProducts(allProducts);
 
-  const handleProductClick = (product) => {
-    navigate(`/product/${product.slug}`, { state: { product } });
-    setSearchTerm("");
-    setSearchResults([]);
-  };
+        // Only parent categories
+        const parents = allCategories.filter((c) => !c.parent);
+
+        // Map each parent category to first product + total count
+        const categoriesWithInfo = parents.map((parent) => {
+          // Filter products belonging to this category or its children
+          const parentProducts = allProducts.filter(
+            (p) => p.category?._id === parent._id || p.category?.parent?._id === parent._id
+          );
+
+          return {
+            ...parent,
+            productCount: parentProducts.length,
+            image: parentProducts[0]?.images?.[0] || "/placeholder.jpg",
+          };
+        });
+
+        setCategories(categoriesWithInfo);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
-    <header className="bg-[#F5F5DC] shadow-md sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto flex items-center justify-between h-14 relative px-4 md:px-6">
+    <header className="bg-background font-playfair shadow-md">
+      <TopCrousel />
 
-        {/* LEFT: Desktop Nav or Hamburger */}
-        <div className="flex items-center gap-4">
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex gap-6 text-[#3B2F2F] font-medium">
-            {["Shop", "Collection", "About"].map((item) => (
-              <Link
-                key={item}
-                to={`/${item.toLowerCase()}`}
-                className="hover:text-[#A0522D] transition"
-              >
-                {item}
-              </Link>
-            ))}
-          </nav>
+      <div className="sticky top-0 z-50 bg-background">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 h-20 flex items-center">
 
-          {/* Hamburger for Mobile */}
-          <button
-            className="md:hidden text-[#3B2F2F] focus:outline-none"
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {menuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              ) : (
+          {/* MOBILE */}
+          <div className="flex w-full items-center justify-between md:hidden">
+            <button onClick={() => setMenuOpen(true)}>
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
-          </button>
-        </div>
+              </svg>
+            </button>
 
-        {/* CENTER: Logo */}
-        <h1 className="text-3xl font-serif font-bold text-[#A0522D] tracking-wide absolute left-1/2 transform -translate-x-1/2 md:static">
-          <Link to="/">Sellora</Link>
-        </h1>
+            <Link to="/" className="text-3xl font-logo font-bold text-primary">Cake<span className="text-danger">🧁</span>let</Link>
 
-        {/* RIGHT: Profile/Login & Cart */}
-        <div className="flex items-center gap-3">
-          {!user ? (
-            <Link
-              to="/login"
-              className="px-3 py-1 rounded-lg bg-[#F4A460]/40 text-[#3B2F2F] hover:bg-[#F4A460]/70 transition text-sm"
-            >
-              Login
-            </Link>
-          ) : (
-            <div className="relative">
-              <button
-                onClick={() => setProfileOpen(!profileOpen)}
-                className="px-3 py-1 rounded-lg bg-[#F4A460]/40 text-[#3B2F2F] hover:bg-[#F4A460]/70 transition text-sm"
-              >
-                Profile
-              </button>
-              {profileOpen && (
-                <div className="absolute right-0 mt-2 w-44 bg-white rounded-xl shadow-lg border border-[#F4A460]/40 overflow-hidden text-sm">
-                  <div className="px-3 py-2 text-[#3B2F2F]">
-                    <p className="font-semibold">{user.name}</p>
-                  </div>
-                  <hr />
-                  <button
-                    className="w-full text-left px-3 py-1 hover:bg-[#F5F5DC]"
-                    onClick={() => navigate("/my-orders")}
-                  >
-                    My Orders
-                  </button>
-                  <button
-                    onClick={handleLogout}
-                    className="w-full text-left px-3 py-1 text-[#E35336] hover:bg-[#E35336]/10"
-                  >
-                    Logout
-                  </button>
-                </div>
+            <div onClick={handleCartClick} className="relative cursor-pointer">
+              <RiShoppingBagLine size={22} />
+              {cartCount?.length > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-[16px] h-4 flex items-center justify-center text-xs bg-danger text-white rounded-full px-1">
+                  {cart.length > 99 ? "99+" : cart.length}
+                </span>
               )}
             </div>
-          )}
+          </div>
 
-          {/* Cart */}
-          <div
-            onClick={handleCartClick}
-            className="relative cursor-pointer"
-          >
-            <span className="px-3 py-1 rounded-lg bg-[#A0522D] text-[#F5F5DC] hover:bg-[#8B4513] transition text-sm">
-              Cart
-            </span>
-            <span className="absolute -top-2 -right-2 text-xs bg-[#E35336] text-white px-1 py-0.5 rounded-full">
-              {cart?.length || 0}
-            </span>
+          {/* DESKTOP */}
+          <div className="hidden md:grid grid-cols-3 items-center w-full">
+
+            {/* LEFT MENU */}
+            <nav className="flex gap-8 text-text-main font-medium relative">
+              {["Home", "Menu", "About"].map((item) => (
+                <div key={item} className="relative">
+                  {item === "Menu" ? (
+                    <>
+                      <button
+                        className="flex items-center gap-1 hover:text-primary transition"
+                        onClick={() => setDropdownOpen(!dropdownOpen)}
+                      >
+                        {item} <RiArrowDownSLine size={18} />
+                      </button>
+
+                      {dropdownOpen && (
+  <div className="absolute top-full left-0 mt-2 bg-white shadow-lg rounded-xl w-[80rem] p-4 z-50">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      {categories.map((cat) => (
+        <Link
+          key={cat._id}
+          to={`/category/${cat.slug}`}
+          className="flex flex-col items-center bg-gray-50 p-4 rounded-xl hover:shadow-lg transition cursor-pointer"
+          onClick={() => setDropdownOpen(false)}
+        >
+          {/* IMAGE */}
+          <img
+            src={cat.image}
+            alt={cat.name}
+            className="w-36 h-36 object-cover rounded-lg mb-3"
+          />
+
+          {/* CATEGORY NAME */}
+          <p className="font-semibold text-text-main text-center">{cat.name}</p>
+
+          {/* PRODUCT COUNT */}
+          <p className="text-xs text-gray-500">{cat.productCount} products</p>
+        </Link>
+      ))}
+    </div>
+  </div>
+)}
+
+                    </>
+                  ) : (
+                    <Link to={`/${item.toLowerCase()}`} className="hover:text-primary transition">{item}</Link>
+                  )}
+                </div>
+              ))}
+            </nav>
+
+            {/* CENTER LOGO */}
+            <div className="flex justify-center">
+              <Link to="/" className="text-4xl font-logo font-bold text-primary tracking-wide">Cake<span className="text-danger">🧁</span>let</Link>
+            </div>
+
+            {/* RIGHT SIDE */}
+            <div className="flex justify-end items-center gap-4">
+              {!user ? (
+                <Link to="/login" className="px-3 py-1 rounded-lg hover:bg-accent/40 transition text-sm">Login</Link>
+              ) : (
+                <div className="relative">
+                  <button onClick={() => setProfileOpen(!profileOpen)} className="p-2 rounded-lg">
+                    <RiUser3Line size={20} />
+                  </button>
+                  {profileOpen && (
+                    <div className="absolute right-0 mt-2 w-44 bg-white rounded-xl shadow-lg overflow-hidden text-sm">
+                      <div className="px-3 py-2 font-semibold text-text-main">{user.name}</div>
+                      <hr />
+                      <button className="w-full text-left px-3 py-2 hover:bg-background" onClick={() => navigate("/my-orders")}>My Orders</button>
+                      <button className="w-full text-left px-3 py-2 text-danger hover:bg-danger/10" onClick={handleLogout}>Logout</button>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div onClick={handleCartClick} className="relative cursor-pointer">
+  <RiShoppingBagLine size={22} />
+  {cartCount > 0 && (
+    <span className="absolute -top-1 -right-1 min-w-[16px] h-4 flex items-center justify-center text-xs bg-danger text-white rounded-full px-1">
+      {cartCount > 99 ? "99+" : cartCount}
+    </span>
+  )}
+</div>
+
+            </div>
           </div>
         </div>
       </div>
-
-      {/* Mobile Drawer */}
-      {menuOpen && (
-        <div className="md:hidden fixed inset-y-0 left-0 w-64 bg-[#F5F5DC] shadow-lg z-50 flex flex-col pt-4 px-4">
-          {["Shop", "Collection", "About"].map((item) => (
-            <Link
-              key={item}
-              to={`/${item.toLowerCase()}`}
-              className="py-2 text-[#3B2F2F] font-medium hover:text-[#A0522D] transition"
-              onClick={() => setMenuOpen(false)}
-            >
-              {item}
-            </Link>
-          ))}
-
-          {/* Profile Section */}
-          {user && (
-            <div className="mt-4 border-t border-[#F4A460]/30 pt-2 flex flex-col gap-1">
-              <p className="text-sm text-[#3B2F2F] font-semibold">{user.name}</p>
-              <button
-                className="w-full text-left py-1 text-sm hover:bg-[#F5F5DC]"
-                onClick={() => navigate("/my-orders")}
-              >
-                My Orders
-              </button>
-              <button
-                className="w-full text-left py-1 text-sm text-[#E35336] hover:bg-[#E35336]/10"
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
-            </div>
-          )}
-        </div>
-      )}
     </header>
   );
 }

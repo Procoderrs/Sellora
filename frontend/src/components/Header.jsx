@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { CartContext } from "../context/CartContext";
+import TopCrousel from "./TopCrousel";
 
 export default function Navbar() {
   const { user, logout, loading } = useContext(AuthContext);
@@ -16,7 +17,13 @@ export default function Navbar() {
   };
 
   return (
-    <header className="bg-[#F5F5DC] shadow-md sticky top-0 z-50">
+    <header className="bg-[#F5F5DC] shadow-md  sticky top-0 z-50">
+      <div className="flex flex-col">
+        
+<div className="crousel-slider">
+  <TopCrousel />
+</div>
+      
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
 
         {/* Logo */}
@@ -84,6 +91,7 @@ export default function Navbar() {
             </span>
           </div>
         </nav>
+      </div>
       </div>
     </header>
   );

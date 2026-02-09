@@ -105,7 +105,7 @@ export default function Dashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-[#F5F5DC] p-8">
+    <div className="min-h-screen bg-[#F5F5DC] font-Inter p-8">
       <h1 className="text-5xl md:text-6xl font-extrabold text-[#3B2F2F] mb-12 tracking-tight">
         Admin Dashboard
       </h1>

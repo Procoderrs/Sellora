@@ -54,15 +54,15 @@ export default function Categories() {
   }));
 
   return (
-    <div className="min-h-screen bg-[#F5F5DC] p-8">
+    <div className="min-h-screen font-smoooch bg-background p-8">
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
-        <h2 className="text-3xl font-bold text-[#A0522D]">
+        <h2 className="text-3xl font-bold text-primary">
           Category Management
         </h2>
         <button
           onClick={() => setShowForm(true)}
-          className="bg-[#A0522D] text-[#F5F5DC] px-5 py-2 rounded-lg shadow hover:bg-[#8B4513] transition"
+          className="bg-accent text-lg  text-text-main px-5 py-2 rounded-lg shadow hover:bg-accent/90 transition"
         >
           + Add Category
         </button>
@@ -91,25 +91,26 @@ export default function Categories() {
       )}
 
       {/* Shelves */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
         {shelves.map((shelf) => (
           <div
-            key={shelf.parent._id}
-            className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transition"
-          >
-            <h3 className="text-xl font-bold text-[#3B2F2F] mb-4">
+  key={shelf.parent._id}
+  className="bg-background rounded-2xl border border-border
+  shadow-sm hover:shadow-md transition p-6"
+>
+            <h3 className="text-xl font-bold text-text-main mb-4">
               {shelf.parent.name}
             </h3>
             {shelf.children.length === 0 ? (
               <p className="text-gray-500">No subcategories</p>
             ) : (
               <div className="space-y-3">
-                {shelf.children.map((child) => (
+                {shelf.children.map((child,i) => (
                   <div
                     key={child._id}
                     className="flex justify-between items-center p-3 bg-[#F4A460]/20 rounded-lg hover:bg-[#F4A460]/30 transition"
                   >
-                    <span className="text-[#3B2F2F] font-medium">{child.name}</span>
+                    <span className="text-[#3B2F2F] font-medium"><span className="text-gray-300">{i+1}</span> {child.name}</span>
                     <div className="space-x-2">
                       <button
                         onClick={() => handleEdit(child)}

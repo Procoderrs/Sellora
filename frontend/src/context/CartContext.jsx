@@ -185,10 +185,8 @@ export function CartProvider({ children }) {
     fetchCart();
   }, [user, authLoading]);
 
-  const cartCount = cart.reduce(
-  (sum, item) => sum + item.quantity,
-  0
-);
+   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+
   return (
     <CartContext.Provider
       value={{

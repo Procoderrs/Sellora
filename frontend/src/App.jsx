@@ -13,7 +13,7 @@ import Product from "./admin/Product.jsx";
 import AddProduct from "./admin/AddProduct.jsx";
 import CustomerDashboard from "./pages/CustomerDashboard.jsx";
 import Header from "./components/Header.jsx";
-import CategoryProd from './components/CategoryProd.jsx'
+import CategoryProducts from './components/CategoryProd.jsx'
 import CustomerLayout from "./layout/CustomerLayout.jsx";
 import ProductDetail from "./pages/ProductDetails.jsx";
 import ShoppingCart from "./pages/ShoppingCart.jsx";
@@ -37,7 +37,7 @@ export default function App() {
     {/* PUBLIC */}
     <Route element={<PublicLayout />}>
       <Route path="/" element={<CustomerDashboard />} />
-      <Route path="/category/:slug" element={<CategoryProd />} />
+      <Route path="/category/:slug" element={<CategoryProducts />} />
       <Route path="/product/:slug" element={<ProductDetail />} />
       <Route path="/cart" element={<ShoppingCart />} />
       <Route path="/shop" element={<Shop />} />

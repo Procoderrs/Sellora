@@ -1,13 +1,50 @@
+/* 1. Google Font Import must be at the very top */
+@import url('https://fonts.googleapis.com/css2?family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Smooch+Sans:wght@100..900&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Cedarville+Cursive&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Ballet:opsz@16..72&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+/* 2. Tailwind v4 Import */
 @import "tailwindcss";
 
-@theme{
-      --color-primary: '#A0522D',
-      --color-accent: '#F4A460',
-      --color-background: '#F5F5DC',
-      --color-danger: '#E35336',
-      --color-textMain: '#3B2F2F',
+/* 3. Theme block using CSS variable syntax (semicolons, no quotes) */
+@theme {
+  --color-primary: #A0522D ;
+  --color-accent: #E6B65A;
+  --color-background: #FFF8ED;
+  --color-danger: #E35336;
+  --color-text-main: #3B2F2F;
+  --color-sidebar:#FFF1DC;
+  --color-border:#B3C8CF;
+
+  /* This creates the utility class: font-playfair */
+  --font-playfair: "Playfair", serif;
+  --font-logo:"Ballet";
+  --font-Inter:"Poppins"; 
+  --font-Oswald: "Oswald", sans-serif;
+  --font-smoooch:"Smooch Sans";
+  --font-lobster:"Lobster"
+  
 }
 
-button {
-  cursor: pointer;
+/* 4. Base styles */
+@layer base {
+  button {
+    cursor: pointer;
+  }
 }
+/* #3B2F2F
+#FFF1DC
+Primary (Main color):     #A0522D  (Caramel Brown)
+Background:               #FFF8ED  (Cream / Vanilla)
+Accent (buttons):         #E6B65A  (Honey Gold)
+Danger / sale:            #E35336  (Strawberry Red)
+Text main:                #3B2F2F  (Dark Chocolate) */
