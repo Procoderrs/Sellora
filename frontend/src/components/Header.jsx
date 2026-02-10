@@ -66,14 +66,17 @@ export default function Navbar() {
 
 
   return (
-    <header className="bg-white shadow-md sticky top-0 z-50 font-playfair">
+    <header className="bg-background shadow-md sticky top-0 z-50 font-playfair">
       <TopCrousel />
 
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center">
 
         {/* LEFT: Navigation Links */}
         <nav className="flex gap-8 text-text-main font-medium relative">
-              {["Home", "Menu", "About"].map((item) => (
+          <Link to="/" className="hover:text-primary transition">
+    Home
+  </Link>
+              {[ "Menu", "About"].map((item) => (
                 <div key={item} className="relative">
                   {item === "Menu" ? (
                     <>

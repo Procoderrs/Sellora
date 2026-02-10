@@ -16,7 +16,6 @@ export default function CategoryProducts() {
   const [sortBy, setSortBy] = useState("default");
   const [productQuantities, setProductQuantities] = useState({});
 
-  // Total cart count
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   useEffect(() => {
@@ -28,7 +27,6 @@ export default function CategoryProducts() {
         const allProducts = prodRes.data.products || [];
         const allCategories = catRes.data.categories || [];
 
-        // Hero categories with counts
         const heroWithCounts = [
           { name: "All", slug: "all", icon: "mdi:view-grid" },
           { name: "Cakes", slug: "cakes", icon: "mdi:cake" },
@@ -47,26 +45,22 @@ export default function CategoryProducts() {
 
         setHeroCategories(heroWithCounts);
 
-        // All products
         if (slug === "all") {
           setCategoryName("All Products");
-          setCategoryDescription("Browse all our delicious items");
+          setCategoryDescription("Browse all our freshly baked delights");
           setProducts(allProducts);
           return;
         }
 
-        // Filter by category
         const parentCategory = allCategories.find(c => c.slug === slug);
         if (!parentCategory) return;
 
         setCategoryName(parentCategory.name);
         setCategoryDescription(parentCategory.description || "");
 
-        const childCategories = allCategories.filter(c => c.parent?._id === parentCategory._id);
-        const categoryIds = [parentCategory._id, ...childCategories.map(c => c._id)];
-
-        const filteredProducts = allProducts.filter(p => categoryIds.includes(p.category?._id));
-        setProducts(filteredProducts);
+        const children = allCategories.filter(c => c.parent?._id === parentCategory._id);
+        const ids = [parentCategory._id, ...children.map(c => c._id)];
+        setProducts(allProducts.filter(p => ids.includes(p.category?._id)));
       } catch (err) {
         console.error(err);
       }
@@ -75,116 +69,114 @@ export default function CategoryProducts() {
     fetchData();
   }, [slug]);
 
-  // Sorting products
   const sortedProducts = [...products].sort((a, b) => {
     if (sortBy === "low-high") return a.price - b.price;
     if (sortBy === "high-low") return b.price - a.price;
     return 0;
   });
 
-  // Quantity handlers
-  const increaseQty = (productId) => {
-    setProductQuantities(prev => ({ ...prev, [productId]: (prev[productId] || 1) + 1 }));
-  };
-  const decreaseQty = (productId) => {
-    setProductQuantities(prev => ({ ...prev, [productId]: Math.max((prev[productId] || 1) - 1, 1) }));
-  };
+  const increaseQty = (id) =>
+    setProductQuantities(p => ({ ...p, [id]: (p[id] || 1) + 1 }));
 
-  // Add to cart handler
-  const handleAddToCart = (productId, product) => {
-    const quantity = productQuantities[productId] || 1;
-    addToCart(product, quantity);
-  };
+  const decreaseQty = (id) =>
+    setProductQuantities(p => ({ ...p, [id]: Math.max((p[id] || 1) - 1, 1) }));
+
+  const handleAddToCart = (product) =>
+    addToCart(product, productQuantities[product._id] || 1);
 
   return (
-    <div className="min-h-screen bg-background relative">
-      {/* CART COUNT (TOP RIGHT) */}
-      <div className="fixed top-4 right-4 z-50 bg-[#A0522D] text-white px-4 py-2 rounded-full font-bold shadow-md">
+    <div className="min-h-screen bg-background">
+
+      {/* CART BADGE */}
+      <div className="fixed top-5 right-5 z-50 bg-primary text-white px-5 py-2 rounded-full shadow-lg font-semibold">
         Cart: {cartCount}
       </div>
 
-      {/* HERO SECTION */}
+      {/* HERO */}
       <section
-        className="relative w-full h-120 bg-cover bg-center flex flex-col justify-center items-center text-white"
-        style={{ backgroundImage: "url('/img-cake.png')" }}
+        className="relative h-[420px] flex flex-col items-center justify-center text-white text-center"
+        style={{ backgroundImage: "url('/img-cake.png')", backgroundSize: "cover" }}
       >
-        <div className="absolute inset-0 bg-black/50" />
-        <h1 className="relative font-lobster text-5xl font-bold mb-4">{categoryName}</h1>
+        <div className="absolute inset-0 bg-black/60" />
+        <h1 className="relative font-lobster text-5xl mb-4">{categoryName}</h1>
         {categoryDescription && (
-          <p className="relative text-lg mb-6 text-center max-w-2xl px-4">{categoryDescription}</p>
+          <p className="relative max-w-2xl text-lg opacity-90 px-4">
+            {categoryDescription}
+          </p>
         )}
 
-        {/* HERO CATEGORIES */}
-        <div className="relative flex gap-8 bg-white/10 px-6 py-3 rounded-xl backdrop-blur-md z-10">
+        <div className="relative mt-8 flex gap-6 bg-white/10 backdrop-blur-md px-6 py-4 rounded-2xl">
           {heroCategories.map(cat => (
             <button
               key={cat.slug}
               onClick={() => navigate(`/category/${cat.slug}`)}
-              className={`flex flex-col items-center transition
-                ${slug === cat.slug ? "text-yellow-300" : "text-white hover:text-yellow-300"}
+              className={`flex flex-col items-center text-sm transition
+                ${slug === cat.slug ? "text-yellow-300" : "hover:text-yellow-300"}
               `}
             >
-              <Icon icon={cat.icon} width="28" />
-              <span className="text-sm">{cat.name}</span>
-              <span className="text-xs opacity-80">({cat.count})</span>
+              <Icon icon={cat.icon} width="26" />
+              <span className="mt-1">{cat.name}</span>
+              <span className="text-xs opacity-70">({cat.count})</span>
             </button>
           ))}
         </div>
       </section>
 
-      {/* SORTING */}
-      <section className="px-10 pt-10 flex justify-end">
+      {/* SORT */}
+      <div className="max-w-7xl mx-auto px-6 pt-10 flex justify-end">
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
-          className="border px-4 py-2 rounded-md text-sm"
+          className="border rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-primary"
         >
           <option value="default">Sort by</option>
-          <option value="low-high">Price: Low to High</option>
-          <option value="high-low">Price: High to Low</option>
+          <option value="low-high">Price: Low → High</option>
+          <option value="high-low">Price: High → Low</option>
         </select>
-      </section>
+      </div>
 
-      {/* PRODUCTS GRID */}
-      <section className="px-10 py-10">
-        {sortedProducts.length === 0 ? (
-          <p className="text-center text-lg text-gray-600">No products found.</p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-            {sortedProducts.map(prod => {
-              const qty = productQuantities[prod._id] || 1;
-              return (
-                <div key={prod._id} className="relative rounded-xl shadow-md overflow-hidden bg-white group">
+      {/* PRODUCTS */}
+      <section className="max-w-7xl mx-auto px-6 py-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
+          {sortedProducts.map(prod => {
+            const qty = productQuantities[prod._id] || 1;
+            return (
+              <div key={prod._id} className="bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden">
 
-                  <img
-                    src={prod.images?.[0] || "/placeholder.jpg"}
-                    alt={prod.title}
-                    className="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
+                <img
+                  src={prod.images?.[0] || "/placeholder.jpg"}
+                  alt={prod.title}
+                  className="h-56 w-full object-cover"
+                />
 
-                  {/* Quick View overlay removed from blocking */}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-0 pointer-events-none" />
+                <div className="p-5 flex flex-col gap-2">
+                  <h3 className="font-playfair text-lg font-semibold text-text-main">
+                    {prod.title}
+                  </h3>
+                  <p className="text-sm text-text-main/80 line-clamp-2">
+                    {prod.description}
+                  </p>
+                  <p className="text-xl font-bold text-primary mt-1">
+                    ${prod.price}
+                  </p>
 
-                  <div className="p-4 flex flex-col gap-2">
-                    <h3 className="text-lg font-semibold">{prod.title}</h3>
-                    <p className="text-sm text-[#3B2F2F] line-clamp-2">{prod.description}</p>
-                    <p className="mt-1 font-bold">${prod.price}</p>
+                  <div className="flex items-center gap-3 mt-3">
+                    <button onClick={() => decreaseQty(prod._id)} className="qty-btn">−</button>
+                    <span>{qty}</span>
+                    <button onClick={() => increaseQty(prod._id)} className="qty-btn">+</button>
 
-                    {/* Quantity + Add to Cart */}
-                    <div className="flex items-center gap-2 mt-2">
-                      <button onClick={() => decreaseQty(prod._id)} className="px-3 py-1 bg-gray-200 rounded-md hover:bg-gray-300">−</button>
-                      <span>{qty}</span>
-                      <button onClick={() => increaseQty(prod._id)} className="px-3 py-1 bg-gray-200 rounded-md hover:bg-gray-300">+</button>
-                      <button onClick={() => handleAddToCart(prod._id, prod)} className="ml-auto bg-[#A0522D] text-white px-4 py-2 rounded-md hover:bg-[#8B4513]">
-                        Add to Cart
-                      </button>
-                    </div>
+                    <button
+                      onClick={() => handleAddToCart(prod)}
+                      className="ml-auto bg-primary text-white px-4 py-2 rounded-xl hover:bg-[#8B4513] transition"
+                    >
+                      Add to Cart
+                    </button>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        )}
+              </div>
+            );
+          })}
+        </div>
       </section>
     </div>
   );

@@ -69,16 +69,13 @@ export const updateProduct = async (req, res) => {
     }
 
     // Merge new uploaded images
-    const newImages = req.cloudinaryUrls || [];
-   let finalImages = [...oldImages];
+   const newImages = req.cloudinaryUrls || [];
+let finalImages = [...oldImages];
 
-req.files?.forEach((file, idx) => {
-  const match = file.fieldname.match(/\[(\d+)\]/);
-  if (match) {
-    const index = Number(match[1]);
-    finalImages[index] = req.cloudinaryUrls.shift();
-  }
+newImages.forEach((url, index) => {
+  finalImages[index] = url;
 });
+
 
 
     const updatedData = {

@@ -1,24 +1,36 @@
 import React from "react";
 
+import { useNavigate } from "react-router-dom";
 const sections = [
   {
     title: "Freshly Baked Cakes",
+    slug:"cakes",
     desc: "Our cakes are baked fresh every day with premium ingredients to give you rich taste and soft textures.",
     images: ["/cake.png", "/lotus.png"],
   },
   {
     title: "Delicious Cupcakes",
+    slug:"cupcakes",
     desc: "Perfect cupcakes for birthdays, parties, or just to satisfy your sweet cravings.",
     images: ["/cupcake.png", "/vanilla.png"],
   },
   {
     title: "Coffee & Desserts",
+    slug:"coffee",
     desc: "Pair your favorite cake with freshly brewed coffee for the perfect dessert experience.",
     images: ["/coffee.png", "/espresso.png"],
+  },
+  {
+    title: "Joyful Brownie",
+    slug:"brownie",
+    desc: "Pair your favorite cake with freshly brewed coffee for the perfect dessert experience.",
+    images: ["/browniw-1.png", "/brownie-2.png"],
   },
 ];
 
 export default function Shop_info() {
+
+  const navigate=useNavigate()
   return (
     <section className="bg-background py-20">
       <div className="max-w-7xl mx-auto px-6 space-y-24">
@@ -37,7 +49,7 @@ export default function Shop_info() {
                   key={i}
                   src={img}
                   alt={item.title}
-                  className="w-full h-[220px] md:h-[320px] object-cover rounded-3xl shadow-lg"
+                  className="w-full h-55 md:h-80 object-cover rounded-3xl shadow-lg"
                 />
               ))}
             </div>
@@ -52,9 +64,14 @@ export default function Shop_info() {
                 {item.desc}
               </p>
 
-              <button className="mt-6 px-6 py-3 bg-accent text-text-main rounded-lg hover:bg-primary hover:text-white transition">
-                Explore More
-              </button>
+              <button
+  onClick={() => navigate(`/category/${item.slug}`)}
+  className="mt-6 px-6 py-3 bg-accent text-text-main rounded-lg
+             hover:bg-primary hover:text-white transition"
+>
+  Explore Now
+</button>
+
             </div>
           </div>
         ))}

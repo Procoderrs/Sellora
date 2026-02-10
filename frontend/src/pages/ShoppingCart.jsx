@@ -15,9 +15,7 @@ export default function ShoppingCart() {
 
   const handleCheckout = () => {
     if (!user) {
-      navigate("/login", {
-        state: { from: "/checkout/shipping" }
-      });
+      navigate("/login", { state: { from: "/checkout/shipping" } });
     } else {
       navigate("/checkout/shipping");
     }
@@ -26,12 +24,17 @@ export default function ShoppingCart() {
   /* ================= EMPTY CART ================= */
   if (!cart.length) {
     return (
-      <section className="px-4 sm:px-10 py-16 bg-[#F5F5DC] min-h-screen">
-        <div className="max-w-4xl mx-auto bg-white border rounded-xl p-10 text-center">
-          <h2 className="text-2xl font-bold mb-4">Your cart is empty</h2>
+      <section className="min-h-screen flex items-center justify-center bg-background font-Inter">
+        <div className="bg-white border rounded-2xl p-12 text-center shadow-md max-w-md">
+          <h2 className="text-3xl font-playfair text-text-main mb-4">
+            Your cart is empty
+          </h2>
+          <p className="text-gray-500 mb-8">
+            Looks like you haven’t added anything yet.
+          </p>
           <button
             onClick={() => navigate("/")}
-            className="bg-[#A0522D] text-white px-6 py-3 rounded-lg"
+            className="bg-primary text-white px-8 py-3 rounded-xl font-semibold hover:bg-[#8B4513] transition"
           >
             Continue Shopping
           </button>
@@ -42,70 +45,75 @@ export default function ShoppingCart() {
 
   /* ================= CART ================= */
   return (
-    <section className="px-4 sm:px-10 py-16 pb-28 bg-[#F5F5DC] min-h-screen">
-      <div className="max-w-7xl mx-auto grid md:grid-cols-[70%_30%] gap-10">
+    <section className="px-4 sm:px-10 py-16 pb-32 bg-background min-h-screen font-Inter">
+      <div className="max-w-7xl mx-auto grid lg:grid-cols-[68%_32%] gap-10">
 
         {/* LEFT — CART ITEMS */}
-        <div className="bg-white border rounded-2xl shadow-sm p-6 space-y-6">
-          <h2 className="text-2xl font-bold border-b pb-4">
+        <div className="bg-sidebar  rounded-3xl shadow-sm p-8 space-y-8">
+          <h2 className="text-3xl font-playfair text-text-main border-b pb-4">
             Shopping Cart
           </h2>
 
           {cart.map(item => (
             <div
               key={item._id}
-              className="flex flex-col sm:flex-row md:grid
-                         md:grid-cols-[120px_1fr_150px]
-                         gap-6 border-b pb-6"
+              className="grid md:grid-cols-[130px_1fr_120px] gap-6 border-b pb-6"
             >
               {/* IMAGE */}
               <img
                 src={item.images?.[0] || "/placeholder.jpg"}
                 alt={item.title}
-                className="w-full sm:w-32 h-40 sm:h-32 object-cover rounded-lg border"
+                className="w-full h-36 object-cover rounded-xl border bg-white"
               />
 
               {/* INFO */}
               <div className="flex flex-col justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold">{item.title}</h3>
-                  <p className="text-sm text-gray-500 mb-2">
-                    ${item.price} each
+                  <h3 className="text-lg font-semibold text-text-main">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    ${item.price} per item
                   </p>
                 </div>
 
-                <button
-                  onClick={() => removeFromCart(item.product)}
-                  className="text-sm text-red-600 hover:underline self-start"
-                >
-                  Remove
-                </button>
-              </div>
+                {/* QUANTITY */}
+                <div className="flex items-center gap-4 mt-4">
+                  <div className="flex items-center border rounded-xl overflow-hidden bg-white">
+                    <button
+                      onClick={() =>
+                        item.quantity > 1 &&
+                        updateQuantity(item.product, item.quantity - 1)
+                      }
+                      className="px-4 py-2 hover:bg-gray-100 text-lg"
+                    >
+                      −
+                    </button>
+                    <span className="px-4 font-semibold">
+                      {item.quantity}
+                    </span>
+                    <button
+                      onClick={() =>
+                        updateQuantity(item.product, item.quantity + 1)
+                      }
+                      className="px-4 py-2 hover:bg-gray-100 text-lg"
+                    >
+                      +
+                    </button>
+                  </div>
 
-              {/* QUANTITY + PRICE */}
-              <div className="flex flex-row sm:flex-col justify-between sm:items-end gap-4">
-                <div className="flex items-center border rounded-lg overflow-hidden">
                   <button
-                    onClick={() =>
-                      item.quantity > 1 &&
-                      updateQuantity(item.product, item.quantity - 1)
-                    }
-                    className="px-3 py-1 border-r hover:bg-gray-100"
+                    onClick={() => removeFromCart(item.product)}
+                    className="text-sm text-danger hover:underline"
                   >
-                    −
-                  </button>
-                  <span className="px-4">{item.quantity}</span>
-                  <button
-                    onClick={() =>
-                      updateQuantity(item.product, item.quantity + 1)
-                    }
-                    className="px-3 py-1 border-l hover:bg-gray-100"
-                  >
-                    +
+                    Remove
                   </button>
                 </div>
+              </div>
 
-                <p className="font-semibold text-[#A0522D] text-right">
+              {/* PRICE */}
+              <div className="flex items-end justify-end">
+                <p className="text-xl font-semibold text-primary">
                   ${(item.price * item.quantity).toFixed(2)}
                 </p>
               </div>
@@ -113,48 +121,45 @@ export default function ShoppingCart() {
           ))}
         </div>
 
-        {/* RIGHT — ORDER SUMMARY (DESKTOP) */}
-        <div className="bg-white border rounded-2xl shadow-sm p-6 h-fit md:sticky md:top-24">
-          <h3 className="text-xl font-bold mb-4 border-b pb-3">
+        {/* RIGHT — ORDER SUMMARY */}
+        <div className="bg-background rounded-3xl shadow-md p-8 h-fit sticky top-28">
+          <h3 className="text-2xl font-playfair text-text-main mb-6 border-b pb-4">
             Order Summary
           </h3>
 
-          <div className="flex justify-between mb-3">
+          <div className="flex justify-between mb-3 text-sm">
             <span>Subtotal</span>
             <span>${subtotal.toFixed(2)}</span>
           </div>
 
-          <div className="flex justify-between mb-3">
+          <div className="flex justify-between mb-3 text-sm">
             <span>Shipping</span>
-            <span className="text-green-600">Free</span>
+            <span className="text-green-600 font-medium">Free</span>
           </div>
 
-          <hr className="my-4" />
+          <hr className="my-6" />
 
-          <div className="flex justify-between text-lg font-bold mb-6">
+          <div className="flex justify-between text-lg font-semibold mb-8">
             <span>Total</span>
-            <span className="text-[#A0522D]">
+            <span className="text-primary">
               ${subtotal.toFixed(2)}
             </span>
           </div>
 
-          {/* DESKTOP CHECKOUT */}
           <button
             onClick={handleCheckout}
-            className="hidden md:block w-full bg-[#A0522D]
-                       text-white py-3 rounded-lg font-semibold
-                       hover:bg-[#8B4513] transition"
+            className="hidden md:block w-full bg-primary text-white py-4 rounded-xl font-semibold hover:bg-[#8B4513] transition"
           >
             Proceed to Checkout
           </button>
         </div>
       </div>
 
-      {/* MOBILE FIXED CHECKOUT BAR */}
+      {/* MOBILE CHECKOUT BAR */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t p-4 z-50">
         <button
           onClick={handleCheckout}
-          className="w-full bg-[#A0522D] text-white py-3 rounded-lg font-semibold"
+          className="w-full bg-primary text-white py-4 rounded-xl font-semibold"
         >
           Checkout · ${subtotal.toFixed(2)}
         </button>

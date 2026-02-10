@@ -82,7 +82,7 @@ export default function PublicHeader() {
               </svg>
             </button>
 
-            <Link to="/" className="text-3xl font-logo font-bold text-primary">Cake<span className="text-danger">🧁</span>let</Link>
+            <Link to="/" className="text-3xl font-logo font-black text-primary">Cake<span className="text-danger">🧁</span>let</Link>
 
             <div onClick={handleCartClick} className="relative cursor-pointer">
               <RiShoppingBagLine size={22} />
@@ -99,7 +99,12 @@ export default function PublicHeader() {
 
             {/* LEFT MENU */}
             <nav className="flex gap-8 text-text-main font-medium relative">
-              {["Home", "Menu", "About"].map((item) => (
+              <Link to="/" className="hover:text-primary transition">
+    Home
+  </Link>
+
+
+              {["Menu", "About"].map((item) => (
                 <div key={item} className="relative">
                   {item === "Menu" ? (
                     <>
@@ -111,7 +116,7 @@ export default function PublicHeader() {
                       </button>
 
                       {dropdownOpen && (
-  <div className="absolute top-full left-0 mt-2 bg-white shadow-lg rounded-xl w-[80rem] p-4 z-50">
+  <div className="absolute top-full -left-16 mt-2 bg-background shadow-lg rounded-xl w-[50rem] p-4 z-50">
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       {categories.map((cat) => (
         <Link

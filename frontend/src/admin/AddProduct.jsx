@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import api from "../api/api";
 import { useNavigate, useLocation } from "react-router-dom";
 
+
 export default function AddProduct() {
   const navigate = useNavigate();
   const location = useLocation();
-
   const editingProduct = location.state?.product || null;
 
   const [title, setTitle] = useState("");
@@ -21,7 +21,9 @@ export default function AddProduct() {
   const [parentId, setParentId] = useState("");
   const [subcategoryId, setSubcategoryId] = useState("");
 
+  // ✅ images = only Files
   const [images, setImages] = useState(Array(2).fill(null));
+  // ✅ previews = URLs
   const [previews, setPreviews] = useState(Array(2).fill(null));
 
   const [errors, setErrors] = useState({});
@@ -29,10 +31,10 @@ export default function AddProduct() {
   useEffect(() => {
     api.get("/admin/categories/category-tree").then(res => {
       setParents(res.data.categories || []);
-      console.log(res.data.categories);
     });
   }, []);
 
+  // ✅ EDIT MODE DATA LOAD
   useEffect(() => {
     if (editingProduct && parents.length) {
       setTitle(editingProduct.title);
@@ -44,77 +46,67 @@ export default function AddProduct() {
 
       if (editingProduct.category?.parent) {
         setParentId(editingProduct.category.parent._id);
-        const parent = parents.find(p => p._id === editingProduct.category.parent._id);
+        const parent = parents.find(
+          p => p._id === editingProduct.category.parent._id
+        );
         setSubcategories(parent?.subcategories || []);
-        setSubcategoryId(editingProduct.category._id);
-      } else if (editingProduct.category) {
         setSubcategoryId(editingProduct.category._id);
       }
 
+      // ✅ previews only
       const newPreviews = Array(2).fill(null);
       editingProduct.images?.forEach((img, idx) => {
-        if (idx < 5) newPreviews[idx] = img;
+        if (idx < 2) newPreviews[idx] = img;
       });
+
       setPreviews(newPreviews);
+      setImages(Array(2).fill(null));
     }
   }, [editingProduct, parents]);
 
-
-  useEffect(() => {
-  if (editingProduct) {
-    const newPreviews = Array(2).fill(null);
-    const newImages = Array(2).fill(null);
-
-    editingProduct.images?.forEach((img, idx) => {
-      if (idx < 2) {
-        newPreviews[idx] = img;
-        // Keep URLs as a placeholder for existing images
-        newImages[idx] = img;
-      }
-    });
-
-    setPreviews(newPreviews);
-    setImages(newImages);
-  }
-}, [editingProduct]);
-
-  const handleParentChange = (id) => {
+  const handleParentChange = id => {
     setParentId(id);
     const parent = parents.find(p => p._id === id);
     setSubcategories(parent?.subcategories || []);
     setSubcategoryId("");
   };
 
+  // ✅ IMAGE CHANGE FIXED
   const handleImageChange = (index, file) => {
-  const updatedImages = [...images];
-  updatedImages[index] = file; // this will replace the URL with a File object if changed
-  setImages(updatedImages);
+    const updatedImages = [...images];
+    updatedImages[index] = file;
+    setImages(updatedImages);
 
-  const updatedPreviews = [...previews];
-  updatedPreviews[index] = file ? URL.createObjectURL(file) : null;
-  setPreviews(updatedPreviews);
-};
+    const updatedPreviews = [...previews];
+    updatedPreviews[index] = file
+      ? URL.createObjectURL(file)
+      : editingProduct?.images?.[index] || null;
 
+    setPreviews(updatedPreviews);
+  };
 
   const validateForm = () => {
     const newErrors = {};
 
     if (!title.trim()) newErrors.title = "Title is required";
     if (!description.trim()) newErrors.description = "Description is required";
-    if (!price || Number(price) <= 0) newErrors.price = "Price must be greater than 0";
-    if (!stock || Number(stock) < 0) newErrors.stock = "Stock must be 0 or more";
-    if (!subcategoryId) newErrors.subcategoryId = "Please select a subcategory";
+    if (!price || Number(price) <= 0)
+      newErrors.price = "Price must be greater than 0";
+    if (!stock || Number(stock) < 0)
+      newErrors.stock = "Stock must be 0 or more";
+    if (!subcategoryId)
+      newErrors.subcategoryId = "Please select a subcategory";
 
     if (!editingProduct && images.some(img => !img)) {
-      newErrors.images = "All 5 images are required";
+      newErrors.images = "Exactly 2 images required";
     }
 
     setErrors(newErrors);
-
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+  // ✅ SUBMIT FIXED
+  const handleSubmit = async e => {
     e.preventDefault();
     if (!validateForm()) return;
 
@@ -127,17 +119,20 @@ export default function AddProduct() {
     formData.append("status", status);
     formData.append("category", subcategoryId);
 
-// Only append files
-images.forEach(img => {
-  if (img instanceof File) formData.append("images", img);
-});
+    // ✅ existing images (URLs from previews)
+    formData.append(
+      "existingImages",
+      JSON.stringify(
+        previews.filter(p => typeof p === "string")
+      )
+    );
 
-// Send existing URLs too, so server knows which ones to keep
-const existingImages = images
-  .filter(img => typeof img === "string")
-  .map(url => url); 
-formData.append("existingImages", JSON.stringify(existingImages));
-
+    // ✅ new uploaded files only
+    images.forEach(img => {
+      if (img instanceof File) {
+        formData.append("images", img);
+      }
+    });
 
     try {
       setLoading(true);
@@ -160,7 +155,6 @@ formData.append("existingImages", JSON.stringify(existingImages));
       <h1 className="text-3xl font-bold text-[#A0522D] mb-8 text-center">
         {editingProduct ? "Edit Product" : "Add New Product"}
       </h1>
-
       <form
         onSubmit={handleSubmit}
         className="bg-white rounded-2xl shadow-xl p-8 max-w-6xl mx-auto space-y-6"
