@@ -15,8 +15,8 @@ export default function CategoryPreview() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const catRes = await api.get("/admin/categories");
-        const prodRes = await api.get("/admin/products");
+        const catRes = await api.get("/categories");
+        const prodRes = await api.get("/products");
 
         const allCategories = catRes.data.categories || [];
         const allProducts = prodRes.data.products || [];
