@@ -9,7 +9,6 @@ export default function CategoryPreview() {
   const navigate = useNavigate();
   const { addToCart } = useContext(CartContext);
 
-  // Shuffle helper for 2 random products
   const shuffleArray = (arr) => [...arr].sort(() => Math.random() - 0.5);
 
   useEffect(() => {
@@ -21,10 +20,8 @@ export default function CategoryPreview() {
         const allCategories = catRes.data.categories || [];
         const allProducts = prodRes.data.products || [];
 
-        // Only parent categories
         const parents = allCategories.filter((c) => !c.parent);
 
-        // Map each parent category to 2 random products
         const categoriesWithProducts = parents.map((parent) => {
           const parentProducts = allProducts.filter(
             (p) =>
@@ -32,11 +29,9 @@ export default function CategoryPreview() {
               p.category?.parent?._id === parent._id
           );
 
-          const randomProducts = shuffleArray(parentProducts).slice(4, 6);
-
           return {
             ...parent,
-            products: randomProducts,
+            products: shuffleArray(parentProducts).slice(4, 6),
           };
         });
 
@@ -49,81 +44,100 @@ export default function CategoryPreview() {
     fetchData();
   }, []);
 
-  // Quantity handlers
-  const increaseQty = (productId) => {
-    setProductQuantities(prev => ({ ...prev, [productId]: (prev[productId] || 1) + 1 }));
-  };
-  const decreaseQty = (productId) => {
-    setProductQuantities(prev => ({ ...prev, [productId]: Math.max((prev[productId] || 1) - 1, 1) }));
-  };
+  const increaseQty = (id) =>
+    setProductQuantities((p) => ({ ...p, [id]: (p[id] || 1) + 1 }));
+  const decreaseQty = (id) =>
+    setProductQuantities((p) => ({ ...p, [id]: Math.max((p[id] || 1) - 1, 1) }));
 
-  const handleAddToCart = (productId, product) => {
-    const quantity = productQuantities[productId] || 1;
-    addToCart(product, quantity);
+  const handleAddToCart = (id, product) => {
+    addToCart(product, productQuantities[id] || 1);
   };
 
   if (!categories.length) return null;
 
   return (
-    <section className="bg-[#F5F5DC] py-16">
-      <div className="max-w-7xl mx-auto px-6">
+    <section className="bg-[#FAF7F2] py-20">
+      <div className="max-w-7xl mx-auto px-6 space-y-20">
 
-        {/* Section Heading */}
-        <h1 className="text-4xl md:text-5xl font-playfair font-bold text-[#8B4513] mb-12 text-center">
-          Our Picks
-        </h1>
+        {/* SECTION TITLE */}
+        <div className="text-center">
+          <h1 className="text-4xl md:text-5xl font-playfair font-bold text-[#6B3E2E]">
+            Our Picks
+          </h1>
+          <p className="mt-3 text-sm text-[#8B6F63] tracking-wide">
+            Hand-picked delights from every category
+          </p>
+        </div>
 
-        {/* Categories */}
         {categories.map((cat) => (
-          <div key={cat._id} className="mb-16">
+          <div key={cat._id}>
 
-            {/* Category Title */}
-            <h2
-              className="text-2xl md:text-3xl font-playfair font-bold text-[#5C4033] mb-6 cursor-pointer hover:text-[#A0522D] transition"
-              onClick={() => navigate(`/category/${cat.slug}`)}
-            >
-              {cat.name}
-            </h2>
+            {/* CATEGORY TITLE */}
+            <div className="flex items-center justify-between mb-6">
+              <h2
+                onClick={() => navigate(`/category/${cat.slug}`)}
+                className="text-2xl font-playfair font-semibold text-[#5A3828] cursor-pointer hover:text-[#A0522D] transition"
+              >
+                {cat.name}
+              </h2>
+              <span
+                onClick={() => navigate(`/category/${cat.slug}`)}
+                className="text-sm text-[#A0522D] cursor-pointer hover:underline"
+              >
+                View all →
+              </span>
+            </div>
 
-            {/* Products Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+            {/* PRODUCTS */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {cat.products.map((prod) => {
                 const qty = productQuantities[prod._id] || 1;
+
                 return (
                   <div
                     key={prod._id}
-                    className="bg-white rounded-2xl shadow-md hover:shadow-xl overflow-hidden transition-transform transform hover:-translate-y-1"
+                    className="bg-white rounded-xl border border-[#EFE6DC] hover:shadow-lg transition p-4 flex gap-4"
                   >
-                    {/* Product Image */}
+                    {/* IMAGE (SMALL & CLEAN) */}
                     <img
                       src={prod.images?.[0] || "/placeholder.jpg"}
                       alt={prod.title}
-                      className="w-full h-64 object-cover"
+                      className="w-28 h-28 rounded-lg object-cover flex-shrink-0"
                     />
 
-                    {/* Title, Price & Add to Cart */}
-                    <div className="p-4 flex flex-col gap-2">
-                      <h3 className="font-playfair font-semibold text-xl text-[#5C4033]">
+                    {/* INFO */}
+                    <div className="flex flex-col flex-1">
+                      <h3 className="font-playfair text-lg font-semibold text-[#4A2C20] leading-tight">
                         {prod.title}
                       </h3>
-                      <p className="text-lg text-[#8B4513] font-bold">${prod.price.toFixed(2)}</p>
 
-                      {/* Quantity + Add to Cart */}
-                      <div className="flex items-center gap-2 mt-2">
-                        <button
-                          onClick={() => decreaseQty(prod._id)}
-                          className="px-3 py-1 bg-gray-200 rounded-md hover:bg-gray-300"
-                        >−</button>
-                        <span>{qty}</span>
-                        <button
-                          onClick={() => increaseQty(prod._id)}
-                          className="px-3 py-1 bg-gray-200 rounded-md hover:bg-gray-300"
-                        >+</button>
+                      <p className="text-[#8B4513] font-bold mt-1">
+                        ${prod.price.toFixed(2)}
+                      </p>
+
+                      {/* ACTIONS */}
+                      <div className="mt-auto flex items-center gap-2">
+                        <div className="flex items-center border rounded-md overflow-hidden">
+                          <button
+                            onClick={() => decreaseQty(prod._id)}
+                            className="px-2 py-1 text-sm bg-gray-100 hover:bg-gray-200"
+                          >
+                            −
+                          </button>
+                          <span className="px-3 text-sm">{qty}</span>
+                          <button
+                            onClick={() => increaseQty(prod._id)}
+                            className="px-2 py-1 text-sm bg-gray-100 hover:bg-gray-200"
+                          >
+                            +
+                          </button>
+                        </div>
+
                         <button
                           onClick={() => handleAddToCart(prod._id, prod)}
-                          className="ml-auto bg-[#A0522D] text-white px-4 py-2 rounded-md hover:bg-[#8B4513] transition"
+                          className="ml-auto text-sm bg-[#A0522D] text-white px-4 py-2 rounded-md hover:bg-[#8B4513] transition"
                         >
-                          Add to Cart
+                          Add
                         </button>
                       </div>
                     </div>
