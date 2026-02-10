@@ -31,7 +31,7 @@ import About from './pages/About.jsx';
 import { AuthProvider } from "./context/AuthContext.jsx";
 export default function App() {
   return (
-    <AuthProvider>
+   
 
  <BrowserRouter>
   <Routes>
@@ -79,7 +79,7 @@ export default function App() {
 
   </Routes>
 </BrowserRouter>
-    </AuthProvider>
+   
     
    
 
