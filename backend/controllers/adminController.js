@@ -58,8 +58,8 @@ export const getTopSellingProducts = async (req, res) => {
     const topProducts = await Order.aggregate([
       {
         $match: {
-          paymentStatus: "paid",
-          status: "delivered"
+          paymentStatus: { $regex: /^paid$/i },
+          status: { $regex: /^delivered$/i }
         }
       },
 
@@ -75,7 +75,6 @@ export const getTopSellingProducts = async (req, res) => {
       { $sort: { totalSold: -1 } },
       { $limit: 5 },
 
-      // ✅ Join actual product data
       {
         $lookup: {
           from: "products",
@@ -98,12 +97,15 @@ export const getTopSellingProducts = async (req, res) => {
       }
     ]);
 
+    console.log("TOP PRODUCTS:", topProducts); // 👈 DEBUG LINE
+
     res.json(topProducts);
   } catch (error) {
     console.error("TOP SELLING ERROR:", error);
     res.status(500).json({ message: error.message });
   }
 };
+
 
 
 
