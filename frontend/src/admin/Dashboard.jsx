@@ -49,7 +49,9 @@ export default function Dashboard() {
         const ordersRes = await api.get("/admin/orders");
         const customers = await api.get("/admin/users");
         const dashboardStats = await api.get("/admin/dashboard/stats");
+        console.log(dashboardStats);
         const topProductsRes = await api.get("/admin/dashboard/top-products");
+        console.log(topProductsRes);
         const topCustomerRes = await api.get('/admin/dashboard/top-customer');
 
         setTopProducts(topProductsRes.data);
@@ -69,9 +71,11 @@ export default function Dashboard() {
         });
 
         setCategoryStats([
-          { name: "Women", value: dashboardStats.data.women },
-          { name: "Men", value: dashboardStats.data.men },
-          { name: "Kids", value: dashboardStats.data.kids },
+          { name: "Coffee", value: dashboardStats.data.coffee },
+          { name: "Cupcake", value: dashboardStats.data.cupcake },
+          { name: "Cake", value: dashboardStats.data.Cake },
+          { name: "brownie", value: dashboardStats.data.Brownie },
+
         ]);
       } catch (error) {
         console.error(error);

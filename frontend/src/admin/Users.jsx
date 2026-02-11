@@ -9,7 +9,6 @@ export default function AdminUsers() {
     const fetchUsers = async () => {
       try {
         const res = await api.get("/admin/users");
-        console.log(res);
         setUsers(res.data.users);
       } catch (err) {
         alert(err.response?.data?.message || "Failed to load users");
@@ -22,79 +21,61 @@ export default function AdminUsers() {
   }, []);
 
   if (loading) {
-    return (
-      <p className="text-center mt-10 text-[#3B2F2F]">
-        Loading users...
-      </p>
-    );
+    return <p className="p-6 text-text-main">Loading users...</p>;
   }
 
   return (
-    <section
-      className="min-h-screen px-10 py-12"
-      style={{ backgroundColor: "#F5F5DC" }}
-    >
-      <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-md p-8">
-        <h2
-          className="text-2xl font-bold mb-6"
-          style={{ color: "#3B2F2F" }}
-        >
+    <div className="min-h-screen p-8 bg-background font-lg font-smoooch">
+      <div className="max-w-6xl mx-auto bg-background border border-border rounded-2xl shadow-sm p-8">
+        <h2 className="text-3xl font-bold text-primary mb-6">
           Users Management
         </h2>
 
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr style={{ backgroundColor: "#A0522D", color: "white" }}>
-                <th className="text-left px-4 py-3">Name</th>
-                <th className="text-left px-4 py-3">Email</th>
-                <th className="text-left px-4 py-3">Role</th>
-                <th className="text-left px-4 py-3">User ID</th>
+          <table className="min-w-full divide-y divide-[#F4A460]/20 bg-background rounded-2xl">
+            <thead className="bg-[#F4A460]/30">
+              <tr>
+                <th className="px-4 py-3 text-left text-sm font-semibold text-text-main">Name</th>
+                <th className="px-4 py-3 text-left text-sm font-semibold text-text-main">Email</th>
+                <th className="px-4 py-3 text-left text-sm font-semibold text-text-main">Role</th>
+                <th className="px-4 py-3 text-left text-sm font-semibold text-text-main">User ID</th>
               </tr>
             </thead>
 
-            <tbody>
+            <tbody className="divide-y divide-[#F4A460]/20">
               {users.map((user, index) => (
                 <tr
                   key={user._id}
-                  className="border-b"
-                  style={{
-                    backgroundColor:
-                      index % 2 === 0 ? "#F5F5DC" : "white",
-                    color: "#3B2F2F",
-                  }}
+                  className={`hover:bg-[#F4A460]/10 transition`}
                 >
-                  <td className="px-4 py-3 font-medium">{user.name}</td>
-                  <td className="px-4 py-3">{user.email}</td>
+                  <td className="px-4 py-3 font-medium text-text-main">{user.name}</td>
+                  <td className="px-4 py-3 text-text-main">{user.email}</td>
                   <td className="px-4 py-3">
                     <span
-                      className="px-3 py-1 rounded-full text-sm font-semibold"
-                      style={{
-                        backgroundColor:
-                          user.role === "admin"
-                            ? "#F4A460"
-                            : "#A0522D",
-                        color: "white",
-                      }}
+                      className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                        user.role === "admin"
+                          ? "bg-accent text-primary"
+                          : "bg-[#A0522D]/20 text-[#A0522D]"
+                      }`}
                     >
                       {user.role}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-sm opacity-70">
-                    {user._id}
-                  </td>
+                  <td className="px-4 py-3 text-sm text-text-main opacity-70">{user._id}</td>
                 </tr>
               ))}
+
+              {users.length === 0 && (
+                <tr>
+                  <td colSpan="4" className="text-center py-6 text-gray-500">
+                    No users found
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
-
-          {users.length === 0 && (
-            <p className="text-center mt-6 text-[#3B2F2F]">
-              No users found
-            </p>
-          )}
         </div>
       </div>
-    </section>
+    </div>
   );
 }

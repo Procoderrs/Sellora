@@ -36,11 +36,13 @@ export const getDashboard = async (req, res) => {
       }
     ]);
 
-    const women = stats.find(s => s._id === "women")?.count || 0;
-    const men   = stats.find(s => s._id === "men")?.count || 0;
-    const kids  = stats.find(s => s._id === "kids")?.count || 0;
+    const coffee = stats.find(s => s._id === "coffee")?.count || 0;
+    const brownie   = stats.find(s => s._id === "brownie")?.count || 0;
+    const cake  = stats.find(s => s._id === "cake")?.count || 0;
+    const cupcake  = stats.find(s => s._id === "cupcake")?.count || 0;
 
-    res.json({ women, men, kids });
+
+    res.json({ coffee,brownie,cake,cupcake });
 
   } catch (error) {
     console.error("DASHBOARD ERROR:", error);
