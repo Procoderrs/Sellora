@@ -46,6 +46,7 @@ export default function Dashboard() {
       try {
         const products = await api.get("/admin/products");
         const categories = await api.get("/admin/categories");
+        console.log(categories);
         const ordersRes = await api.get("/admin/orders");
         const customers = await api.get("/admin/users");
         const dashboardStats = await api.get("/admin/dashboard/stats");
@@ -71,12 +72,12 @@ export default function Dashboard() {
         });
 
         setCategoryStats([
-          { name: "Coffee", value: dashboardStats.data.coffee },
-          { name: "Cupcake", value: dashboardStats.data.cupcake },
-          { name: "Cake", value: dashboardStats.data.Cake },
-          { name: "brownie", value: dashboardStats.data.Brownie },
+  { name: "Coffee", value: dashboardStats.data.coffee },
+  { name: "Cupcake", value: dashboardStats.data.cupcake },
+  { name: "Cake", value: dashboardStats.data.cake },
+  { name: "Brownie", value: dashboardStats.data.brownie },
+]);
 
-        ]);
       } catch (error) {
         console.error(error);
       }

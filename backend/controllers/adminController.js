@@ -38,9 +38,9 @@ export const getDashboard = async (req, res) => {
 
     const coffee = stats.find(s => s._id === "coffee")?.count || 0;
     const brownie   = stats.find(s => s._id === "brownie")?.count || 0;
-    const cake  = stats.find(s => s._id === "cake")?.count || 0;
-    const cupcake  = stats.find(s => s._id === "cupcake")?.count || 0;
-
+    const cake  = stats.find(s => s._id === "cakes")?.count || 0;
+    const cupcake  = stats.find(s => s._id === "cupcakes")?.count || 0;
+console.log(coffee,brownie,cake,cupcake);
 
     res.json({ coffee,brownie,cake,cupcake });
 
@@ -56,39 +56,32 @@ export const getDashboard = async (req, res) => {
 export const getTopSellingProducts = async (req, res) => {
   try {
     const topProducts = await Order.aggregate([
-  {
-    $match: {
-      paymentStatus: "paid",
-      status: "delivered"
-    }
-  },
+      // 1️⃣ Sirf completed & paid orders
+      {
+        $match: {
+          paymentStatus: "paid",
+          status: "delivered"
+        }
+      },
 
-  { $unwind: "$items" },
+      // 2️⃣ items ko alag karo
+      { $unwind: "$items" },
 
-  {
-    $lookup: {
-      from: "products",
-      localField: "items.product",
-      foreignField: "_id",
-      as: "productData"
-    }
-  },
+      // 3️⃣ product-wise total quantity
+      {
+        $group: {
+          _id: "$items.product",
+          name: { $first: "$items.title" },
+          totalSold: { $sum: "$items.quantity" }
+        }
+      },
 
-  // Ignore deleted products
-  { $unwind: "$productData" },
+      // 4️⃣ Highest selling first
+      { $sort: { totalSold: -1 } },
 
-  {
-    $group: {
-      _id: "$items.product",
-      name: { $first: "$productData.title" },
-      totalSold: { $sum: "$items.quantity" }
-    }
-  },
-
-  { $sort: { totalSold: -1 } },
-  { $limit: 5 }
-]);
-
+      // 5️⃣ Top 5
+      { $limit: 5 }
+    ]);
 
     res.json(topProducts);
   } catch (error) {
