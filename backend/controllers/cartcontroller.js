@@ -143,58 +143,56 @@ export const removeFromCart = async (req, res) => {
 };
 
 
+
 export const mergeCart = async (req, res) => {
   try {
     const userId = req.user._id;
     const { items } = req.body;
 
-    /* ✅ CRITICAL GUARD */
+    // Guard: items must be an array
     if (!Array.isArray(items)) {
       return res.status(400).json({
-        message: "Invalid merge payload (items must be array)"
+        message: "Invalid merge payload (items must be array)",
       });
     }
 
-    let cart = await Cart.findOne({ user: userId });
+    // Fetch existing cart or create a dummy array for merge
+    const existingCart = await Cart.findOne({ user: userId });
+    const mergedItems = existingCart ? [...existingCart.items] : [];
 
-    if (!cart) {
-      cart = await Cart.create({
-        user: userId,
-        items: [],
-        totalPrice: 0
-      });
-    }
-
+    // Merge guest cart items into mergedItems
     for (const guestItem of items) {
-
-      /* ✅ VALIDATION GUARDS */
       if (!guestItem.product || !guestItem.quantity) continue;
 
       const productId = guestItem.product.toString();
 
-      const existingItem = cart.items.find(
+      const existingItem = mergedItems.find(
         (item) => item.product.toString() === productId
       );
 
       if (existingItem) {
         existingItem.quantity += guestItem.quantity;
       } else {
-        cart.items.push({
+        mergedItems.push({
           product: productId,
           title: guestItem.title || "Product",
-          images: guestItem.images || [],
-          price: guestItem.price || 0,
-          quantity: guestItem.quantity
+          images:
+            guestItem.images && guestItem.images.length
+              ? guestItem.images
+              : ["/placeholder.jpg"],
+          price:
+            typeof guestItem.price === "number" && guestItem.price >= 0
+              ? guestItem.price
+              : 0,
+          quantity: guestItem.quantity > 0 ? guestItem.quantity : 1,
         });
       }
     }
 
-    /* ✅ HARD DEDUPE SAFETY */
+    // HARD dedupe by product id
     const uniqueMap = {};
-
-    cart.items.forEach(item => {
+    mergedItems.forEach((item) => {
       const key = item.product.toString();
-
       if (uniqueMap[key]) {
         uniqueMap[key].quantity += item.quantity;
       } else {
@@ -202,25 +200,30 @@ export const mergeCart = async (req, res) => {
       }
     });
 
-    cart.items = Object.values(uniqueMap);
+    const finalItems = Object.values(uniqueMap);
 
-    cart.totalPrice = cart.items.reduce(
+    // Calculate totalPrice
+    const totalPrice = finalItems.reduce(
       (sum, item) => sum + item.price * item.quantity,
       0
     );
 
-    await cart.save();
+    // Safely update cart in one operation
+    const cart = await Cart.findOneAndUpdate(
+      { user: userId },
+      { $set: { items: finalItems, totalPrice } },
+      { new: true, upsert: true } // create if not exists
+    );
 
     res.json({
       message: "Cart merged safely",
-      cart
+      cart,
     });
-
   } catch (err) {
-    console.error("MERGE CART ERROR:", err);  // ⭐ IMPORTANT
+    console.error("MERGE CART ERROR:", err);
     res.status(500).json({
       message: "Merge cart failed",
-      error: err.message
+      error: err.message,
     });
   }
 };
