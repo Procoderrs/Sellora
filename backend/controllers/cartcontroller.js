@@ -144,46 +144,85 @@ export const removeFromCart = async (req, res) => {
 
 
 export const mergeCart = async (req, res) => {
-  const userId = req.user._id;
-  const { items } = req.body;
+  try {
+    const userId = req.user._id;
+    const { items } = req.body;
 
-  let cart = await Cart.findOne({ user: userId });
-
-  if (!cart) {
-    cart = await Cart.create({
-      user: userId,
-      items: [],
-      totalPrice: 0
-    });
-  }
-
-  items.forEach((guestItem) => {
-    const existingItem = cart.items.find(
-      (item) => item.product.toString() === guestItem.product
-    );
-
-    if (existingItem) {
-      existingItem.quantity += guestItem.quantity;
-    } else {
-      cart.items.push({
-        product: guestItem.product,
-        title: guestItem.title,
-        images: guestItem.images,
-        price: guestItem.price,
-        quantity: guestItem.quantity
+    /* ✅ CRITICAL GUARD */
+    if (!Array.isArray(items)) {
+      return res.status(400).json({
+        message: "Invalid merge payload (items must be array)"
       });
     }
-  });
 
-  cart.totalPrice = cart.items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
+    let cart = await Cart.findOne({ user: userId });
 
-  await cart.save();
+    if (!cart) {
+      cart = await Cart.create({
+        user: userId,
+        items: [],
+        totalPrice: 0
+      });
+    }
 
-  res.json({
-    message: "Cart merged successfully",
-    cart
-  });
+    for (const guestItem of items) {
+
+      /* ✅ VALIDATION GUARDS */
+      if (!guestItem.product || !guestItem.quantity) continue;
+
+      const productId = guestItem.product.toString();
+
+      const existingItem = cart.items.find(
+        (item) => item.product.toString() === productId
+      );
+
+      if (existingItem) {
+        existingItem.quantity += guestItem.quantity;
+      } else {
+        cart.items.push({
+          product: productId,
+          title: guestItem.title || "Product",
+          images: guestItem.images || [],
+          price: guestItem.price || 0,
+          quantity: guestItem.quantity
+        });
+      }
+    }
+
+    /* ✅ HARD DEDUPE SAFETY */
+    const uniqueMap = {};
+
+    cart.items.forEach(item => {
+      const key = item.product.toString();
+
+      if (uniqueMap[key]) {
+        uniqueMap[key].quantity += item.quantity;
+      } else {
+        uniqueMap[key] = item;
+      }
+    });
+
+    cart.items = Object.values(uniqueMap);
+
+    cart.totalPrice = cart.items.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
+
+    await cart.save();
+
+    res.json({
+      message: "Cart merged safely",
+      cart
+    });
+
+  } catch (err) {
+    console.error("MERGE CART ERROR:", err);  // ⭐ IMPORTANT
+    res.status(500).json({
+      message: "Merge cart failed",
+      error: err.message
+    });
+  }
 };
+
+
