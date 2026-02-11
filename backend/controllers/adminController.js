@@ -56,32 +56,39 @@ export const getDashboard = async (req, res) => {
 export const getTopSellingProducts = async (req, res) => {
   try {
     const topProducts = await Order.aggregate([
-      // 1️⃣ Sirf completed & paid orders
-      {
-        $match: {
-          paymentStatus: "paid",
-          status: "delivered"
-        }
-      },
+  {
+    $match: {
+      paymentStatus: "paid",
+      status: "delivered"
+    }
+  },
 
-      // 2️⃣ items ko alag karo
-      { $unwind: "$items" },
+  { $unwind: "$items" },
 
-      // 3️⃣ product-wise total quantity
-      {
-        $group: {
-          _id: "$items.product",
-          name: { $first: "$items.title" },
-          totalSold: { $sum: "$items.quantity" }
-        }
-      },
+  {
+    $lookup: {
+      from: "products",
+      localField: "items.product",
+      foreignField: "_id",
+      as: "productData"
+    }
+  },
 
-      // 4️⃣ Highest selling first
-      { $sort: { totalSold: -1 } },
+  // Ignore deleted products
+  { $unwind: "$productData" },
 
-      // 5️⃣ Top 5
-      { $limit: 5 }
-    ]);
+  {
+    $group: {
+      _id: "$items.product",
+      name: { $first: "$productData.title" },
+      totalSold: { $sum: "$items.quantity" }
+    }
+  },
+
+  { $sort: { totalSold: -1 } },
+  { $limit: 5 }
+]);
+
 
     res.json(topProducts);
   } catch (error) {
