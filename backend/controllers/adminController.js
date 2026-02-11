@@ -56,7 +56,6 @@ console.log(coffee,brownie,cake,cupcake);
 export const getTopSellingProducts = async (req, res) => {
   try {
     const topProducts = await Order.aggregate([
-      // 1️⃣ Sirf completed & paid orders
       {
         $match: {
           paymentStatus: "paid",
@@ -64,23 +63,39 @@ export const getTopSellingProducts = async (req, res) => {
         }
       },
 
-      // 2️⃣ items ko alag karo
       { $unwind: "$items" },
 
-      // 3️⃣ product-wise total quantity
       {
         $group: {
           _id: "$items.product",
-          name: { $first: "$items.title" },
           totalSold: { $sum: "$items.quantity" }
         }
       },
 
-      // 4️⃣ Highest selling first
       { $sort: { totalSold: -1 } },
+      { $limit: 5 },
 
-      // 5️⃣ Top 5
-      { $limit: 5 }
+      // ✅ Join actual product data
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "_id",
+          as: "product"
+        }
+      },
+
+      { $unwind: "$product" },
+
+      {
+        $project: {
+          _id: 1,
+          totalSold: 1,
+          name: "$product.title",
+          price: "$product.price",
+          image: { $arrayElemAt: ["$product.images", 0] }
+        }
+      }
     ]);
 
     res.json(topProducts);
@@ -89,6 +104,7 @@ export const getTopSellingProducts = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 
 
