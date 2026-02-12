@@ -88,7 +88,9 @@ export default function Navbar() {
                       </button>
 
                       {dropdownOpen && (
-  <div className="absolute top-full left-0 mt-2 bg-white shadow-lg rounded-xl w-[80rem] p-4 z-50">
+  <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 
+                w-screen max-w-none bg-white shadow-lg rounded-xl p-6 z-50">
+
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       {categories.map((cat) => (
         <Link

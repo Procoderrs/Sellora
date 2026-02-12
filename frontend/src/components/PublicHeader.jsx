@@ -131,7 +131,7 @@ export default function PublicHeader() {
                 </button>
 
                 {dropdownOpen && (
-                  <div className="absolute top-full lg:-left-16 md:-left-32 mt-2 bg-background shadow-lg rounded-xl w-[50rem] p-4 z-50">
+                  <div className="absolute top-full lg:-left-16 md:-left-32 md:w-[50rem] mt-2 bg-background shadow-lg rounded-xl lg:w-[60rem] xl:w-[80rem] p-4 z-50">
                     <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-6">
                       {categories.map((cat) => (
                         <Link

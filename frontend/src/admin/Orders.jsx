@@ -81,19 +81,47 @@ export default function Orders() {
 
       {/* Orders Table */}
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-[#F4A460]/40 bg-background rounded-2xl shadow-sm">
-          <thead className="bg-[#F4A460]/30">
-            <tr>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-text-main">Order ID</th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-text-main">Customer</th>
-              <th className="px-4 py-3 text-sm font-semibold text-text-main">Total</th>
-              <th className="px-4 py-3 text-sm font-semibold text-text-main">Payment</th>
-              <th className="px-4 py-3 text-sm font-semibold text-text-main">Status</th>
-              <th className="px-4 py-3 text-sm font-semibold text-text-main text-center">Items</th>
-              <th className="px-4 py-3 text-sm font-semibold text-text-main">Date</th>
-              <th className="px-4 py-3 text-sm font-semibold text-text-main text-center">Details</th>
-            </tr>
-          </thead>
+        <table className="min-w-full table-fixed divide-y  divide-[#F4A460]/40 bg-background rounded-2xl shadow-sm">
+       <thead className="bg-[#F4A460]/30">
+  <tr>
+    <th className="px-4 py-3 text-left text-sm font-semibold text-text-main w-[12%]">
+      Order ID
+    </th>
+
+    <th className="px-4 py-3 text-left text-sm font-semibold text-text-main w-[28%]">
+      Customer
+    </th>
+
+    <th className="px-4 py-3 text-left text-sm font-semibold text-text-main w-[12%]">
+      Total
+    </th>
+
+    <th className="px-4 py-3 text-left text-sm font-semibold text-text-main w-[10%]">
+      Payment
+    </th>
+
+    <th className="px-4 py-3 text-left text-sm font-semibold text-text-main w-[14%]">
+      Status
+    </th>
+
+    <th className="px-4 py-3 text-left text-sm font-semibold text-text-main w-[5%]">
+      Items
+    </th>
+
+    <th className="px-4 py-3 text-center text-sm font-semibold text-text-main w-[5%]">
+      Date
+    </th>
+
+    <th className="px-4 py-3 text-left text-sm font-semibold text-text-main w-[6%]">
+      Details
+    </th>
+  </tr>
+</thead>
+
+
+
+
+          
 
           <tbody className="divide-y divide-[#F4A460]/20">
             {filteredOrders.map((order) => (

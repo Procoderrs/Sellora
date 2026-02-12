@@ -104,31 +104,17 @@ export default function Products() {
             {/* Products Table */}
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-[#F4A460]/40">
-                <thead className="bg-[#F4A460]/30">
-                  <tr>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-text-main">
-                      Image
-                    </th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-text-main">
-                      Title
-                    </th>
-                    <th className="px-4 py-3 text-sm font-semibold text-text-main">
-                      Subcategory
-                    </th>
-                    <th className="px-4 py-3 text-sm font-semibold text-text-main">
-                      Price
-                    </th>
-                    <th className="px-4 py-3 text-sm font-semibold text-text-main">
-                      Stock
-                    </th>
-                    <th className="px-4 py-3 text-sm font-semibold text-text-main">
-                      Status
-                    </th>
-                    <th className="px-4 py-3 text-center text-sm font-semibold text-text-main">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
+               <thead className="bg-[#F4A460]/30">
+  <tr>
+    <th className="px-4 py-3 text-left text-sm font-semibold text-text-main w-[10%]">Image</th>
+    <th className="px-4 py-3 text-left text-sm font-semibold text-text-main w-[30%]">Title</th>
+    <th className="px-4 py-3 text-left text-sm font-semibold text-text-main w-[15%]">Subcategory</th>
+    <th className="px-4 py-3 text-left text-sm font-semibold text-text-main w-[10%]">Price</th>
+    <th className="px-4 py-3 text-left text-sm font-semibold text-text-main w-[10%]">Stock</th>
+    <th className="px-4 py-3 text-left text-sm font-semibold text-text-main w-[10%]">Status</th>
+    <th className="px-4 py-3 text-center text-sm font-semibold text-text-main w-[15%]">Actions</th>
+  </tr>
+</thead>
 
                 <tbody className="divide-y divide-[#F4A460]/20">
                   {group.items.map((p) => (

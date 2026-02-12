@@ -233,17 +233,17 @@ export default function Dashboard() {
           Recent Orders
         </h2>
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
+          <table className="w-full border-collapse min-w-full table-fixed">
             <thead>
-              <tr className="bg-[#F5F5DC] text-sm text-[#3B2F2F]">
-                <th className="p-3">Order ID</th>
-                <th className="p-3">Customer</th>
-                <th className="p-3">Amount</th>
-                <th className="p-3">Payment</th>
-                <th className="p-3">Status</th>
-                <th className="p-3">Date</th>
-              </tr>
-            </thead>
+  <tr className="bg-[#F5F5DC] text-sm text-[#3B2F2F]">
+    <th className="p-3 w-[16%] text-left">Order ID</th>
+    <th className="p-3 w-[32%] text-left">Customer</th>
+    <th className="p-3 w-[12%] text-left">Amount</th>
+    <th className="p-3 w-[12%] text-left">Payment</th>
+    <th className="p-3 w-[14%] text-left">Status</th>
+    <th className="p-3 w-[14%] text-left">Date</th>
+  </tr>
+</thead>
             <tbody>
               {recentOrders.map(order => (
                 <tr key={order._id} className="border-b text-sm hover:bg-[#FAF8F2]">
