@@ -1,114 +1,122 @@
-import React, { useState,useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
-import { useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useContext } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { CartContext } from "../context/CartContext";
+import { FaPlus, FaMinus, FaFire } from "react-icons/fa";
 
 export default function ProductDetail() {
-  const { state } = useLocation();
-  const product = state?.product;
-  const categoryName = state?.categoryName;
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { addToCart } = useContext(CartContext);
 
+  // Grab product and parentCategory from location.state
+  const { product, parentCategory } = location.state || {};
+  console.log(product);
+  const imagesArray = product ? product.images || [product.image] : [];
 
-  const {addToCart}=useContext(CartContext)
-  console.log(addToCart);
-  const navigate=useNavigate();
-  const [selectedImage, setSelectedImage] = useState(
-    product?.images?.[0] || ""
-  );
+  const [selectedImage, setSelectedImage] = useState(imagesArray[0] || "");
   const [count, setCount] = useState(1);
 
-const handleAddToCart = () => {
-  addToCart(product, count);
-  navigate("/cart");
-};
+  if (!product) {
+    return (
+      <p className="text-center mt-20 text-gray-500">
+        Product not found.
+      </p>
+    );
+  }
 
-  if (!product) return <p>Product not found</p>;
+  const handleAddToCart = () => {
+    addToCart(product, count);
+    navigate("/cart");
+  };
 
   return (
-   <section className="px-4 md:px-10 py-16 bg-[#F5F5DC] min-h-screen">
-  <div className="border rounded-2xl bg-white shadow-md p-4 md:p-8">
+    <div className="min-h-screen bg-[#FDF6F0]">
 
-    <div className="flex flex-col md:grid md:grid-cols-[10%_40%_40%] gap-6 md:gap-10 items-start">
+      {/* ----- Hero Header ----- */}
+      <section
+        className="relative h-[220px] flex flex-col items-center justify-center text-center"
+        style={{ backgroundImage: "url('/img-cake.png')", backgroundSize: "cover" }}
+      >
+        <div className="absolute inset-0 bg-black/50" />
+        <div className="relative text-white px-4">
+          <p className="text-5xl  font-cookie">{product.title}</p>
+          
+          
+          
+        </div>
+      </section>
 
-      {/* LEFT: Thumbnails */}
-      {/* MOBILE: horizontal scroll above main image */}
-      <div className="flex md:flex-col gap-4 overflow-x-auto md:overflow-visible mb-4 md:mb-0">
-        {product.images?.map((img, index) => (
+      {/* ----- Product Details ----- */}
+      <section className="max-w-6xl mx-auto mt-10 pb-5 px-4 md:px-16 flex flex-col md:flex-row gap-10">
+        
+        {/* Left: Thumbnails */}
+       {/*  <div className="flex flex-col gap-4 md:w-1/6">
+          {imagesArray.map((img, idx) => (
+            <img
+              key={idx}
+              src={img}
+              alt={`${product.name} ${idx + 1}`}
+              onClick={() => setSelectedImage(img)}
+              className={`w-full h-20 object-cover rounded-lg cursor-pointer border-2 transition-all
+                ${selectedImage === img ? "border-[#A0522D]" : "border-gray-200 hover:border-[#A0522D]"}
+              `}
+            />
+          ))}
+        </div>
+ */}
+        {/* Center: Main Image */}
+        <div className="flex-1 border rounded-2xl p-4 shadow-lg hover:shadow-2xl transition-shadow">
           <img
-            key={index}
-            src={img}
-            alt={`Thumbnail ${index + 1}`}
-            onClick={() => setSelectedImage(img)}
-            className={`w-20 h-20 md:w-24 md:h-24 object-cover rounded-lg cursor-pointer border-2 flex-shrink-0
-              ${
-                selectedImage === img
-                  ? "border-[#A0522D]"
-                  : "border-gray-200 hover:border-[#A0522D]"
-              }`}
+            src={selectedImage}
+            alt={product.name}
+            className="w-full h-[350px] sm:h-[350px] object-cover object-center rounded-2xl transition-transform duration-500 hover:scale-105"
           />
-        ))}
-      </div>
+        </div>
 
-      {/* CENTER: Main Image */}
-      <div className="border rounded-xl p-2 md:p-4 w-full">
-        <img
-          src={selectedImage}
-          alt={product.title}
-          className="w-full h-[300px] sm:h-[400px] md:h-[420px] object-cover rounded-lg"
-        />
-      </div>
+        {/* Right: Product Info */}
+        <div className="flex-1 flex flex-col justify-between space-y-6">
+          <div className="space-y-4">
+            <h2 className="text-4xl md:text-5xl font-cookie font-bold text-[#3B2F2F]">{product.title}</h2>
+            <p className="text-2xl font-semibold text-[#A0522D]">${product.price}</p>
+            <p className="text-lg font-semibold text-gray-400">{product.description}</p>
 
-      {/* RIGHT: Product Info */}
-      <div className="border rounded-xl p-4 md:p-6 w-full md:w-auto flex-1 space-y-5">
-        <p className="text-sm text-gray-500 uppercase tracking-wide">
-          {categoryName}
-        </p>
+            {parentCategory && (
+              <p className="text-sm text-gray-400 italic">Category: {parentCategory}</p>
+            )}
+            
+          </div>
 
-        <h1 className="text-2xl sm:text-3xl font-bold">{product.title}</h1>
+          {/* Quantity & Add to Cart */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-4">
+              <span className="font-semibold text-gray-700">Quantity:</span>
+              <div className="flex items-center border rounded-lg overflow-hidden">
+                <button
+                  onClick={() => count > 1 && setCount(count - 1)}
+                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 transition-colors"
+                >
+                  <FaMinus className="text-sm" />
+                </button>
+                <span className="px-6 font-medium">{count}</span>
+                <button
+                  onClick={() => setCount(count + 1)}
+                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 transition-colors"
+                >
+                  <FaPlus className="text-sm" />
+                </button>
+              </div>
+            </div>
 
-        <p className="text-xl sm:text-2xl font-semibold text-[#A0522D]">
-          ${product.price}
-        </p>
-
-        <hr />
-
-        {/* Quantity Selector */}
-        <div className="flex items-center gap-4">
-          <span className="font-medium">Quantity</span>
-          <div className="flex items-center border rounded-lg overflow-hidden">
             <button
-              onClick={() => count > 1 && setCount(count - 1)}
-              className="px-4 py-2 border-r hover:bg-gray-100"
+              onClick={handleAddToCart}
+              className="w-full py-4 bg-gradient-to-r from-[#E6B65A] to-[#A0522D] text-white font-bold rounded-2xl shadow-lg hover:from-[#A0522D] hover:to-[#E6B65A] transition-all duration-500"
             >
-              −
-            </button>
-            <span className="px-6">{count}</span>
-            <button
-              onClick={() => setCount(count + 1)}
-              className="px-4 py-2 border-l hover:bg-gray-100"
-            >
-              +
+              Add to Cart
             </button>
           </div>
         </div>
 
-        {/* Add to Cart */}
-        <button
-          onClick={handleAddToCart}
-          className="w-full bg-[#A0522D] text-white py-3 rounded-lg font-semibold hover:bg-[#8B4513] transition"
-        >
-          Add to Cart
-        </button>
-
-        {/* Stock Info */}
-        <p className="text-gray-600 inline p-2 rounded text-xs bg-[#F5F5DC]">
-          {product.stock} items in Stock
-        </p>
-      </div>
+      </section>
     </div>
-  </div>
-</section>
-
   );
 }

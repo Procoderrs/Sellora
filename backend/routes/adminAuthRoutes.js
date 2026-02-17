@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get("/stats", authMiddleware,adminOnly, getDashboard);
 // routes/adminDashboardRoutes.js
-router.get("/top-products",authMiddleware,adminOnly,getTopSellingProducts);
+router.get("/top-products",getTopSellingProducts);
 
 router.get('/top-customer',authMiddleware,adminOnly,getTopCustomers);
 

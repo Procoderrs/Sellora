@@ -2,7 +2,7 @@ import React from "react";
 
 export default function About() {
   return (
-    <section className="px-4 md:px-12 py-12 font-playfair bg-background text-text-main">
+    <section className="px-4 md:px-12 py-12 font-Oswald bg-background text-text-main">
 
       {/* HERO SECTION */}
       <div className="relative w-full h-screen rounded-xl overflow-hidden">
@@ -13,9 +13,10 @@ export default function About() {
         />
 
         <div className="absolute inset-0 bg-black/40 flex items-end">
-          <h2 className="text-2xl md:text-4xl max-w-2xl font-logo text-primary px-6 md:px-10 pb-6 md:pb-10">
+          {/* Changed h2 → h1 for main page heading */}
+          <h1 className="text-2xl md:text-4xl max-w-2xl font-cookie text-background px-6 md:px-10 pb-6 md:pb-10">
             Freshly Baked Happiness, Crafted with Love & Passion
-          </h2>
+          </h1>
         </div>
       </div>
 
@@ -30,9 +31,9 @@ export default function About() {
         </div>
 
         <div className="flex-1 flex flex-col gap-4">
-          <h3 className="text-2xl font-logo text-primary">
+          <h2 className="text-2xl font-cookie text-primary">
             Welcome to Cakelet
-          </h3>
+          </h2>
 
           <p className="text-text-main leading-relaxed font-Inter">
             Cakelet is more than just a bakery — it’s a place where sweetness,
@@ -50,9 +51,9 @@ export default function About() {
       {/* SECTION 2 */}
       <div className="mt-20 max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-10">
         <div className="flex-1 flex flex-col gap-4">
-          <h3 className="text-2xl font-logo text-primary">
+          <h2 className="text-2xl font-cookie text-primary">
             Crafted With Love & Quality
-          </h3>
+          </h2>
 
           <p className="text-text-main leading-relaxed font-Inter">
             We believe great desserts begin with great ingredients. That’s why
@@ -87,9 +88,9 @@ export default function About() {
 
         {/* CENTER TEXT */}
         <div className="text-center px-4">
-          <h3 className="text-xl font-logo text-primary mb-3">
+          <h2 className="text-xl font-cookie text-primary mb-3">
             Have Questions?
-          </h3>
+          </h2>
 
           <p className="text-text-main mb-2 font-Inter">
             If you have any questions, feel free to contact us.

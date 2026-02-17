@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import api from "../api/api";
 import { Icon } from "@iconify/react";
 import { CartContext } from "../context/CartContext";
+import { FaShoppingCart } from "react-icons/fa";
 
 export default function CategoryProducts() {
   const { slug } = useParams();
@@ -88,43 +89,61 @@ export default function CategoryProducts() {
     <div className="min-h-screen bg-background">
 
       {/* CART BADGE */}
-      <div className="fixed top-5 right-5 z-50 bg-primary text-white px-5 py-2 rounded-full shadow-lg font-semibold">
+      <div
+        role="status"
+        aria-live="polite"
+        aria-label={`Cart contains ${cartCount} items`}
+        className="fixed top-5 right-5 z-50 bg-primary text-white px-5 py-2 rounded-full shadow-lg font-semibold"
+      >
         Cart: {cartCount}
       </div>
 
       {/* HERO */}
       <section
-        className="relative h-[420px] flex flex-col items-center justify-center text-white text-center"
+        className="relative h-[420px] flex flex-col items-center justify-center text-center"
         style={{ backgroundImage: "url('/img-cake.png')", backgroundSize: "cover" }}
       >
-        <div className="absolute inset-0 bg-black/60" />
-        <h1 className="relative font-lobster text-5xl mb-4">{categoryName}</h1>
+        <div className="absolute inset-0 bg-black/50" aria-hidden="true" />
+
+        <h1
+          role="heading"
+          aria-level="1"
+          className="relative font-lobster text-5xl mb-4 text-white bg-black/50 px-2 rounded"
+        >
+          {categoryName}
+        </h1>
+
         {categoryDescription && (
-          <p className="relative max-w-2xl text-lg opacity-90 px-4">
+          <p className="relative max-w-2xl text-lg text-white/90 px-4">
             {categoryDescription}
           </p>
         )}
 
-        <div className="relative mt-8 flex gap-6 bg-white/10 backdrop-blur-md px-6 py-4 rounded-2xl">
-          {heroCategories.map(cat => (
-            <button
-              key={cat.slug}
-              onClick={() => navigate(`/category/${cat.slug}`)}
-              className={`flex flex-col items-center text-sm transition
-                ${slug === cat.slug ? "text-yellow-300" : "hover:text-yellow-300"}
-              `}
-            >
-              <Icon icon={cat.icon} width="26" />
-              <span className="mt-1">{cat.name}</span>
-              <span className="text-xs opacity-70">({cat.count})</span>
-            </button>
-          ))}
-        </div>
+        <nav aria-label="Category navigation">
+          <div className="relative mt-8 flex gap-6 bg-white/10 backdrop-blur-md px-6 py-4 rounded-2xl">
+            {heroCategories.map(cat => (
+              <button
+                key={cat.slug}
+                onClick={() => navigate(`/category/${cat.slug}`)}
+                className={`flex flex-col items-center text-sm transition
+                  ${slug === cat.slug ? "text-yellow-300" : "hover:text-yellow-300"}
+                `}
+                aria-label={`${cat.name} (${cat.count} products)`}
+              >
+                <Icon icon={cat.icon} width="26" role="img" aria-hidden="false" />
+                <span className="mt-1">{cat.name}</span>
+                <span className="text-xs opacity-70">({cat.count})</span>
+              </button>
+            ))}
+          </div>
+        </nav>
       </section>
 
       {/* SORT */}
       <div className="max-w-7xl mx-auto px-6 pt-10 flex justify-end">
+        <label htmlFor="sortProducts" className="sr-only">Sort products</label>
         <select
+          id="sortProducts"
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
           className="border rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-primary"
@@ -141,35 +160,66 @@ export default function CategoryProducts() {
           {sortedProducts.map(prod => {
             const qty = productQuantities[prod._id] || 1;
             return (
-              <div key={prod._id} className="bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden">
+              <div
+                key={prod._id}
+                className="bg-white rounded-3xl shadow-md hover:shadow-2xl transition transform hover:-translate-y-1 hover:scale-105 overflow-hidden cursor-pointer"
+              >
+                {/* IMAGE + CLICK TO NAVIGATE */}
+                <div
+                  className="relative w-full h-56"
+                  onClick={() => navigate(`/product/${prod.slug}`, { state: { product: prod } })}
+                >
+                  <img
+                    src={prod.images?.[0] || "/placeholder.jpg"}
+                    alt={prod.title}
+                    className="w-full h-full object-cover rounded-t-3xl"
+                  />
+                  {prod.totalSold > 2 && (
+                    <span className="absolute top-3 left-3 bg-yellow-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow">
+                      🔥 Top Seller
+                    </span>
+                  )}
+                </div>
 
-                <img
-                  src={prod.images?.[0] || "/placeholder.jpg"}
-                  alt={prod.title}
-                  className="h-56 w-full object-cover"
-                />
-
+                {/* PRODUCT INFO */}
                 <div className="p-5 flex flex-col gap-2">
-                  <h3 className="font-playfair text-lg font-semibold text-text-main">
+                  <h3 className="font-playfair text-lg font-semibold text-text-main line-clamp-2">
                     {prod.title}
                   </h3>
-                  <p className="text-sm text-text-main/80 line-clamp-2">
-                    {prod.description}
-                  </p>
-                  <p className="text-xl font-bold text-primary mt-1">
-                    ${prod.price}
-                  </p>
 
+                  <p className="text-sm text-text-main/70 line-clamp-2">{prod.description}</p>
+
+                  {/* {prod.category?.parent && (
+                    <span className="text-xs text-text-main/50">
+                      Parent: {prod.category.parent.name}
+                    </span>
+                  )} */}
+
+                  <span className="text-xl font-bold text-primary mt-1">
+                    ${prod.price}
+                  </span>
+
+                  {/* QUANTITY & CART */}
                   <div className="flex items-center gap-3 mt-3">
-                    <button onClick={() => decreaseQty(prod._id)} className="qty-btn">−</button>
-                    <span>{qty}</span>
-                    <button onClick={() => increaseQty(prod._id)} className="qty-btn">+</button>
+                    <button
+                      onClick={() => decreaseQty(prod._id)}
+                      className="px-3 py-1 rounded bg-gray-100 hover:bg-gray-200"
+                    >
+                      −
+                    </button>
+                    <span aria-live="polite">{qty}</span>
+                    <button
+                      onClick={() => increaseQty(prod._id)}
+                      className="px-3 py-1 rounded bg-gray-100 hover:bg-gray-200"
+                    >
+                      +
+                    </button>
 
                     <button
                       onClick={() => handleAddToCart(prod)}
-                      className="ml-auto bg-primary text-white px-4 py-2 rounded-xl hover:bg-[#8B4513] transition"
+                      className="ml-auto bg-primary text-white px-4 py-2 rounded-2xl hover:bg-yellow-600 transition flex items-center gap-1"
                     >
-                      Add to Cart
+                      <FaShoppingCart /> Add
                     </button>
                   </div>
                 </div>

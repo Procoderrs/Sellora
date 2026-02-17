@@ -1,5 +1,6 @@
 import Product from "../models/productModel.js";
 import Category from "../models/categoryModel.js";
+import Order from "../models/orderModel.js";
 
 /**
  * GET ALL ACTIVE PRODUCTS (PUBLIC)
@@ -90,3 +91,95 @@ export const getPublicCategories = async (req, res) => {
   }
 };
 
+
+
+export const getPublicTopSellingProducts = async (req, res) => {
+  try {
+    const topProducts = await Order.aggregate([
+      // Only paid orders
+      { $match: { paymentStatus: "paid" } },
+      { $unwind: "$items" },
+
+      // Group by product and sum quantity sold
+      {
+        $group: {
+          _id: "$items.product",
+          totalSold: { $sum: "$items.quantity" }
+        }
+      },
+
+      // Sort by most sold
+      { $sort: { totalSold: -1 } },
+      { $limit: 10 },
+
+      // Lookup product details
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "_id",
+          as: "product"
+        }
+      },
+      { $unwind: "$product" },
+
+      // Only active and in-stock products
+      {
+        $match: {
+          "product.status": "active",
+          "product.stock": { $gt: 0 }
+        }
+      },
+
+      // Lookup category details
+      {
+        $lookup: {
+          from: "categories",
+          localField: "product.category",
+          foreignField: "_id",
+          as: "category"
+        }
+      },
+      { $unwind: "$category" },
+
+      // Lookup parent category
+      {
+        $lookup: {
+          from: "categories",
+          localField: "category.parent",
+          foreignField: "_id",
+          as: "parentCategory"
+        }
+      },
+      { $unwind: { path: "$parentCategory", preserveNullAndEmptyArrays: true } },
+
+      // Project final shape
+      {
+        $project: {
+          _id: "$product._id",
+          totalSold: 1,
+          title: "$product.title",
+          slug: "$product.slug",
+          price: "$product.price",
+          images: "$product.images",
+          description: "$product.description", 
+          category: {
+            _id: "$category._id",
+            name: "$category.name",
+            slug: "$category.slug",
+            parent: {
+              _id: "$parentCategory._id",
+              name: "$parentCategory.name",
+              slug: "$parentCategory.slug"
+            }
+          }
+        }
+      }
+    ]);
+
+    res.json({ products: topProducts });
+  } catch (error) {
+    console.error("PUBLIC TOP PRODUCTS ERROR:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};

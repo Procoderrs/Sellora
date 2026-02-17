@@ -40,6 +40,8 @@ export default function App() {
     {/* PUBLIC */}
     <Route element={<PublicLayout />}>
       <Route path="/" element={<CustomerDashboard />} />
+            <Route path="/home" element={<CustomerDashboard />} />
+
       <Route path="/category/:slug" element={<CategoryProducts />} />
       <Route path="/product/:slug" element={<ProductDetail />} />
       <Route path="/cart" element={<ShoppingCart />} />

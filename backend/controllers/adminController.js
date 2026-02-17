@@ -96,6 +96,17 @@ export const getTopSellingProducts = async (req, res) => {
       }
     ]);
 
+
+
+
+
+    /* 
+    
+    
+    
+    
+    
+    */
     console.log("TOP PRODUCTS:", topProducts);
 
     res.json(topProducts);

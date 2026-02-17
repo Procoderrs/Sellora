@@ -12,6 +12,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Ballet:opsz@16..72&display=swap');
 
 @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Cookie&display=swap');
 /* 2. Tailwind v4 Import */
 @import "tailwindcss";
 
@@ -31,8 +33,44 @@
   --font-Inter:"Poppins"; 
   --font-Oswald: "Oswald", sans-serif;
   --font-smoooch:"Smooch Sans";
-  --font-lobster:"Lobster"
+  --font-lobster:"Lobster";
+  --font-cookie:"Cookie";
   
+}
+
+
+
+.view-btn {
+  position: relative;
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  overflow: hidden;
+  z-index: 1;
+  transition: color 0.3s ease;
+}
+
+.view-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--color-primary);
+  transform: translateY(-100%);
+  transition: transform 0.35s ease;
+  z-index: -1;
+}
+
+.view-btn:hover::before {
+  transform: translateY(0);
+}
+
+.view-btn:hover {
+  color: white;
+}
+
+/* Reverse animation on leave */
+.view-btn::before {
+  transform-origin: top;
 }
 
 /* 4. Base styles */
@@ -41,6 +79,19 @@
     cursor: pointer;
   }
 }
+
+
+
+
+/* Add in your global CSS / tailwind.css file */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
 /* #3B2F2F
 #FFF1DC
 Primary (Main color):     #A0522D  (Caramel Brown)
