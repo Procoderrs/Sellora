@@ -171,7 +171,7 @@ export default function CategoryProducts() {
                 >
                   <img
                     src={prod.images?.[0] || "/placeholder.jpg"}
-                    alt={prod.title}
+                    alt=""
                     className="w-full h-full object-cover rounded-t-3xl"
                   />
                   {prod.totalSold > 2 && (
@@ -183,9 +183,9 @@ export default function CategoryProducts() {
 
                 {/* PRODUCT INFO */}
                 <div className="p-5 flex flex-col gap-2">
-                  <h3 className="font-playfair text-lg font-semibold text-text-main line-clamp-2">
+                  <h2 className="font-playfair text-lg font-semibold text-text-main line-clamp-2">
                     {prod.title}
-                  </h3>
+                  </h2>
 
                   <p className="text-sm text-text-main/70 line-clamp-2">{prod.description}</p>
 

@@ -127,7 +127,7 @@ export default function PublicHeader() {
 
             {/* LEFT NAV */}
             <nav className="flex gap-8 text-text-main font-medium relative">
-              <Link to="/" className="hover:text-primary transition">Home</Link>
+              <Link to="/home" className="hover:text-primary transition">Home</Link>
 
               <div
                 className="relative inline-block"
@@ -179,13 +179,19 @@ export default function PublicHeader() {
              
 
 <div className="relative ml-4">
+  <label htmlFor="product-search" className="sr-only">
+    Search Products
+  </label>
+
   <input
+    id="product-search"   // ⭐ IMPORTANT FIX
     type="search"
     value={search}
     onChange={onSearchChange}
     placeholder="Search products..."
     className="px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary w-64"
   />
+
   {searchOpen && searchResults.length > 0 && (
     <div className="absolute top-full mt-1 w-full bg-white shadow-lg rounded-lg z-50">
       {searchResults.map((prod) => (
@@ -196,11 +202,12 @@ export default function PublicHeader() {
             navigate(`/product/${prod.slug || prod._id}`, {
               state: {
                 product: prod,
-                parentCategory: prod.category?.parent?.name || prod.category?.name,
+                parentCategory:
+                  prod.category?.parent?.name || prod.category?.name,
               },
             });
-            setSearch("");      // clear search input
-            setSearchOpen(false); // close dropdown
+            setSearch("");
+            setSearchOpen(false);
           }}
         >
           <div className="flex items-center gap-3">
@@ -219,6 +226,7 @@ export default function PublicHeader() {
     </div>
   )}
 </div>
+
 
 
               {!user ? (

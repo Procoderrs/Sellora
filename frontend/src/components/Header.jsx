@@ -133,45 +133,55 @@ export default function Navbar() {
         <div className="flex justify-end items-center gap-4 flex-1">
 
           {/* SEARCH INPUT */}
-          <div className="relative">
-            <input
-              type="search"
-              value={search}
-              onChange={onSearchChange}
-              placeholder="Search products..."
-              className="px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary w-64"
+          <div className="relative ml-4">
+  <label htmlFor="product-search" className="sr-only">
+    Search Products
+  </label>
+
+  <input
+    id="product-search"   // ⭐ IMPORTANT FIX
+    type="search"
+    value={search}
+    onChange={onSearchChange}
+    placeholder="Search products..."
+    className="px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary w-64"
+  />
+
+  {searchOpen && searchResults.length > 0 && (
+    <div className="absolute top-full mt-1 w-full bg-white shadow-lg rounded-lg z-50">
+      {searchResults.map((prod) => (
+        <div
+          key={prod._id}
+          className="flex items-center justify-between p-2 hover:bg-gray-100 transition rounded-lg cursor-pointer"
+          onClick={() => {
+            navigate(`/product/${prod.slug || prod._id}`, {
+              state: {
+                product: prod,
+                parentCategory:
+                  prod.category?.parent?.name || prod.category?.name,
+              },
+            });
+            setSearch("");
+            setSearchOpen(false);
+          }}
+        >
+          <div className="flex items-center gap-3">
+            <img
+              src={prod.images?.[0] || "/placeholder.jpg"}
+              alt={prod.title}
+              className="w-12 h-12 object-cover rounded"
             />
-            {searchOpen && searchResults.length > 0 && (
-              <div className="absolute top-full mt-1 w-full bg-white shadow-lg rounded-lg z-50">
-                {searchResults.map((prod) => (
-                  <div
-                    key={prod._id}
-                    className="flex items-center gap-3 p-2 hover:bg-gray-100 transition rounded-lg cursor-pointer"
-                    onClick={() => {
-                      navigate(`/product/${prod.slug || prod._id}`, {
-                        state: {
-                          product: prod,
-                          parentCategory: prod.category?.parent?.name || prod.category?.name,
-                        },
-                      });
-                      setSearch("");
-                      setSearchOpen(false);
-                    }}
-                  >
-                    <img
-                      src={prod.images?.[0] || "/placeholder.jpg"}
-                      alt={prod.title}
-                      className="w-12 h-12 object-cover rounded"
-                    />
-                    <div>
-                      <p className="text-sm font-semibold">{prod.title}</p>
-                      <p className="text-xs text-gray-500">${prod.price}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+            <div>
+              <p className="text-sm font-semibold">{prod.title}</p>
+              <p className="text-xs text-gray-500">${prod.price}</p>
+            </div>
           </div>
+        </div>
+      ))}
+    </div>
+  )}
+</div>
+
 
           {/* USER PROFILE */}
           {!user ? (

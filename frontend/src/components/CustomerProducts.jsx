@@ -82,20 +82,20 @@ export default function CategoryPreview() {
               {/* IMAGE */}
               <div className="relative w-full h-52 flex justify-center items-center pt-4">
                 <img
-                  src={prod.images?.[0] || prod.image || "/placeholder.jpg"}
-                  alt={prod.title}
-                  className="w-36 h-36 object-cover rounded-2xl shadow-md 
-                             group-hover:scale-105 transition-transform duration-500"
-                />
+  src={prod.images?.[0] || prod.image || "/placeholder.jpg"}
+  alt=""   // ✅ FIX — intentionally empty
+  className="w-36 h-36 object-cover rounded-2xl shadow-md 
+             group-hover:scale-105 transition-transform duration-500"
+/>
                 
               </div>
 
               {/* PRODUCT INFO */}
               <div className="p-4 flex flex-col justify-between h-[150px]">
                 <div className="space-y-1">
-                  <h3 className="font-playfair text-base font-semibold text-[#3B2F2F] line-clamp-2">
+                  <h2 className="font-playfair text-base font-semibold text-[#3B2F2F] line-clamp-2">
                     {prod.title}
-                  </h3>
+                  </h2>
                   <p className="text-sm text-[#A0522D] font-bold">${prod.price}</p>
                   
                   
