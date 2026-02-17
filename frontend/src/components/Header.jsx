@@ -7,11 +7,11 @@ import { RiUser3Line, RiShoppingBagLine, RiArrowDownSLine } from "@remixicon/rea
 import api from "../api/api";
 import debounce from "lodash.debounce";
 
-export default function Navbar() {
+export default function PublicHeader() {
   const { user, logout } = useContext(AuthContext);
   const { cartCount } = useContext(CartContext);
-  const navigate = useNavigate();
 
+  const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [categories, setCategories] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -21,6 +21,8 @@ export default function Navbar() {
   const [products, setProducts] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [searchOpen, setSearchOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
@@ -43,23 +45,27 @@ export default function Navbar() {
         setProducts(allProducts); // for search
 
         const parents = allCategories.filter((c) => !c.parent);
+
         const categoriesWithInfo = parents.map((parent) => {
           const parentProducts = allProducts.filter(
             (p) =>
               p.category?._id === parent._id ||
               p.category?.parent?._id === parent._id
           );
+
           return {
             ...parent,
             productCount: parentProducts.length,
             image: parentProducts[0]?.images?.[0] || "/placeholder.jpg",
           };
         });
+
         setCategories(categoriesWithInfo);
       } catch (err) {
         console.error(err);
       }
     };
+
     fetchData();
   }, []);
 
@@ -83,57 +89,96 @@ export default function Navbar() {
   };
 
   return (
-    <header className="bg-background shadow-md sticky top-0 z-50 font-playfair relative">
+    <header className="bg-background font-playfair shadow-md relative">
       <TopCrousel />
 
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center gap-6">
+      <div className="sticky top-0 z-50 bg-background">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 h-20 flex items-center">
 
-        {/* LEFT NAV */}
-        <nav className="flex gap-6 text-text-main font-medium relative">
-          <Link to="/" className="hover:text-primary transition">Home</Link>
-
-          {/* Categories Dropdown */}
-          <div className="relative">
-            <button
-              onClick={() => setDropdownOpen(!dropdownOpen)}
-              className="flex items-center gap-1"
-              aria-label="Toggle categories menu"
-            >
-              Menu <RiArrowDownSLine size={18} />
+          {/* MOBILE HEADER */}
+          <div className="flex w-full items-center justify-between md:hidden">
+            <button onClick={() => setMenuOpen(true)} aria-label="Open navigation menu">
+              <svg
+                className="w-6 h-6 text-text-main"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
             </button>
 
-            {dropdownOpen && (
-              <div className="absolute top-full mt-2 w-64 bg-white shadow-lg rounded-xl p-4 z-50">
-                {categories.map((cat) => (
-                  <Link
-                    key={cat._id}
-                    to={`/category/${cat.slug}`}
-                    className="flex flex-col items-center p-2 hover:bg-gray-100 rounded-lg"
-                  >
-                    <img src={cat.image} alt={cat.name} className="w-16 h-16 object-cover rounded mb-1" />
-                    <span className="text-sm font-semibold">{cat.name}</span>
-                    <span className="text-xs text-gray-500">{cat.productCount} products</span>
-                  </Link>
-                ))}
-              </div>
-            )}
+            <Link to="/" className="text-3xl font-logo font-black text-primary">
+              Cake<span className="text-danger">🧁</span>let
+            </Link>
+
+            <button onClick={handleCartClick} className="relative" aria-label="Open shopping cart">
+              <RiShoppingBagLine size={22} />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-[16px] h-4 flex items-center justify-center text-xs bg-danger text-white rounded-full px-1">
+                  {cartCount > 99 ? "99+" : cartCount}
+                </span>
+              )}
+            </button>
           </div>
 
-          <Link to="/about" className="hover:text-primary transition">About</Link>
-        </nav>
+          {/* DESKTOP HEADER */}
+          <div className="hidden md:grid grid-cols-3 items-center w-full">
 
-        {/* CENTER LOGO */}
-        <div className="flex justify-center flex-1">
-          <Link className="text-3xl font-logo text-primary" to="/">
-            Cake<span className="text-danger">🧁</span>let
-          </Link>
-        </div>
+            {/* LEFT NAV */}
+            <nav className="flex gap-8 text-text-main font-medium relative">
+              <Link to="/home" className="hover:text-primary transition">Home</Link>
 
-        {/* RIGHT ACTIONS */}
-        <div className="flex justify-end items-center gap-4 flex-1">
+              <div
+                className="relative inline-block"
+                onMouseEnter={() => setDropdownOpen(true)}
+                onMouseLeave={() => setDropdownOpen(false)}
+              >
+                <button className="flex items-center gap-1 hover:text-primary transition" aria-label="Toggle categories menu">
+                  Menu <RiArrowDownSLine size={18} />
+                </button>
 
-          {/* SEARCH INPUT */}
-          <div className="relative ml-4">
+                {dropdownOpen && (
+                  <div className="absolute left-0 top-full mt-3 w-[520px] bg-background shadow-xl rounded-xl p-5 z-50">
+                    <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-6">
+                      {categories.map((cat) => (
+                        <Link
+                          key={cat._id}
+                          to={`/category/${cat.slug}`}
+                          className="flex flex-col items-center bg-white p-4 rounded-xl hover:shadow-lg transition"
+                        >
+                          <img src={cat.image} alt="" className="w-24 h-24 object-cover rounded-lg mb-2" />
+                          <span className="font-semibold">{cat.name}</span>
+                          <span className="text-xs opacity-60">{cat.productCount} products</span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <Link to="/about" className="hover:text-primary transition">About</Link>
+
+              
+
+            </nav>
+
+            {/* CENTER LOGO */}
+            <div className="flex justify-center">
+              <Link to="/" className="text-4xl font-logo font-bold text-primary">
+                Cake<span className="text-danger">🧁</span>let
+              </Link>
+            </div>
+
+
+
+            {/* RIGHT ACTIONS */}
+            <div className="flex justify-end items-center gap-4">
+
+{/* SEARCH INPUT */}
+             
+
+<div className="relative ml-4">
   <label htmlFor="product-search" className="sr-only">
     Search Products
   </label>
@@ -183,37 +228,65 @@ export default function Navbar() {
 </div>
 
 
-          {/* USER PROFILE */}
-          {!user ? (
-            <Link to="/login" className="px-3 py-1 rounded-lg hover:bg-accent/40 transition text-sm">Login</Link>
-          ) : (
-            <div className="relative">
-              <button onClick={() => setProfileOpen(!profileOpen)} aria-label="Open user menu">
-                <RiUser3Line size={20} />
-              </button>
-              {profileOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg text-sm z-50">
-                  <div className="px-3 py-2 font-semibold">{user.name}</div>
-                  <hr />
-                  <button className="w-full text-left px-3 py-2 hover:bg-background" onClick={() => navigate("/my-orders")}>My Orders</button>
-                  <button className="w-full text-left px-3 py-2 text-danger hover:bg-danger/10" onClick={handleLogout}>Logout</button>
+
+              {!user ? (
+                <Link to="/login" className="px-3 py-1 rounded-lg hover:bg-accent/40 transition text-sm">Login</Link>
+              ) : (
+                <div className="relative">
+                  <button onClick={() => setProfileOpen(!profileOpen)} className="p-2" aria-label="Open user menu">
+                    <RiUser3Line size={20} />
+                  </button>
+                  {profileOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg text-sm z-50">
+                      <div className="px-3 py-2 font-semibold">{user.name}</div>
+                      <hr />
+                      <button className="w-full text-left px-3 py-2 hover:bg-background" onClick={() => navigate("/my-orders")}>My Orders</button>
+                      <button className="w-full text-left px-3 py-2 text-danger hover:bg-danger/10" onClick={handleLogout}>Logout</button>
+                    </div>
+                  )}
                 </div>
               )}
+              <button onClick={handleCartClick} className="relative" aria-label="Open shopping cart">
+                <RiShoppingBagLine size={22} />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 min-w-[16px] h-4 flex items-center justify-center text-xs bg-danger text-white rounded-full px-1">
+                    {cartCount > 99 ? "99+" : cartCount}
+                  </span>
+                )}
+              </button>
+
+              
             </div>
-          )}
-
-          {/* CART */}
-          <button onClick={handleCartClick} className="relative" aria-label="Open shopping cart">
-            <RiShoppingBagLine size={22} />
-            {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 min-w-[16px] h-4 flex items-center justify-center text-xs bg-danger text-white rounded-full px-1">
-                {cartCount > 99 ? "99+" : cartCount}
-              </span>
-            )}
-          </button>
-
+          </div>
         </div>
       </div>
+
+      {/* MOBILE SIDEBAR */}
+      {menuOpen && (
+        <div className="fixed inset-0 z-[100] bg-black/40 md:hidden">
+          <aside className="w-72 h-full bg-white shadow-xl p-5 overflow-y-auto" role="dialog" aria-label="Mobile Navigation">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-lg font-semibold">Menu</h2>
+              <button onClick={() => setMenuOpen(false)} aria-label="Close navigation menu" className="text-xl">✕</button>
+            </div>
+            <nav className="flex flex-col gap-4 text-sm">
+              <Link to="/" onClick={() => setMenuOpen(false)} className="py-2 border-b">Home</Link>
+              <Link to="/about" onClick={() => setMenuOpen(false)} className="py-2 border-b">About</Link>
+              <div className="pt-2">
+                <p className="font-semibold mb-2">Categories</p>
+                <div className="flex flex-col gap-2">
+                  {categories.map((cat) => (
+                    <Link key={cat._id} to={`/category/${cat.slug}`} onClick={() => setMenuOpen(false)} className="flex items-center gap-3 py-2">
+                      <img src={cat.image} alt="" className="w-8 h-8 object-cover rounded" />
+                      <span>{cat.name}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </nav>
+          </aside>
+        </div>
+      )}
     </header>
   );
 }
