@@ -5,7 +5,7 @@ import { AuthContext } from "./AuthContext";
 export const CartContext = createContext();
 
 export function CartProvider({ children }) {
-  const { user, loading: authLoading } = useContext(AuthContext);
+  const { customer, loading: authLoading } = useContext(AuthContext);
 
   const [cart, setCart] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -24,7 +24,7 @@ export function CartProvider({ children }) {
 
   /* ---------------- FETCH CART ---------------- */
   const fetchCart = async () => {
-    if (!user) {
+    if (!customer) {
       const guestCart = loadGuestCart();
       setCart(guestCart);
       setTotalPrice(
@@ -65,7 +65,7 @@ export function CartProvider({ children }) {
 
   /* ---------------- ADD TO CART ---------------- */
   const addToCart = async (product, quantity = 1) => {
-    if (user) {
+    if (customer) {
       try {
         const { data } = await api.post("/cart/add", {
           productId: product._id,
@@ -105,7 +105,7 @@ export function CartProvider({ children }) {
 
   /* ---------------- UPDATE QUANTITY ---------------- */
   const updateQuantity = async (productId, quantity) => {
-    if (user) {
+    if (customer) {
       const { data } = await api.put(`/cart/update/${productId}`, { quantity });
       setCart(data.cart.items);
       setTotalPrice(data.cart.totalPrice);
@@ -121,7 +121,7 @@ export function CartProvider({ children }) {
 
   /* ---------------- REMOVE ITEM ---------------- */
   const removeFromCart = async (productId) => {
-    if (user) {
+    if (customer) {
       const { data } = await api.delete(`/cart/remove/${productId}`);
       setCart(data.cart.items);
       setTotalPrice(data.cart.totalPrice);
@@ -138,7 +138,7 @@ export function CartProvider({ children }) {
     if (authLoading) return;
 
     const syncCart = async () => {
-      if (user && !hasMerged) {
+      if (customer && !hasMerged) {
         await mergeGuestCart(); // merge guest cart into user cart once
         setHasMerged(true);
       }
@@ -146,7 +146,7 @@ export function CartProvider({ children }) {
     };
 
     syncCart();
-  }, [user, authLoading]);
+  }, [customer, authLoading]);
 
   /* ---------------- DERIVED STATE ---------------- */
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
