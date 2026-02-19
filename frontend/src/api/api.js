@@ -10,21 +10,20 @@ console.log(api);
  
  // Request interceptor to attach auth token
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("authToken"); // jo tum login me save kiya tha
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  // Try admin token first
+  const adminToken = localStorage.getItem("adminToken");
+  const customerToken = localStorage.getItem("authToken");
+
+  if (adminToken) {
+    config.headers.Authorization = `Bearer ${adminToken}`;
+  } else if (customerToken) {
+    config.headers.Authorization = `Bearer ${customerToken}`;
   }
+
   return config;
 }, (error) => {
   return Promise.reject(error);
-}); 
-
-const adminToken = localStorage.getItem("adminToken");
-const customerToken = localStorage.getItem("customerToken");
-
-const token = customerToken || adminToken;
-
-
+});
 export default api;
 
 /* https://sellora-rz68.vercel.app

@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import api from "../api/api"; // make sure api is imported
+import api from '../api/api'
 
 export const AuthContext = createContext();
 
@@ -8,45 +8,66 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+  const [admin, setAdmin] = useState(null);
+  const [customer, setCustomer] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const savedUser = localStorage.getItem("auth");
-    if (savedUser) setUser(JSON.parse(savedUser));
+    // Load saved admin and customer from localStorage
+    const savedAdmin = localStorage.getItem("adminAuth");
+    const savedCustomer = localStorage.getItem("customerAuth");
+
+    if (savedAdmin) setAdmin(JSON.parse(savedAdmin));
+    if (savedCustomer) setCustomer(JSON.parse(savedCustomer));
+
     setLoading(false);
   }, []);
 
   const login = async (data) => {
-    // 1️⃣ Set user in state and localStorage
-    setUser(data.user);
-    localStorage.setItem("auth", JSON.stringify(data.user));
-    localStorage.setItem("authToken", data.token);
+    if (data.user.role === "admin") {
+      setAdmin(data.user);
+      localStorage.setItem("adminAuth", JSON.stringify(data.user));
+      localStorage.setItem("adminToken", data.token);
+    } else {
+      setCustomer(data.user);
+      localStorage.setItem("customerAuth", JSON.stringify(data.user));
+      localStorage.setItem("customerToken", data.token);
 
-    // 2️⃣ Merge guest cart if exists
-    const guestCart = JSON.parse(localStorage.getItem("guestCart") || "[]");
-
-    if (guestCart.length > 0) {
-      try {
-        // Send guest cart to backend merge API
-        await api.post("/cart/merge", { items: guestCart });
-
-        // Clear guest cart from localStorage
-        localStorage.removeItem("guestCart");
-      } catch (err) {
-        console.error("Cart merge failed:", err.response?.data || err.message);
+      // Merge guest cart for customer only
+      const guestCart = JSON.parse(localStorage.getItem("guestCart") || "[]");
+      if (guestCart.length > 0) {
+        try {
+          await api.post("/cart/merge", { items: guestCart });
+          localStorage.removeItem("guestCart");
+        } catch (err) {
+          console.error("Cart merge failed:", err.response?.data || err.message);
+        }
       }
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem("auth");
-    localStorage.removeItem("authToken");
+  const logout = (role) => {
+    if (role === "admin") {
+      setAdmin(null);
+      localStorage.removeItem("adminAuth");
+      localStorage.removeItem("adminToken");
+    } else if (role === "customer") {
+      setCustomer(null);
+      localStorage.removeItem("customerAuth");
+      localStorage.removeItem("customerToken");
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        admin,
+        customer,
+        loading,
+        login,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

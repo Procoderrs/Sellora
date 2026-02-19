@@ -1,8 +1,9 @@
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-
+import { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 export default function Topbar() {
-  const { logout } = useAuth();
+  const { logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
