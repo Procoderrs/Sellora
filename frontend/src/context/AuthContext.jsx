@@ -12,52 +12,38 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-  const admin = localStorage.getItem("adminAuth");
-  const customer = localStorage.getItem("customerAuth");
+    const savedUser = localStorage.getItem("auth");
+    if (savedUser) setUser(JSON.parse(savedUser));
+    setLoading(false);
+  }, []);
 
-  if (customer) setUser(JSON.parse(customer));
-  else if (admin) setUser(JSON.parse(admin));
+  const login = async (data) => {
+    // 1️⃣ Set user in state and localStorage
+    setUser(data.user);
+    localStorage.setItem("auth", JSON.stringify(data.user));
+    localStorage.setItem("authToken", data.token);
 
-  setLoading(false);
-}, []);
+    // 2️⃣ Merge guest cart if exists
+    const guestCart = JSON.parse(localStorage.getItem("guestCart") || "[]");
 
+    if (guestCart.length > 0) {
+      try {
+        // Send guest cart to backend merge API
+        await api.post("/cart/merge", { items: guestCart });
 
- const login = async (data) => {
-  const storageKey =
-    data.user.role === "admin" ? "adminAuth" : "customerAuth";
-
-  const tokenKey =
-    data.user.role === "admin" ? "adminToken" : "customerToken";
-
-  localStorage.setItem(storageKey, JSON.stringify(data.user));
-  localStorage.setItem(tokenKey, data.token);
-
-  setUser(data.user);
-
-  const guestCart = JSON.parse(localStorage.getItem("guestCart") || "[]");
-
-  if (guestCart.length > 0 && data.user.role === "customer") {
-    try {
-      await api.post("/cart/merge", { items: guestCart });
-      localStorage.removeItem("guestCart");
-    } catch (err) {
-      console.error("Cart merge failed");
+        // Clear guest cart from localStorage
+        localStorage.removeItem("guestCart");
+      } catch (err) {
+        console.error("Cart merge failed:", err.response?.data || err.message);
+      }
     }
-  }
-};
+  };
 
   const logout = () => {
-  setUser(null);
-
-  localStorage.removeItem("adminAuth");
-  localStorage.removeItem("customerAuth");
-  localStorage.removeItem("adminToken");
-  localStorage.removeItem("customerToken");
-
-   localStorage.removeItem("auth");
-  localStorage.removeItem("authToken");
-};
-
+    setUser(null);
+    localStorage.removeItem("auth");
+    localStorage.removeItem("authToken");
+  };
 
   return (
     <AuthContext.Provider value={{ user, loading, login, logout }}>
