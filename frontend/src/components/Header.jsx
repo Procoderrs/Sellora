@@ -8,7 +8,7 @@ import api from "../api/api";
 import debounce from "lodash.debounce";
 
 export default function PublicHeader() {
-  const { user, logout } = useContext(AuthContext);
+  const { customer, logout } = useContext(AuthContext);
   const { cartCount } = useContext(CartContext);
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -30,7 +30,7 @@ export default function PublicHeader() {
   };
 
   const handleCartClick = () => {
-    if (!user) navigate("/login");
+    if (!customer) navigate("/login");
     else navigate("/cart");
   };
 
@@ -229,7 +229,7 @@ export default function PublicHeader() {
 
 
 
-              {!user ? (
+              {!customer ? (
                 <Link to="/login" className="px-3 py-1 rounded-lg hover:bg-accent/40 transition text-sm">Login</Link>
               ) : (
                 <div className="relative">
@@ -238,7 +238,7 @@ export default function PublicHeader() {
                   </button>
                   {profileOpen && (
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg text-sm z-50">
-                      <div className="px-3 py-2 font-semibold">{user.name}</div>
+                      <div className="px-3 py-2 font-semibold">{customer.name}</div>
                       <hr />
                       <button className="w-full text-left px-3 py-2 hover:bg-background" onClick={() => navigate("/my-orders")}>My Orders</button>
                       <button className="w-full text-left px-3 py-2 text-danger hover:bg-danger/10" onClick={handleLogout}>Logout</button>

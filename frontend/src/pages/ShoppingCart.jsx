@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function ShoppingCart() {
 	const { cart, removeFromCart, updateQuantity } = useContext(CartContext);
-	const { user } = useContext(AuthContext);
+	const { customer } = useContext(AuthContext);
 	const navigate = useNavigate();
 
 	const subtotal = cart.reduce(
@@ -14,7 +14,7 @@ export default function ShoppingCart() {
 	);
 
 	const handleCheckout = () => {
-		if (!user) {
+		if (!customer) {
 			navigate("/login", { state: { from: "/checkout/shipping" } });
 		} else {
 			navigate("/checkout/shipping");
