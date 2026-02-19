@@ -4,14 +4,14 @@ import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 export default function MyOrders() {
-  const { user } = useContext(AuthContext);
+  const { customer } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) return;
+    if (!customer) return;
 
     const fetchOrders = async () => {
       try {
