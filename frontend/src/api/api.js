@@ -19,6 +19,12 @@ api.interceptors.request.use((config) => {
   return Promise.reject(error);
 }); 
 
+const adminToken = localStorage.getItem("adminToken");
+const customerToken = localStorage.getItem("customerToken");
+
+const token = customerToken || adminToken;
+
+
 export default api;
 
 /* https://sellora-rz68.vercel.app

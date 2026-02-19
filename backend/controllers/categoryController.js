@@ -6,6 +6,12 @@ export const createCategory = async (req, res) => {
   try {
     const { name, parent, status, description } = req.body;
     if (!name) return res.status(400).json({ message: "Category name is required" });
+if (parent) {
+  const parentExists = await Category.findById(parent);
+  if (!parentExists) {
+    return res.status(400).json({ message: "Invalid parent category" });
+  }
+}
 
     // Generate unique slug
     let baseSlug = slugify(name, { lower: true });

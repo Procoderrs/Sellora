@@ -40,6 +40,7 @@ export const getDashboard = async (req, res) => {
     const brownie   = stats.find(s => s._id === "brownie")?.count || 0;
     const cake  = stats.find(s => s._id === "cakes")?.count || 0;
     const cupcake  = stats.find(s => s._id === "cupcakes")?.count || 0;
+    
 console.log(coffee,brownie,cake,cupcake);
 
     res.json({ coffee,brownie,cake,cupcake });
@@ -115,10 +116,6 @@ export const getTopSellingProducts = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-
-
-
 
 
 export const getTopCustomers = async (req, res) => {

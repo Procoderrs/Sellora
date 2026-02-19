@@ -7,6 +7,8 @@ export default function CategoryForm({ topCategories = [], selected = null, onCl
   const [status, setStatus] = useState(selected?.status || "active");
   const [description, setDescription] = useState(selected?.description || "");
   const [error, setError] = useState("");
+const [newParentMode, setNewParentMode] = useState(false);
+const [newParentName, setNewParentName] = useState("");
 
   useEffect(() => {
     if (selected) {
@@ -17,26 +19,53 @@ export default function CategoryForm({ topCategories = [], selected = null, onCl
     }
   }, [selected]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!parent) {
-      setError("parent category not selected");
-      return;
-    }
-    if (!name.trim()) return alert("Category name is required");
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    try {
-      const payload = { name, parent: parent || null, status, description };
-      if (selected) await api.put(`/admin/categories/${selected._id}`, payload);
-      else await api.post("/admin/categories", payload);
-      setError("");
-      onSuccess();
-      onClose();
-    } catch (err) {
-      console.log(err.response?.data || err);
-      alert(err.response?.data?.message || "Something went wrong");
+  if (!name.trim()) {
+    setError("Category name is required");
+    return;
+  }
+
+  try {
+    let parentId = parent || null;
+
+    // ✅ NEW PARENT CREATE LOGIC (CORRECT PLACE)
+    if (newParentMode && newParentName.trim()) {
+      const res = await api.post("/admin/categories", {
+        name: newParentName.trim(),
+        parent: null,
+      });
+
+      parentId = res.data.category._id;
     }
-  };
+
+    // ✅ FINAL CATEGORY CREATE / UPDATE
+    const payload = {
+      name: name.trim(),
+      parent: parentId,
+      status,
+      description,
+    };
+
+    if (selected) {
+      await api.put(`/admin/categories/${selected._id}`, payload);
+    } else {
+      await api.post("/admin/categories", payload);
+    }
+
+    setError("");
+    onSuccess();
+    onClose();
+
+  } catch (err) {
+    alert(err.response?.data?.message || "Something went wrong");
+  }
+};
+
+
+
+
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
@@ -72,6 +101,27 @@ export default function CategoryForm({ topCategories = [], selected = null, onCl
               </option>
             ))}
           </select>
+
+          <label className="flex items-center gap-2 text-sm">
+  <input
+    type="checkbox"
+    checked={newParentMode}
+    onChange={() => setNewParentMode(!newParentMode)}
+  />
+  Create New Parent Category
+</label>
+
+
+{newParentMode && (
+  <input
+    type="text"
+    placeholder="New parent category name"
+    value={newParentName}
+    onChange={(e) => setNewParentName(e.target.value)}
+    className="w-full border rounded-lg px-3 py-2"
+  />
+)}
+
           <p className="text-xs text-[#3B2F2F]/70 mt-1">
             Leave empty if this is a main category
           </p>

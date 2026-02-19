@@ -15,10 +15,9 @@ export default function Categories() {
     const all = res.data.categories;
 
     // Parent categories
-    setParentCategories(all.filter((c) => !c.parent));
+    setParentCategories(all.filter((c) => c.parent === null));
+setCategories(all.filter((c) => c.parent !== null));
 
-    // Subcategories
-    setCategories(all.filter((c) => c.parent));
   };
 
   useEffect(() => {
