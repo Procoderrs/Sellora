@@ -25,7 +25,7 @@ export default function MyOrders() {
     };
 
     fetchOrders();
-  }, [user]);
+  }, [customer]);
 
   if (loading) {
     return <p className="p-10">Loading orders...</p>;
