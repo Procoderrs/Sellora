@@ -1,7 +1,42 @@
+import { useState } from "react";
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 export default function Footer() {
+
+  const [email,setEmail]=useState("");
+  const [loading,setLoading]=useState("");
+  const [message,setMessage] =useState(false);
+
+  const handleSubscribe=async(e)=>{
+    e.preventDefault();
+    if(!email.trim()){
+      setMessage('please enter an email');
+      return;
+    }
+    try {
+      setLoading(true);
+      setMessage("");
+      const res=await api.post('/newsletter/subcribe',{email});
+      setMessage("✅ Subscribed successfully!");
+    setEmail('')
+      } 
+      catch (error) {
+      if(error.response?.status===409){
+        setMessage("⚠️ You are already subscribed");
+      }
+      else if(error.response?.status===400){
+        setMessage("❌ Invalid email");
+      }
+      else {
+        setMessage("❌ Server error. Try again");
+      }
+      
+    }
+    finally{
+        setLoading(false)
+      }
+  }
   return (
     <footer className="bg-[#4A2C20] text-[#FAF7F2] font-Inter">
       <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -71,13 +106,15 @@ export default function Footer() {
             Get updates on new cakes & special offers.
           </p>
 
-          <form className="flex flex-col sm:flex-row gap-2">
+          <form className="flex flex-col sm:flex-row gap-2" onSubmit={handleSubscribe}>
             <label htmlFor="newsletter-email" className="sr-only">
               Enter your email
             </label>
             <input
               id="newsletter-email"
               type="email"
+              value={email}
+              onChange={(e)=>setEmail(e.target.value)}
               placeholder="Enter your email"
               className="px-4 py-2 rounded-md text-[#4A2C20] flex-1 
                          border border-[#FAF7F2]/50 bg-[#FAF7F2] 
@@ -89,9 +126,13 @@ export default function Footer() {
               className="px-4 py-2 bg-[#FFD966] text-[#4A2C20] font-semibold 
                          rounded-md hover:bg-[#E6B65A] transition"
             >
+              {loading?'Sending...':'Subscribe'}
               Subscribe
             </button>
           </form>
+          {message &&(
+            <p className="text-sm mt-2">{message}</p>
+          )}
         </div>
       </div>
 
