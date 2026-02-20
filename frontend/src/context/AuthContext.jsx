@@ -46,17 +46,17 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const logout = (role) => {
-    if (role === "admin") {
-      setAdmin(null);
-      localStorage.removeItem("adminAuth");
-      localStorage.removeItem("adminToken");
-    } else if (role === "customer") {
-      setCustomer(null);
-      localStorage.removeItem("customerAuth");
-      localStorage.removeItem("customerToken");
-    }
-  };
+  const logout = () => {
+  setAdmin(null);
+  setCustomer(null);
+
+  localStorage.removeItem("adminAuth");
+  localStorage.removeItem("adminToken");
+
+  localStorage.removeItem("customerAuth");
+  localStorage.removeItem("customerToken");
+};
+
 
   return (
     <AuthContext.Provider

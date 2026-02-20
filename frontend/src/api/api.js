@@ -10,17 +10,18 @@ console.log(api);
  
  // Request interceptor to attach auth token
 api.interceptors.request.use((config) => {
+  const customerToken = localStorage.getItem("customerToken");
   const adminToken = localStorage.getItem("adminToken");
-  const customerToken = localStorage.getItem("customerToken"); // ✅ FIXED
 
-  if (adminToken) {
-    config.headers.Authorization = `Bearer ${adminToken}`;
-  } else if (customerToken) {
+  if (customerToken) {
     config.headers.Authorization = `Bearer ${customerToken}`;
+  } else if (adminToken) {
+    config.headers.Authorization = `Bearer ${adminToken}`;
   }
 
   return config;
 });
+
 
 export default api;
 
