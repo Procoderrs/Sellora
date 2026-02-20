@@ -1,13 +1,25 @@
 import ShippingDetails from './ShippingDetails';
 import api from "../api/api";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState,useContext } from "react";
+import { CartContext } from '../context/CartContext';
 
 export default function CheckoutShipping() {
+
+  const {cart,loading:cartLoading}=useContext(CartContext)
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const handleShippingSubmit = async (shippingData) => {
+ if(cartLoading){
+  alert ('cart still loading');
+  return
+ }
+ if(!cart.length){
+  alert ('cart is empty')
+  return;
+ }
+
     try {
       setLoading(true);
 

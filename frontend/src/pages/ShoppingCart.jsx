@@ -4,7 +4,7 @@ import { CartContext } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
 
 export default function ShoppingCart() {
-	const { cart, removeFromCart, updateQuantity } = useContext(CartContext);
+	const { cart,loading:cartLoading ,removeFromCart, updateQuantity } = useContext(CartContext);
 	const { customer } = useContext(AuthContext);
 	const navigate = useNavigate();
 
@@ -12,7 +12,7 @@ export default function ShoppingCart() {
 		(sum, item) => sum + item.price * item.quantity,
 		0,
 	);
-
+console.log(cart);
 	const handleCheckout = () => {
 		if (!customer) {
 			navigate("/login", { state: { from: "/checkout/shipping" } });
