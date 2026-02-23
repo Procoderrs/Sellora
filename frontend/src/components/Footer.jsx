@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 import { Link } from "react-router-dom";
-
+import api from "../api/api";
 export default function Footer() {
 
   const [email,setEmail]=useState("");
-  const [loading,setLoading]=useState("");
-  const [message,setMessage] =useState(false);
+  const [loading,setLoading]=useState(false);
+  const [message,setMessage] =useState("");
 
   const handleSubscribe=async(e)=>{
     e.preventDefault();
@@ -17,7 +17,7 @@ export default function Footer() {
     try {
       setLoading(true);
       setMessage("");
-      const res=await api.post('/newsletter/subcribe',{email});
+      const res=await api.post('/newsletter/subscribe',{email});
       setMessage("✅ Subscribed successfully!");
     setEmail('')
       } 
@@ -126,8 +126,8 @@ export default function Footer() {
               className="px-4 py-2 bg-[#FFD966] text-[#4A2C20] font-semibold 
                          rounded-md hover:bg-[#E6B65A] transition"
             >
-              {loading?'Sending...':'Subscribe'}
-              Subscribe
+             {loading ? 'Sending...' : 'Subscribe'}
+             
             </button>
           </form>
           {message &&(

@@ -16,6 +16,9 @@ const newsletterSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-newsletterSchema.index({ email: 1 }, { unique: true });
+
 
 export default mongoose.model("Newsletter", newsletterSchema);
+
+
+
