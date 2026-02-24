@@ -4,7 +4,7 @@ import {
   PieChart, Pie, Cell, Legend, Tooltip as PieTooltip,
   BarChart, Bar, XAxis, YAxis, Tooltip as BarTooltip, ResponsiveContainer,
 } from "recharts";
-
+import Newsletter from './NewsLetter';
 // Memoized PieChart
 const MemoPieChart = React.memo(({ data, colors }) => (
   <ResponsiveContainer width="100%" height={300}>
@@ -223,6 +223,8 @@ export default function Dashboard() {
           </tbody>
         </table>
       </div>
+
+      <Newsletter/>
     </div>
   );
 }
