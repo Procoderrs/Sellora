@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import api from "../api/api";
 import { useNavigate } from "react-router-dom";
-import { FaShoppingCart } from "react-icons/fa";
 
-export default function TopProducts() {
+export default function BestSelling() {
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
 
@@ -11,8 +10,6 @@ export default function TopProducts() {
     const fetchTopProducts = async () => {
       try {
         const res = await api.get("/products/top-selling");
-        console.log("TOP PRODUCTS:", res.data);
-        // Set products array
         setProducts(res.data.products || []);
       } catch (err) {
         console.error(err);
@@ -23,97 +20,97 @@ export default function TopProducts() {
 
   if (!products.length) return null;
 
+  /* GROUP PRODUCTS BY CATEGORY */
+  const categories = {};
+
+  products.forEach((prod) => {
+    const catName = prod.category.name;
+    if (!categories[catName]) categories[catName] = [];
+    categories[catName].push(prod);
+  });
+
   return (
-    <section className="bg-[#FFF8ED] py-24">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="flex justify-between">
+    <section className="bg-background py-24">
+      <div className="max-w-7xl mx-auto px-6 space-y-24">
 
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-playfair font-bold text-[#A0522D]">
-              Top Selling Products
-            </h2>
-            <p className="mt-3 text-text-main/70 tracking-wide">
-              Our most loved & best performing delights
-            </p>
-          </div>
+        {Object.entries(categories).map(([catName, catProducts]) => {
+          
+          /* SORT BY SALES */
+          const sorted = [...catProducts].sort(
+            (a, b) => b.totalSold - a.totalSold
+          );
 
-          {/* SHOW ALL BUTTON */}
-          <div className="text-center mt-10">
-            <button
-              onClick={() => navigate("/category/all")}
-              className="px-10 py-3 bg-[#E6B65A] hover:bg-[#A0522D] hover:text-white 
-                         rounded-lg font-semibold shadow-md transition-all duration-300"
-            >
-              Show All Products
-            </button>
-          </div>
-        </div>
+          const best = sorted[0];
+          const second = sorted[1];
 
-        {/* PREMIUM HORIZONTAL CAROUSEL */}
-        <div className="flex gap-6 overflow-x-auto scrollbar-hide py-4">
-          {products.map((prod) => (
+          return (
             <div
-              key={prod._id}
-              className="relative min-w-[260px] flex-shrink-0 rounded-3xl 
-                         overflow-hidden bg-white shadow-xl group transition-all duration-300"
+              key={catName}
+              className="relative overflow-hidden rounded-3xl"
             >
-              {/* DIAGONAL ACCENT */}
-              <div
-                className="absolute inset-0 bg-[#E6B65A]/20"
-                style={{ clipPath: "polygon(0 0, 100% 0, 100% 70%, 0 100%)" }}
-              />
-
-              {/* IMAGE */}
-              <div className="relative w-full h-52 flex justify-center items-center pt-4">
+              {/* SAME BLOB BACKGROUND STYLE */}
+              <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
                 <img
-                  src={prod.images?.[0] || "/placeholder.jpg"}
-                  alt={prod.title}
-                  className="w-36 h-36 object-cover rounded-2xl shadow-md 
-                             group-hover:scale-105 transition-transform duration-500"
+                  src="/blobbb.svg"
+                  alt=""
+                  className="w-full h-full object-cover"
                 />
+              </div>
 
-                {/* TOP SELLER BADGE */}
-                {prod.totalSold > 2 && (
-                  <div className="absolute top-4 left-4 bg-[#A0522D] text-white 
-                                  px-3 py-1 rounded-full text-xs font-semibold shadow">
-                    🔥 Top Seller
+              {/* CONTENT GRID */}
+              <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-8 items-center p-8 md:p-12">
+
+                {/* LEFT COLUMN */}
+                <div className="flex flex-col justify-center">
+                  <p className="text-accent font-semibold uppercase tracking-widest mb-2">
+                    BEST SELLING
+                  </p>
+
+                  <h2 className="text-4xl md:text-5xl font-cookie text-primary font-bold mb-4">
+                    {catName}
+                  </h2>
+
+                  <p className="text-text-main font-body text-base md:text-lg mb-6 leading-relaxed">
+                    Discover our most loved {catName.toLowerCase()} crafted with
+                    premium ingredients and irresistible flavors, baked fresh
+                    to perfection.
+                  </p>
+
+                  <button
+                    onClick={() => navigate(`/category/${catName.toLowerCase()}`)}
+                    className="px-8 py-4 bg-accent text-hero-text rounded-full font-semibold shadow-md hover:scale-105 transition transform duration-300"
+                  >
+                    Explore {catName}
+                  </button>
+                </div>
+
+                {/* MIDDLE COLUMN → BEST PRODUCT */}
+                {best && (
+                  <div className="w-full flex justify-center">
+                    <img
+                      src={best.images?.[0] || "/placeholder.jpg"}
+                      alt={best.title}
+                      className="rounded-2xl shadow-lg object-cover h-64 md:h-80 w-full max-w-sm transition-transform duration-500 hover:scale-105"
+                    />
                   </div>
                 )}
-              </div>
 
-              {/* INFO */}
-              <div className="p-4 flex flex-col">
-                <h3 className="font-playfair text-sm font-semibold text-[#3B2F2F] line-clamp-2">
-                  {prod.title}
-                </h3>
+                {/* RIGHT COLUMN → SECOND PRODUCT */}
+                {second && (
+                  <div className="w-full flex justify-center">
+                    <img
+                      src={second.images?.[0] || "/placeholder.jpg"}
+                      alt={second.title}
+                      className="rounded-2xl shadow-lg object-cover h-64 md:h-80 w-full max-w-sm transition-transform duration-500 hover:scale-105"
+                    />
+                  </div>
+                )}
 
-                <p className="mt-1 text-primary font-bold text-sm">
-                  ${prod.price}
-                </p>
-
-                
-
-                {/* CTA BUTTON */}
-                <button
-                  onClick={() =>
-                    navigate(`/product/${prod.slug || prod._id}`, {
-                      state: {
-                        product: prod,
-                        parentCategory:
-                          prod.category.parent?.name || prod.category.name,
-                      },
-                    })
-                  }
-                  className="mt-3 w-full flex items-center justify-center gap-2 py-2 rounded-lg 
-                             bg-gradient-to-t from-[#E6B65A] to-[#A0522D] 
-                             text-white font-semibold shadow-md"
-                >
-                  <FaShoppingCart className="text-sm" /> View Product
-                </button>
               </div>
             </div>
-          ))}
-        </div>
+          );
+        })}
+
       </div>
     </section>
   );

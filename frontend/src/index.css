@@ -18,25 +18,25 @@
 @import "tailwindcss";
 
 /* 3. Theme block using CSS variable syntax (semicolons, no quotes) */
-@theme {
-  --color-primary: #A0522D ;
+
+  /* --color-primary: #A0522D ;
   --color-accent: #E6B65A;
   --color-background: #FFF8ED;
   --color-danger: #E35336;
   --color-text-main: #3B2F2F;
   --color-sidebar:#FFF1DC;
-  --color-border:#B3C8CF;
+  --color-border:#B3C8CF; */
 
-  /* This creates the utility class: font-playfair */
-  --font-playfair: "Playfair", serif;
+  
+  /* --font-playfair: "Playfair", serif;
   --font-logo:"Ballet";
   --font-Inter:"Poppins"; 
   --font-Oswald: "Oswald", sans-serif;
   --font-smoooch:"Smooch Sans";
   --font-lobster:"Lobster";
-  --font-cookie:"Cookie";
+  --font-cookie:"Cookie"; */
   
-}
+
 
 .sr-only {
   position: absolute;
@@ -110,3 +110,69 @@ Background:               #FFF8ED  (Cream / Vanilla)
 Accent (buttons):         #E6B65A  (Honey Gold)
 Danger / sale:            #E35336  (Strawberry Red)
 Text main:                #3B2F2F  (Dark Chocolate) */
+
+
+
+
+
+
+@theme {
+ /* ==============================
+   PRIMARY BRAND / HERO TEXT
+   High contrast on dark image
+============================== */
+--color-hero-text: #F9F7F1;  /* Very light cream, perfect for titles & hero buttons */
+
+/* ==============================
+   HEADINGS / GENERAL UI
+============================== */
+--color-primary: #4E3B31;  /* Dark chocolate brown, great for body text, other headings */
+
+/* ==============================
+   ACCENT / HIGHLIGHTS
+============================== */
+--color-accent: #C69C6D;  /* Caramel color, buttons, badges, hover highlights */
+
+/* ==============================
+   BACKGROUND
+============================== */
+--color-background: #EFE9E3; 
+--color-card: #F3E1D6;        /* Cards / panels / navbar background */
+
+/* ==============================
+   SUBTLE / BORDER / MUTED
+============================== */
+--color-muted: #D1C5B2;  /* Borders, subtle UI, disabled states */
+
+/* ==============================
+   BODY TEXT
+============================== */
+--color-text-main: #4E3B31;  /* Perfect readability, paragraphs, descriptions */
+--color-border: #E4B8D4;
+   --font-heading: "Playfair Display", serif;
+  --font-body: "Poppins", sans-serif;
+  --font-logo: "Pacifico", cursive;
+  --font-cookie:"Cookie";
+}
+
+
+
+
+.box { 
+  position: relative;
+  z-index: 1;
+}
+
+.box:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: var(--color-background);
+  -webkit-mask:
+    radial-gradient(40px at 40px 40px,#0000 calc(98% - 4px),#000 calc(100% - 4px) 98%,#0000) -40px -40px,
+    linear-gradient(90deg,#000 8px,#0000 0) -4px 50% /100% calc(100% - 80px + 4px) repeat-x,
+    linear-gradient(#000 8px,#0000 0) 50% -4px/calc(100% - 80px + 4px) 100% repeat-y;
+  -webkit-mask-composite: destination-in;
+  mask-composite: intersect;
+}

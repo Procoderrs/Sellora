@@ -4,7 +4,7 @@ import "swiper/css";
 
 export default function TopCrousel() {
   return (
-    <div className="bg-primary font-playfair text-background text-sm py-2 overflow-hidden">
+    <div className="bg-black text-hero-text font-playfair  text-sm py-2 overflow-hidden">
       <Swiper
         modules={[Autoplay, FreeMode]}
         loop={true}
