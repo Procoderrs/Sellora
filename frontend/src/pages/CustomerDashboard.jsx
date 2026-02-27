@@ -16,7 +16,7 @@ export default  function CustomerDashboard(){
         <Variety/>
 
     <TopProducts/>
-    <ParentCategoryShowcase/>
+    {/* <ParentCategoryShowcase/> */}
     <Shop_info/>
     {/* <ProductsByCats/> */}
     </>

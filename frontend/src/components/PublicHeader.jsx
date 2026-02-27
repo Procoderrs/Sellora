@@ -91,12 +91,12 @@ export default function PublicHeader() {
 
   return (
     <header
-      className="bg-background shadow-sm relative font-body"
+      className="bg-background  sticky top-0 z-50 shadow-sm  font-body"
       
     >
       {/* <TopCrousel /> */}
 
-      <div className="sticky top-0 z-50 bg-background border-b border-border">
+      <div className=" bg-background border-b border-border">
         <div className="max-w-7xl mx-auto px-4 md:px-6 h-20 flex items-center">
 
           {/* MOBILE HEADER */}
@@ -269,7 +269,7 @@ export default function PublicHeader() {
               <button onClick={handleCartClick} className="relative">
                 <RiShoppingBagLine size={22} />
                 {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 min-w-[16px] h-4 flex items-center justify-center text-xs bg-danger text-white rounded-full px-1">
+                  <span className="absolute -top-3 bg-red-600  -right-1  h-4 flex items-center justify-center text-xs bg-danger text-white rounded-full px-1">
                     {cartCount > 99 ? "99+" : cartCount}
                   </span>
                 )}
