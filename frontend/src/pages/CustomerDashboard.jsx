@@ -13,7 +13,7 @@ export default  function CustomerDashboard(){
     
     <Hero/>
     <Info/>
-        <Varietty/>
+        <Variety/>
 
     <TopProducts/>
     <ParentCategoryShowcase/>
