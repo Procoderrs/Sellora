@@ -240,21 +240,21 @@ export default function PublicHeader() {
                   Login
                 </Link>
               ) : (
-                <div className="relative">
+                <div className="relative flex">
                   <button onClick={() => setProfileOpen(!profileOpen)} className="p-2">
                     <RiUser3Line size={20} />
                   </button>
-
-                  {profileOpen && (
-                    <div className="absolute font-body  right-0 mt-2 w-48 bg-surface rounded-xl shadow-lg text-sm border border-border">
-                      <div className="px-3 py-2 font-semibold">{customer.name}</div>
-                      <hr />
-                      <button
-                        className="w-full text-left px-3 py-2 hover:bg-background"
+ <button
+                        className="w-full text-left text-nowrap px-3 py-2 hover:bg-background"
                         onClick={() => navigate("/my-orders")}
                       >
                         My Orders
                       </button>
+                  {profileOpen && (
+                    <div className="absolute font-body  right-0 mt-2 w-48 bg-surface rounded-xl shadow-lg text-sm border border-border">
+                      <div className="px-3 py-2 font-semibold">{customer.name}</div>
+                      <hr />
+                      
                       <button
                         className="w-full text-left px-3 py-2 text-danger hover:bg-danger/10"
                         onClick={handleLogout}
