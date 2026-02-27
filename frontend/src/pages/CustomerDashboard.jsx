@@ -6,7 +6,7 @@ import Shop_info from "../components/Shop_info"
 import TopCrousel from "../components/TopCrousel"
 import TopProducts from "../components/TopProducts"
 import Info from "../components/Info"
-import Varietty from '../components/Varietyy'
+import Variety from "../components/Varietyy"
 export default  function CustomerDashboard(){
   return(
     <>
