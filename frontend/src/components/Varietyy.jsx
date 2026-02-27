@@ -22,6 +22,7 @@ export default function Variety() {
   const [firstProd, secondProd] = products;
 
   return (
+    <>
     <section className="relative bg-background py-24 overflow-hidden">
 
       {/* RELIABLE SVG/BLOB BACKGROUND */}
@@ -77,5 +78,6 @@ export default function Variety() {
 </div>
       </div>
     </section>
+    </>
   );
 }
