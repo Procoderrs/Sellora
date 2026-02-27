@@ -8,6 +8,7 @@ export default function BestSelling() {
   const [products, setProducts] = useState([]);
   const [modalProduct, setModalProduct] = useState(null);
   const [productQuantities, setProductQuantities] = useState({});
+  const [count ,setCount]=useState(0)
   const navigate = useNavigate();
   const { addToCart } = useContext(CartContext);
 
@@ -17,7 +18,7 @@ export default function BestSelling() {
     Brownie: "/b.jpg",
     Cupcakes: "/cup.jpg",
   };
-
+handleAddToCart(modalProduct, modalQty);
   useEffect(() => {
     const fetchTopProducts = async () => {
       try {
@@ -50,7 +51,11 @@ export default function BestSelling() {
   const handleAddToCart = (product, qty) => {
     addToCart(product, qty);
   };
-
+const modalQty = modalProduct
+  ? productQuantities[modalProduct._id] || 1
+  : 1;
+  
+  
   return (
     <section className="bg-background relative">
       {Object.entries(categories).map(([parentName, catProducts]) => {
@@ -214,19 +219,19 @@ export default function BestSelling() {
                 <div className="flex items-center gap-4">
                   <span className="font-semibold text-gray-700">Quantity:</span>
                   <div className="flex items-center border rounded-lg overflow-hidden">
-                    <button
-                      onClick={() => count > 1 && setCount(count - 1)}
-                      className="px-4 py-2 bg-gray-100 hover:bg-gray-200 transition-colors"
-                    >
-                      <FaMinus className="text-sm" />
-                    </button>
-                    <span className="px-6 font-medium">{count}</span>
-                    <button
-                      onClick={() => setCount(count + 1)}
-                      className="px-4 py-2 bg-gray-100 hover:bg-gray-200 transition-colors"
-                    >
-                      <FaPlus className="text-sm" />
-                    </button>
+                   <button
+  onClick={() => decreaseQty(modalProduct._id)}
+>
+  <FaMinus />
+</button>
+
+<span>{modalQty}</span>
+
+<button
+  onClick={() => increaseQty(modalProduct._id)}
+>
+  <FaPlus />
+</button>
                   </div>
                 </div>
 
