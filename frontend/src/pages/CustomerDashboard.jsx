@@ -7,6 +7,7 @@ import TopCrousel from "../components/TopCrousel"
 import TopProducts from "../components/TopProducts"
 import Info from "../components/Info"
 import Variety from "../components/Varietyy"
+import Subscribe from "../components/Subscribe"
 export default  function CustomerDashboard(){
   return(
     <>
@@ -18,6 +19,7 @@ export default  function CustomerDashboard(){
     <TopProducts/>
     {/* <ParentCategoryShowcase/> */}
     <Shop_info/>
+    <Subscribe/>
     {/* <ProductsByCats/> */}
     </>
   )

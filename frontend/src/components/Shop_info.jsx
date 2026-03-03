@@ -5,25 +5,25 @@ const sections = [
   {
     title: "Freshly Baked Cakes",
     slug: "cakes",
-    desc: "Our cakes are baked fresh every day with premium ingredients to give you rich taste and soft textures.",
+    desc: "Our cakes are handcrafted daily by expert bakers using premium ingredients, farm-fresh eggs, and rich dairy cream. Each slice delivers a soft, moist texture with perfectly balanced sweetness — making every celebration extra special. From classic chocolate indulgence to luxurious lotus creations, we bake happiness into every bite.",
     images: ["/cake.png", "/lotus.png"],
   },
   {
     title: "Delicious Cupcakes",
     slug: "cupcakes",
-    desc: "Perfect cupcakes for birthdays, parties, or just to satisfy your sweet cravings.",
+    desc: "Our cupcakes are tiny bundles of joy topped with smooth, creamy frosting and delightful flavors. Whether it's a birthday, anniversary, or a simple self-treat moment, these perfectly portioned delights bring color, charm, and irresistible sweetness to your day.",
     images: ["/cupcake.png", "/vanilla.png"],
   },
   {
     title: "Coffee & Desserts",
     slug: "coffee",
-    desc: "Pair your favorite cake with freshly brewed coffee for the perfect dessert experience.",
+    desc: "Experience the perfect pairing of freshly brewed coffee and handcrafted desserts. From bold espresso shots to creamy cappuccinos, every sip complements our rich cakes and brownies. It’s more than just coffee — it’s a cozy, comforting moment made to relax and indulge.",
     images: ["/coffee.png", "/espresso.png"],
   },
   {
     title: "Joyful Brownie",
     slug: "brownie",
-    desc: "Pair your favorite freshly brewed coffee for the perfect dessert experience.",
+    desc: "Our brownies are baked to perfection with a fudgy center and slightly crisp edges. Loaded with premium cocoa and optional nutty crunch, each bite melts in your mouth. Perfect with coffee or on its own, it’s a chocolate lover’s ultimate comfort dessert.",
     images: ["/browniw-1.png", "/brownie-2.png"],
   },
 ];
@@ -83,14 +83,22 @@ export default function Shop_info() {
                 </p>
 
                 <button
-                  onClick={() => navigate(`/category/${item.slug}`)}
-                  className="mt-6 relative px-8 py-3 font-medium rounded-lg overflow-hidden text-text-main transition-all
-                             before:absolute before:inset-0 before:bg-gradient-to-b before:from-accent before:to-primary
-                             before:translate-y-full before:transition-transform before:duration-300 hover:before:translate-y-0
-                             hover:text-white z-10"
-                >
-                  Explore Now
-                </button>
+  onClick={() => navigate(`/category/${item.slug}`)}
+  className="mt-6 relative px-8 py-3 font-medium rounded-lg overflow-hidden
+             text-text-main transition-all group"
+>
+  {/* Animated Background */}
+  <span
+    className="absolute inset-0 bg-gradient-to-b from-accent to-primary
+               translate-y-full transition-transform duration-300
+               group-hover:translate-y-0 z-0"
+  ></span>
+
+  {/* Button Text */}
+  <span className="relative z-10 transition-colors duration-300 group-hover:text-white">
+    Explore Now
+  </span>
+</button>
               </div>
             </div>
           ))}

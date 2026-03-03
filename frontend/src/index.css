@@ -14,6 +14,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
 
 @import url('https://fonts.googleapis.com/css2?family=Cookie&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap');
 /* 2. Tailwind v4 Import */
 @import "tailwindcss";
 
@@ -147,12 +149,13 @@ Text main:                #3B2F2F  (Dark Chocolate) */
 /* ==============================
    BODY TEXT
 ============================== */
---color-text-main: #4E3B31;  /* Perfect readability, paragraphs, descriptions */
---color-border: #E4B8D4;
+   --color-text-main: #4E3B31;  /* Perfect readability, paragraphs, descriptions */
+   --color-border: #E4B8D4;
    --font-heading: "Playfair Display", serif;
-  --font-body: "Poppins", sans-serif;
-  --font-logo: "Pacifico", cursive;
-  --font-cookie:"Cookie";
+   --font-body: "Poppins", sans-serif;
+   --font-logo: "Pacifico", cursive;
+   --font-cookie:"Cookie";
+   --font-fraunce: "Fraunces", serif;
 }
 
 

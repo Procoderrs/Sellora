@@ -66,8 +66,7 @@ export default function HeaderHero() {
         
 
           {/* PREMIUM CTA BUTTON */}
-          <button
-onClick={() => navigate("/category/all")}     
+          <button onClick={() => navigate("/category/all")}     
        className="mt-8 inline-flex items-center gap-3 
            px-8 py-4 
            bg-accent text-hero-text

@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { CartContext } from "../context/CartContext";
+import { DataContext } from "../context/DataContext";
 import TopCrousel from "./TopCrousel";
 import { RiUser3Line, RiShoppingBagLine, RiArrowDownSLine } from "@remixicon/react";
 import api from "../api/api";
@@ -10,6 +11,7 @@ import debounce from "lodash.debounce";
 export default function PublicHeader() {
   const { customer, logout } = useContext(AuthContext);
   const { cartCount } = useContext(CartContext);
+  const {parentCategories,products}=useContext(DataContext)
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -17,8 +19,8 @@ export default function PublicHeader() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const [search, setSearch] = useState("");
-  const [products, setProducts] = useState([]);
-  const [searchResults, setSearchResults] = useState([]);
+/*   const [products, setProducts] = useState([]);
+ */  const [searchResults, setSearchResults] = useState([]);
   const [searchOpen, setSearchOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -33,7 +35,7 @@ export default function PublicHeader() {
     else navigate("/cart");
   };
 
-  useEffect(() => {
+  /* useEffect(() => {
     const fetchData = async () => {
       try {
         const catRes = await api.get("/categories");
@@ -45,6 +47,7 @@ export default function PublicHeader() {
         setProducts(allProducts);
 
         const parents = allCategories.filter((c) => !c.parent);
+        console.log(parents);
 
         const categoriesWithInfo = parents.map((parent) => {
           const parentProducts = allProducts.filter(
@@ -67,7 +70,7 @@ export default function PublicHeader() {
     };
 
     fetchData();
-  }, []);
+  }, []); */
 
   const handleSearchChange = debounce((value) => {
     if (!value) {
@@ -112,17 +115,20 @@ export default function PublicHeader() {
               </svg>
             </button>
 
-            <Link
-              to="/"
-              className="text-3xl text-text-main font-logo"
-            >
-              <img src="/png-icon.png" alt="" />
-            </Link>
-
+            {/* CENTER LOGO */}
+            <div className="flex justify-center">
+              <Link
+                to="/"
+                className="text-4xl text-text-main font-logo"
+                
+              >
+               <img src="/logoggg.png" alt="" className="w-36" />
+              </Link>
+            </div>
             <button onClick={handleCartClick} className="relative">
               <RiShoppingBagLine size={22} />
               {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-[16px] h-4 flex items-center justify-center text-xs bg-danger text-white rounded-full px-1">
+                 <span className="absolute -top-3 bg-red-600  -right-1  h-4 flex items-center justify-center text-xs bg-danger text-white rounded-full px-1">
                   {cartCount > 99 ? "99+" : cartCount}
                 </span>
               )}
@@ -137,34 +143,37 @@ export default function PublicHeader() {
               <Link to="/home" className="hover:text-cakes transition">Home</Link>
 
               <div
-                className="relative inline-block"
-                onMouseEnter={() => setDropdownOpen(true)}
-                onMouseLeave={() => setDropdownOpen(false)}
-              >
+  className="relative inline-block"
+  onMouseEnter={() => setDropdownOpen(true)}
+  onMouseLeave={(e) => {
+    // Check if mouse actually left the whole container
+    if (!e.currentTarget.contains(e.relatedTarget)) {
+      setDropdownOpen(false);
+    }
+  }}
+>
                 <button className="flex items-center gap-1 hover:text-cakes transition">
                   Menu <RiArrowDownSLine size={18} />
                 </button>
 
                 {dropdownOpen && (
-                  <div className="absolute left-0 top-full mt-3 w-[520px] bg-surface shadow-lg rounded-2xl p-5 border border-border">
-                    <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-5">
-                      {categories.map((cat) => (
-                        <Link
-                          key={cat._id}
-                          to={`/category/${cat.slug}`}
-                          className="flex flex-col items-center bg-background p-4 rounded-xl hover:shadow-md transition"
-                        >
-                          <img
-                            src={cat.image}
-                            alt=""
-                            className="w-24 h-24 object-cover rounded-lg mb-2"
-                          />
-                          <span className="font-semibold text-sm">{cat.name}</span>
-                          <span className="text-xs text-text-soft">
-                            {cat.productCount} products
-                          </span>
-                        </Link>
-                      ))}
+                  <div className="absolute bg-background  left-0 top-full mt-3 w-[520px] bg-surface shadow-lg rounded-2xl p-5 border border-border">
+                    <div className="grid lg:grid-cols-4  md:grid-cols-2 gap-5">
+                     {parentCategories.map((cat) => (
+  <Link
+    key={cat._id}
+    to={`/category/${cat.slug}`}
+    className="flex flex-col items-center bg-background p-4 rounded-xl hover:shadow-md transition"
+  >
+    <img
+      src={cat.image}
+      alt=""
+      className="w-24 h-24 lg:w-56 object-cover rounded-lg mb-2"
+    />
+    <span className="font-semibold text-sm">{cat.name}</span>
+    <span className="text-xs text-text-soft">{cat.productCount} products</span>
+  </Link>
+))}
                     </div>
                   </div>
                 )}
@@ -194,12 +203,12 @@ export default function PublicHeader() {
                   value={search}
                   onChange={onSearchChange}
                   placeholder="Search products..."
-                  className="px-4 py-2 rounded-xl border border-border bg-surface 
+                  className="px-4 py-2 rounded-xl border bg-background border-border bg-surface 
                              focus:outline-none focus:ring-2 focus:ring-cakes w-64 text-sm"
                 />
 
                 {searchOpen && searchResults.length > 0 && (
-                  <div className="absolute top-full mt-2 w-full bg-surface shadow-lg rounded-xl border border-border z-50">
+                  <div className="absolute bg-background top-full mt-2 w-full bg-surface shadow-lg rounded-xl border border-border z-50">
                     {searchResults.map((prod) => (
                       <div
                         key={prod._id}
@@ -251,7 +260,7 @@ export default function PublicHeader() {
                         My Orders
                       </button>
                   {profileOpen && (
-                    <div className="absolute font-body  right-0 mt-2 w-48 bg-surface rounded-xl shadow-lg text-sm border border-border">
+                    <div className="absolute font-body  bg-background right-0 mt-15 w-48 bg-surface rounded-xl shadow-lg text-sm border border-border">
                       <div className="px-3 py-2 font-semibold">{customer.name}</div>
                       <hr />
                       
@@ -281,7 +290,7 @@ export default function PublicHeader() {
 
       {/* MOBILE SIDEBAR */}
       {menuOpen && (
-        <div className="fixed inset-0 z-[100] bg-black/30 md:hidden">
+        <div className="fixed inset-0 z-[100] bg-background md:hidden">
           <aside className="w-72 h-full bg-surface shadow-xl p-5">
             <div className="flex justify-between mb-6">
               <h2 className="font-semibold">Menu</h2>

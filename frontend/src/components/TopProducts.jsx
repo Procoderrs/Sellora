@@ -7,8 +7,7 @@ import { FaPlus, FaMinus } from "react-icons/fa";
 export default function BestSelling() {
   const [products, setProducts] = useState([]);
   const [modalProduct, setModalProduct] = useState(null);
-  const [productQuantities, setProductQuantities] = useState({});
-  const [count ,setCount]=useState(0)
+  const [count, setCount] = useState(1);
   const navigate = useNavigate();
   const { addToCart } = useContext(CartContext);
 
@@ -18,7 +17,7 @@ export default function BestSelling() {
     Brownie: "/b.jpg",
     Cupcakes: "/cup.jpg",
   };
-handleAddToCart(modalProduct, modalQty);
+
   useEffect(() => {
     const fetchTopProducts = async () => {
       try {
@@ -33,7 +32,6 @@ handleAddToCart(modalProduct, modalQty);
 
   if (!products.length) return null;
 
-  // Group by parent category
   const categories = {};
   products.forEach((prod) => {
     const parentName = prod?.category?.parent?.name;
@@ -42,22 +40,12 @@ handleAddToCart(modalProduct, modalQty);
     categories[parentName].push(prod);
   });
 
-  // Quantity handlers
-  const increaseQty = (id) =>
-    setProductQuantities((prev) => ({ ...prev, [id]: (prev[id] || 1) + 1 }));
-  const decreaseQty = (id) =>
-    setProductQuantities((prev) => ({ ...prev, [id]: Math.max((prev[id] || 1) - 1, 1) }));
-
   const handleAddToCart = (product, qty) => {
     addToCart(product, qty);
   };
-const modalQty = modalProduct
-  ? productQuantities[modalProduct._id] || 1
-  : 1;
-  
-  
+
   return (
-    <section className="bg-background relative">
+    <section className="bg-background relative overflow-hidden">
       {Object.entries(categories).map(([parentName, catProducts]) => {
         const sorted = [...catProducts].sort(
           (a, b) => (b.totalSold || 0) - (a.totalSold || 0)
@@ -65,9 +53,10 @@ const modalQty = modalProduct
         const topTwo = sorted.slice(0, 2);
 
         return (
-          <div key={parentName} className="relative px-4">
-            {/* Decorative background */}
-            <div className="absolute inset-0 w-full h-full pointer-events-none">
+          <div key={parentName} className="relative py-16 px-4 md:px-8 lg:px-16">
+
+            {/* Decorative Background */}
+            <div className="absolute inset-0 pointer-events-none opacity-10">
               <img
                 src="/blobbb.svg"
                 alt="decorative background"
@@ -75,90 +64,76 @@ const modalQty = modalProduct
               />
             </div>
 
-            <div className="relative grid grid-cols-1 md:grid-cols-2 min-h-screen gap-8">
-              {/* LEFT: Category Image */}
-              <div className="h-screen">
+            {/* Layout */}
+            <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+
+              {/* LEFT IMAGE */}
+              <div className="w-full">
                 <img
                   src={categoryImages[parentName] || "/placeholder.jpg"}
                   alt={parentName}
-                  className="w-full py-3 h-full object-cover rounded-2xl shadow-lg"
+                  className="w-full h-[300px] sm:h-[400px] lg:min-h-screen object-cover rounded-3xl shadow-xl"
                 />
               </div>
 
-              {/* RIGHT: Product Cards */}
-              <div className="flex flex-col justify-center items-center">
-                <h2 className="text-4xl md:text-5xl font-cookie text-primary font-bold mb-4">
+              {/* RIGHT CONTENT */}
+              <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-cookie text-primary font-bold mb-10">
                   Best Selling {parentName}
                 </h2>
 
-                <div className="flex w-full gap-6">
-                  {topTwo.map((prod) => {
-                    const qty = productQuantities[prod._id] || 1;
-
-                    return (
-                      <div
-                        key={prod._id}
-                        className="relative group flex flex-col items-center bg-white rounded-2xl shadow-lg p-4"
-                      >
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 w-full">
+                  {topTwo.map((prod) => (
+                    <div
+                      key={prod._id}
+                      className="relative group flex flex-col items-center bg-card rounded-3xl shadow-md hover:shadow-xl transition-all duration-300 p-6"
+                    >
+                      <div className="relative w-full overflow-hidden rounded-2xl">
                         <img
                           src={prod.images?.[0] || "/placeholder.jpg"}
                           alt={prod.title}
-                          className="rounded-2xl shadow-md object-cover w-full h-64 cursor-pointer transition-transform duration-300 group-hover:scale-105"
+                          className="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-110"
                         />
 
-                        <p className="mt-4 text-primary font-semibold text-lg text-center">
-                          {prod.title}
-                        </p>
-                        <p className="mt-2 text-gray-500 text-sm text-center">
-                          {prod.description}
-                        </p>
-                        <p className="text-text-main font-body text-sm text-center mb-2">
-                          ${prod.price}
-                        </p>
-
-                        {/* Quantity + Add to Cart */}
-                        <div className="flex items-center space-x-2 mt-2">
-                          <button
-                            className="px-3 py-1 bg-gray-200 rounded-full"
-                            onClick={() => decreaseQty(prod._id)}
-                          >
-                            <FaMinus />
-                          </button>
-                          <span>{qty}</span>
-                          <button
-                            className="px-3 py-1 bg-gray-200 rounded-full"
-                            onClick={() => increaseQty(prod._id)}
-                          >
-                            <FaPlus />
-                          </button>
-
-                          <button
-                            onClick={() => handleAddToCart(prod, qty)}
-                            className="px-6 py-2 bg-accent text-hero-text rounded-full font-semibold hover:scale-105 transition"
-                          >
-                            Add to Cart
-                          </button>
-                        </div>
-
-                        {/* Hover View button */}
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition">
+                        {/* Hover View Button */}
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
                           <button
                             onClick={() => {
-                              setModalProduct({ ...prod, parentCategory: parentName });
-                              setProductQuantities((prev) => ({
-                                ...prev,
-                                [prod._id]: 1,
-                              }));
+                              setModalProduct({
+                                ...prod,
+                                parentCategory: parentName,
+                              });
+                              setCount(1);
                               document.body.style.overflow = "hidden";
                             }}
-                            className="px-6 py-3 bg-primary text-hero-text rounded-full font-semibold hover:scale-105 transition"
+                            className="px-6 py-2 bg-primary text-white rounded-full font-semibold hover:scale-105 transition"
                           >
                             View
                           </button>
                         </div>
                       </div>
-                    );
-                  })}
+
+                      <p className="mt-5 text-primary font-cookie font-semibold text-2xl text-center">
+                        {prod.title}
+                      </p>
+
+                      <p className="mt-2 text-gray-500 text-sm text-center">
+                        {prod.description}
+                      </p>
+
+                      <p className="text-text-main font-bold text-xl mt-2 mb-4">
+                        ${prod.price}
+                      </p>
+
+                      {/* Add To Cart */}
+                      <button
+                        onClick={() => handleAddToCart(prod, 1)}
+                        className="px-6 py-2 bg-accent text-white rounded-full font-semibold hover:scale-105 transition"
+                      >
+                        Add to Cart
+                      </button>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -166,21 +141,21 @@ const modalQty = modalProduct
         );
       })}
 
-      {/* Modal */}
+      {/* MODAL */}
       {modalProduct && (
         <div
-          className="fixed inset-0 z-50 flex justify-center items-center bg-black/50 overflow-hidden"
+          className="fixed inset-0 z-50 flex justify-center items-center bg-black/60 px-4"
           onClick={() => {
             setModalProduct(null);
             document.body.style.overflow = "auto";
           }}
         >
           <div
-            className="bg-white rounded-2xl p-6 max-w-4xl w-full relative flex flex-col md:flex-row gap-8"
+            className="bg-white rounded-3xl w-full max-w-5xl p-6 md:p-10 relative grid grid-cols-1 md:grid-cols-2 gap-10"
             onClick={(e) => e.stopPropagation()}
           >
             <button
-              className="absolute top-4 right-4 text-xl font-bold"
+              className="absolute top-4 right-6 text-2xl font-bold"
               onClick={() => {
                 setModalProduct(null);
                 document.body.style.overflow = "auto";
@@ -189,25 +164,25 @@ const modalQty = modalProduct
               ×
             </button>
 
-            {/* Left: Main Image */}
-            <div className="flex-1 border rounded-2xl p-4 shadow-lg hover:shadow-2xl transition-shadow">
+            {/* Image */}
+            <div>
               <img
                 src={modalProduct.images?.[0] || "/placeholder.jpg"}
                 alt={modalProduct.title}
-                className="w-full h-[350px] sm:h-[400px] object-cover object-center rounded-2xl transition-transform duration-500 hover:scale-105"
+                className="w-full h-[350px] object-cover rounded-2xl"
               />
             </div>
 
-            {/* Right: Product Info */}
-            <div className="flex-1 flex flex-col justify-between space-y-6">
-              <div className="space-y-4">
-                <h2 className="text-4xl md:text-5xl font-cookie font-bold text-[#3B2F2F]">
+            {/* Info */}
+            <div className="flex flex-col justify-between">
+              <div>
+                <h2 className="text-4xl font-cookie font-bold text-primary mb-4">
                   {modalProduct.title}
                 </h2>
-                <p className="text-2xl font-semibold text-[#A0522D]">
+                <p className="text-2xl font-semibold text-accent mb-4">
                   ${modalProduct.price}
                 </p>
-                <p className="text-lg font-semibold text-gray-400">
+                <p className="text-gray-600 mb-6">
                   {modalProduct.description}
                 </p>
                 <p className="text-sm text-gray-400 italic">
@@ -215,23 +190,24 @@ const modalQty = modalProduct
                 </p>
               </div>
 
-              <div className="space-y-4">
-                <div className="flex items-center gap-4">
-                  <span className="font-semibold text-gray-700">Quantity:</span>
+              {/* Quantity */}
+              <div className="mt-8">
+                <div className="flex items-center gap-4 mb-6">
+                  <span className="font-semibold">Quantity:</span>
                   <div className="flex items-center border rounded-lg overflow-hidden">
-                   <button
-  onClick={() => decreaseQty(modalProduct._id)}
->
-  <FaMinus />
-</button>
-
-<span>{modalQty}</span>
-
-<button
-  onClick={() => increaseQty(modalProduct._id)}
->
-  <FaPlus />
-</button>
+                    <button
+                      onClick={() => count > 1 && setCount(count - 1)}
+                      className="px-4 py-2 bg-gray-100 hover:bg-gray-200"
+                    >
+                      <FaMinus />
+                    </button>
+                    <span className="px-6">{count}</span>
+                    <button
+                      onClick={() => setCount(count + 1)}
+                      className="px-4 py-2 bg-gray-100 hover:bg-gray-200"
+                    >
+                      <FaPlus />
+                    </button>
                   </div>
                 </div>
 
@@ -241,7 +217,7 @@ const modalQty = modalProduct
                     setModalProduct(null);
                     document.body.style.overflow = "auto";
                   }}
-                  className="w-full py-4 bg-gradient-to-r from-[#E6B65A] to-[#A0522D] text-white font-bold rounded-2xl shadow-lg hover:from-[#A0522D] hover:to-[#E6B65A] transition-all duration-500"
+                  className="w-full py-3 bg-gradient-to-r from-[#E6B65A] to-[#A0522D] text-white font-bold rounded-2xl shadow-lg hover:opacity-90 transition"
                 >
                   Add to Cart
                 </button>

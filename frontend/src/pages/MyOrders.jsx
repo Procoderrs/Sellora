@@ -46,7 +46,7 @@ export default function MyOrders() {
   }
 
   return (
-    <section className="px-10 py-16 bg-[#F5F5DC] min-h-screen">
+    <section className="px-10 py-16 bg-background min-h-screen">
       <h1 className="text-3xl font-bold mb-8">My Orders</h1>
 
       <div className="space-y-6">
