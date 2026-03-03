@@ -44,7 +44,7 @@ export default function PaymentSuccess() {
   if (!order) return <p className="text-center mt-8">Order not found</p>;
 
   return (
-    <section className="px-10 py-16 bg-[#F5F5DC] min-h-screen">
+    <section className="px-10 py-16 bg-background min-h-screen">
       <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-md p-8 text-center">
         <h2 className="text-2xl font-bold mb-4">Order #{order._id}</h2>
         <p>Status: {order.status}</p>
