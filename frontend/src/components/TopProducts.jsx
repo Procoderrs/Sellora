@@ -53,14 +53,14 @@ export default function BestSelling() {
         const topTwo = sorted.slice(0, 2);
 
         return (
-          <div key={parentName} className="relative py-16 px-4 md:px-8 lg:px-16">
+          <div key={parentName} className="relative py-16 px-4 md:px-8 lg:px-10">
 
             {/* Decorative Background */}
-            <div className="absolute inset-0 pointer-events-none opacity-10">
+            <div className="absolute inset-0 pointer-events-none  ">
               <img
                 src="/blobbb.svg"
                 alt="decorative background"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover "
               />
             </div>
 
@@ -77,7 +77,7 @@ export default function BestSelling() {
               </div>
 
               {/* RIGHT CONTENT */}
-              <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
+              <div className="flex flex-col items-center lg:items-center text-center lg:text-left">
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-cookie text-primary font-bold mb-10">
                   Best Selling {parentName}
                 </h2>

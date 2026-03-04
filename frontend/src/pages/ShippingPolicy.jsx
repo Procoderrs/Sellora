@@ -9,11 +9,11 @@ export default function ShippingPolicy() {
       <section className="relative text-center mb-16">
         <div className="relative h-64 md:h-96 w-full rounded-3xl overflow-hidden shadow-lg mx-auto">
           <img
-            src="/ship.png"
+            src="/cardd.jpg"
             alt="Sweet Delivery Banner"
             className="w-full h-full object-cover object-center"
           />
-          <div className="absolute inset-0 bg-black/80 flex flex-col justify-center items-center px-4">
+          <div className="absolute inset-0 bg-black/50 flex flex-col justify-center items-center px-4">
             <h1 className="text-4xl md:text-5xl font-heading text-hero-text mb-2">
               Shipping Policy
             </h1>

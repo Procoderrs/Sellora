@@ -7,11 +7,11 @@ export default function ReturnPolicy() {
 
       {/* Hero Section */}
       <section className="relative mb-16">
-        <div className="h-64 md:h-80 rounded-3xl overflow-hidden shadow-lg">
+        <div className="h-64 md:h-90 rounded-3xl overflow-hidden shadow-lg">
           <img
             src="/return.jpg"
             alt="Return Policy Banner"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-center"
           />
           <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
             <h1 className="text-4xl md:text-5xl font-heading text-hero-text text-center">

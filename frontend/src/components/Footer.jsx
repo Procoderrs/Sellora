@@ -78,19 +78,7 @@ export default function Footer() {
           Freshly baked delights crafted daily with premium ingredients and passion.
         </p> */}
 
-        <div className="flex gap-3 pt-2">
-          {[FaFacebookF, FaInstagram, FaTwitter, FaLinkedinIn].map((Icon, i) => (
-            <div
-              key={i}
-              className="w-9 h-9 flex items-center justify-center 
-                         bg-background rounded-full 
-                         hover:bg-accent hover:text-white 
-                         transition-all duration-300 cursor-pointer shadow-sm"
-            >
-              <Icon size={14} />
-            </div>
-          ))}
-        </div>
+       
       </div>
 
       {/* Shop Categories */}
@@ -168,6 +156,21 @@ export default function Footer() {
           <li className="flex items-start gap-3">
             <FiMapPin size={16} className="text-accent mt-1" />
             Faisalabad, Pakistan
+          </li>
+          <li>
+             <div className="flex gap-3 pt-2 ">
+          {[FaFacebookF, FaInstagram, FaTwitter, FaLinkedinIn].map((Icon, i) => (
+            <div
+              key={i}
+              className="w-9 h-9 flex items-center justify-center 
+                         bg-background rounded-full 
+                         hover:bg-accent hover:text-white 
+                         transition-all duration-300 cursor-pointer shadow-sm"
+            >
+              <Icon size={14} />
+            </div>
+          ))}
+        </div>
           </li>
         </ul>
       </div>

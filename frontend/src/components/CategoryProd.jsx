@@ -174,7 +174,7 @@ export default function CategoryProducts() {
 						return (
 							<div
 								key={prod._id}
-								className="bg-white rounded-3xl shadow-md hover:shadow-2xl transition transform hover:-translate-y-1 hover:scale-105 overflow-hidden cursor-pointer"
+								className="bg-card rounded-3xl shadow-md hover:shadow-2xl transition transform hover:-translate-y-1 hover:scale-105 overflow-hidden cursor-pointer"
 							>
 								{/* IMAGE + CLICK TO NAVIGATE */}
 								<div

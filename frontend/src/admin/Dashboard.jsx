@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
+import { useContext } from 'react';
+import { DataContext } from '../context/DataContext';
 import api from '../api/api';
 import {
   PieChart, Pie, Cell, Legend, Tooltip as PieTooltip,
@@ -33,82 +35,27 @@ const MemoBarChart = React.memo(({ data }) => (
 ));
 
 export default function Dashboard() {
-  const COLORS = ["#A0522D", "#F4A460", "#E35336"];
+
+    const { dashboardData, loading } = useContext(DataContext);
+      const { stats, categoryStats, topProducts, topCustomers, recentOrders } = dashboardData;
+
+
+  const COLORS = ["#D2B48C", "#F5DEB3", "#F78F81"];
   const CARD_COLORS = {
-    products: ["#A0522D", "#F4A460"],
-    categories: ["#F4A460", "#A0522D"],
-    orders: ["#E35336", "#F4A460"],
-    customers: ["#A0522D", "#E35336"],
-    revenue: ["#F4A460", "#A0522D"],
+    products: ["#D2B48C", "#F5DEB3"],
+    categories: ["#F5DEB3", "#D2B48C"],
+    orders: ["#F78F81", "#F5DEB3"],
+    customers: ["#D2B48C", "#F78F81"],
+    revenue: ["#F5DEB3", "#D2B48C"],
   };
 
-  const [dashboardData, setDashboardData] = useState({
-    stats: { products: 0, categories: 0, orders: 0, customers: 0, revenue: 0 },
-    categoryStats: [],
-    topProducts: [],
-    topCustomers: [],
-    recentOrders: [],
-  });
+  
 
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchDashboard = async () => {
-      try {
-        const [
-          productsRes,
-          categoriesRes,
-          ordersRes,
-          customersRes,
-          dashboardStatsRes,
-          topProductsRes,
-          topCustomerRes
-        ] = await Promise.all([
-          api.get("/admin/products"),
-          api.get("/admin/categories"),
-          api.get("/admin/orders"),
-          api.get("/admin/users"),
-          api.get("/admin/dashboard/stats"),
-          api.get("/admin/dashboard/top-products"),
-          api.get("/admin/dashboard/top-customer")
-        ]);
 
-        const totalRevenue = ordersRes.data.orders
-          .filter(order => order.paymentStatus === "paid")
-          .reduce((sum, order) => sum + order.totalAmount, 0);
-
-        setDashboardData({
-          stats: {
-            products: productsRes.data.products.length,
-            categories: categoriesRes.data.categories.length,
-            orders: ordersRes.data.orders.length,
-            customers: customersRes.data.users.length,
-            revenue: totalRevenue,
-          },
-          categoryStats: [
-            { name: "Coffee", value: dashboardStatsRes.data.coffee },
-            { name: "Cupcake", value: dashboardStatsRes.data.cupcake },
-            { name: "Cake", value: dashboardStatsRes.data.cake },
-            { name: "Brownie", value: dashboardStatsRes.data.brownie },
-          ],
-          topProducts: topProductsRes.data.slice(0, 10), // limit top 10
-          topCustomers: topCustomerRes.data.slice(0, 10),
-          recentOrders: ordersRes.data.orders.slice(0, 5),
-        });
-
-        setLoading(false);
-      } catch (err) {
-        console.error("Dashboard fetch error:", err);
-        setLoading(false);
-      }
-    };
-
-    fetchDashboard();
-  }, []);
 
   if (loading) return <p className="text-center mt-8">Loading dashboard...</p>;
 
-  const { stats, categoryStats, topProducts, topCustomers, recentOrders } = dashboardData;
 
   const StatCard = React.memo(({ title, value, icon, fromColor, toColor }) => (
     <div
@@ -118,7 +65,7 @@ export default function Dashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-xl font-semibold">{title}</h2>
-          <p className="text-5xl font-extrabold mt-3">{value}</p>
+          <p className="text-3xl font-extrabold mt-3">{value}</p>
         </div>
         <div className="bg-white/20 p-4 rounded-full shadow-md">
           <img src={icon} className="w-12 h-12" alt={title} />
@@ -129,7 +76,7 @@ export default function Dashboard() {
   ));
 
   return (
-    <div className="min-h-screen bg-[#F5F5DC] font-Inter p-8">
+    <div className="min-h-screen bg-background font-Inter p-8">
       <h1 className="text-5xl md:text-6xl font-extrabold text-[#3B2F2F] mb-12 tracking-tight">
         Admin Dashboard
       </h1>
@@ -145,23 +92,23 @@ export default function Dashboard() {
 
       {/* Charts */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div className="bg-white rounded-2xl shadow-lg p-6">
-          <h2 className="text-xl font-bold mb-4 text-[#3B2F2F]">Products by Category</h2>
+        <div className="bg-card rounded-2xl shadow-lg p-6">
+          <h2 className="text-xl font-bold mb-4 text-primary">Products by Category</h2>
           <MemoPieChart data={categoryStats} colors={COLORS} />
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-6">
-          <h2 className="text-xl font-bold mb-4 text-[#3B2F2F]">Top Selling Products</h2>
+        <div className="bg-card rounded-2xl shadow-lg p-6">
+          <h2 className="text-xl font-bold mb-4 text-primary">Top Selling Products</h2>
           <MemoBarChart data={topProducts} />
         </div>
       </div>
 
       {/* Top Customers */}
-      <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 overflow-x-auto">
-        <h2 className="text-xl font-bold mb-4 text-[#3B2F2F]">Top Customers</h2>
+      <div className="bg-card rounded-2xl shadow-lg p-6 mb-8 overflow-x-auto">
+        <h2 className="text-xl font-bold mb-4 text-primary">Top Customers</h2>
         <table className="w-full border-collapse">
           <thead>
-            <tr className="bg-[#F5F5DC] text-left text-sm text-[#3B2F2F]">
+            <tr className="bg-[#F5F5DC] text-left text-sm text-primary">
               <th className="p-3">#</th>
               <th className="p-3">Name</th>
               <th className="p-3">Email</th>
@@ -182,11 +129,11 @@ export default function Dashboard() {
       </div>
 
       {/* Recent Orders */}
-      <div className="bg-white rounded-2xl shadow-lg p-6 overflow-x-auto">
-        <h2 className="text-xl font-bold mb-4 text-[#3B2F2F]">Recent Orders</h2>
+      <div className="bg-card rounded-2xl shadow-lg p-6 overflow-x-auto">
+        <h2 className="text-xl font-bold mb-4 text-primary">Recent Orders</h2>
         <table className="w-full border-collapse min-w-full table-fixed">
           <thead>
-            <tr className="bg-[#F5F5DC] text-sm text-[#3B2F2F]">
+            <tr className="bg-[#F5F5DC] text-sm text-primary">
               <th className="p-3 w-[16%] text-left">Order ID</th>
               <th className="p-3 w-[32%] text-left">Customer</th>
               <th className="p-3 w-[12%] text-left">Amount</th>
