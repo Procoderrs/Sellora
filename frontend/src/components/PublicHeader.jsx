@@ -35,42 +35,7 @@ export default function PublicHeader() {
     else navigate("/cart");
   };
 
-  /* useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const catRes = await api.get("/categories");
-        const prodRes = await api.get("/products");
-
-        const allCategories = catRes.data.categories || [];
-        const allProducts = prodRes.data.products || [];
-
-        setProducts(allProducts);
-
-        const parents = allCategories.filter((c) => !c.parent);
-        console.log(parents);
-
-        const categoriesWithInfo = parents.map((parent) => {
-          const parentProducts = allProducts.filter(
-            (p) =>
-              p.category?._id === parent._id ||
-              p.category?.parent?._id === parent._id
-          );
-
-          return {
-            ...parent,
-            productCount: parentProducts.length,
-            image: parentProducts[0]?.images?.[0] || "/placeholder.jpg",
-          };
-        });
-
-        setCategories(categoriesWithInfo);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    fetchData();
-  }, []); */
+  
 
   const handleSearchChange = debounce((value) => {
     if (!value) {

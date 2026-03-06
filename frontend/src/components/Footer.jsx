@@ -55,7 +55,7 @@ export default function Footer() {
  
 
   return (
-   <footer className="bg-card border-t border-muted text-text-main font-body">
+   <footer className="bg-background  border-t border-muted text-text-main font-body">
   <div className="max-w-7xl mx-auto px-6 py-16">
 
     {/* TOP GRID */}
