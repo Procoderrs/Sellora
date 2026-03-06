@@ -54,6 +54,7 @@ export default function TeamSection() {
               <img
                 src={chef.image}
                 alt={chef.name}
+                loading="lazy"
                 className="w-full h-full object-cover rounded-full  border-4 border-white shadow-lg transition-transform duration-500 group-hover:scale-105"
               />
             </div>

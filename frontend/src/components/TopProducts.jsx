@@ -3,12 +3,15 @@ import api from "../api/api";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "../context/CartContext";
 import { FaPlus, FaMinus } from "react-icons/fa";
+import { DataContext } from "../context/DataContext";
 
 export default function BestSelling() {
   const [products, setProducts] = useState([]);
   const [modalProduct, setModalProduct] = useState(null);
   const [count, setCount] = useState(1);
   const navigate = useNavigate();
+   const {bestSelling}=useContext(DataContext)
+
   const { addToCart } = useContext(CartContext);
 
   const categoryImages = {
@@ -18,22 +21,10 @@ export default function BestSelling() {
     Cupcakes: "/cup.jpg",
   };
 
-  useEffect(() => {
-    const fetchTopProducts = async () => {
-      try {
-        const res = await api.get("/products/top-selling");
-        setProducts(res.data.products || []);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchTopProducts();
-  }, []);
-
-  if (!products.length) return null;
+  if (!bestSelling.length) return null;
 
   const categories = {};
-  products.forEach((prod) => {
+  bestSelling.forEach((prod) => {
     const parentName = prod?.category?.parent?.name;
     if (!parentName) return;
     if (!categories[parentName]) categories[parentName] = [];
@@ -53,45 +44,60 @@ export default function BestSelling() {
         const topTwo = sorted.slice(0, 2);
 
         return (
-          <div key={parentName} className="relative py-16 px-4 md:px-8 lg:px-10">
+          <div key={parentName} className="relative py-8 px-4">
 
             {/* Decorative Background */}
-            <div className="absolute inset-0 pointer-events-none  ">
+           {/*  <div className="absolute inset-0 pointer-events-none  ">
               <img
                 src="/blobbb.svg"
                 alt="decorative background"
+                loading="lazy"
                 className="w-full h-full object-cover "
               />
-            </div>
+            </div> */}
 
             {/* Layout */}
-            <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-4 items-center
+bg-gradient-to-br from-[#fffaf4] to-[#fff3e6]
+border-2 border-[#F4A460]/40
+rounded-[40px]
+shadow-2xl
+p-6 md:p-10
+backdrop-blur-sm
+transition-all duration-500 hover:shadow-[0_25px_60px_rgba(160,82,45,0.25)]">
+
+  {/* subtle inner border glow */}
+  <div className="absolute inset-0 rounded-[40px] border border-white/40 pointer-events-none"></div>
 
               {/* LEFT IMAGE */}
               <div className="w-full">
                 <img
                   src={categoryImages[parentName] || "/placeholder.jpg"}
                   alt={parentName}
-                  className="w-full h-[300px] sm:h-[400px] lg:min-h-screen object-cover rounded-3xl shadow-xl"
+                  loading="lazy"
+                  className="w-full h-[300px] sm:h-[400px] lg:min-h-[600px] object-cover rounded-[30px] border border-[#f4a460]/30 shadow-xl"
                 />
               </div>
 
               {/* RIGHT CONTENT */}
-              <div className="flex flex-col items-center lg:items-center text-center lg:text-left">
+              <div className=" relative flex flex-col items-center lg:items-center text-center lg:text-left">
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-cookie text-primary font-bold mb-10">
                   Best Selling {parentName}
                 </h2>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 w-full">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
                   {topTwo.map((prod) => (
                     <div
                       key={prod._id}
-                      className="relative group flex flex-col items-center bg-card rounded-3xl shadow-md hover:shadow-xl transition-all duration-300 p-6"
+                      className="relative group flex flex-col items-center bg-white/70
+                      backdrop-blur border border-[#f4a460]/30 shadow-lg hover:shadow-2xl
+                      hover:-translate-y-2 rounded-3xl  transition-all duration-300 p-6"
                     >
                       <div className="relative w-full overflow-hidden rounded-2xl">
                         <img
                           src={prod.images?.[0] || "/placeholder.jpg"}
                           alt={prod.title}
+                          loading="lazy"
                           className="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-110"
                         />
 
@@ -106,7 +112,7 @@ export default function BestSelling() {
                               setCount(1);
                               document.body.style.overflow = "hidden";
                             }}
-                            className="px-6 py-2 bg-primary text-white rounded-full font-semibold hover:scale-105 transition"
+                            className="px-6 py-2 bg-linear-to-r from-[#e6b65a] to-[#a0522d] text-white rounded-full font-semibold hover:scale-105 transition"
                           >
                             View
                           </button>
@@ -136,6 +142,8 @@ export default function BestSelling() {
                   ))}
                 </div>
               </div>
+
+              
             </div>
           </div>
         );
@@ -169,6 +177,7 @@ export default function BestSelling() {
               <img
                 src={modalProduct.images?.[0] || "/placeholder.jpg"}
                 alt={modalProduct.title}
+                loading="lazy"
                 className="w-full h-[350px] object-cover rounded-2xl"
               />
             </div>

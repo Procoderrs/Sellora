@@ -63,6 +63,7 @@ export default function Shop_info() {
                   <img
                     key={i}
                     src={img}
+                    loading="lazy"
                     alt=""
                     className="w-full h-56 md:h-80 object-cover rounded-3xl shadow-2xl transform transition-transform duration-500 group-hover:scale-105"
                   />

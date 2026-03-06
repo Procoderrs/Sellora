@@ -32,7 +32,9 @@ export default function Info() {
             <img
               src="/small-2.jpeg"
               alt="Big chocolate cake"
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              className="w-full h-full object-cover transition-transform duration-500 
+              group-hover:scale-110"
+              loading='lazy'
             />
             <div className="absolute inset-0 bg-gradient-to-t from-transparent via-[#FFF1DC]/30 to-transparent rounded-xl pointer-events-none" />
           </div>
@@ -41,6 +43,7 @@ export default function Info() {
             <img
               src="/cake-cup.jpg"
               alt="Cupcakes"
+              loading='lazy'
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-transparent via-[#FFF9D6]/30 to-transparent rounded-xl pointer-events-none" />
@@ -50,6 +53,7 @@ export default function Info() {
             <img
               src="/brow.jpg"
               alt="Brownies"
+              loading='lazy'
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-transparent via-[#E0D1C0]/30 to-transparent rounded-xl pointer-events-none" />
@@ -98,6 +102,7 @@ export default function Info() {
         <img
           src="/founder.jpg"
           alt="Founder of CakeLT"
+          loading='lazy'
           className="w-32 h-32 md:w-44 md:h-44 object-cover rounded-full shadow-lg flex-shrink-0"
         />
         <div className="flex-1 text-center md:text-left">

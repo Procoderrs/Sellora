@@ -48,78 +48,157 @@ import api from "../api/api";
     parent,
     children: childCategories.filter((c) => c.parent?._id === parent._id),
   }));
-    return (
-    <div className="min-h-screen font-smoooch bg-background p-8">
-      <div className="flex justify-between items-center mb-8">
-        <h2 className="text-3xl font-bold text-primary">Category Management</h2>
-        <button
-          onClick={() => setShowForm(true)}
-          className="bg-accent text-lg  text-text-main px-5 py-2 rounded-lg shadow hover:bg-accent/90 transition"
-        >
-          + Add Category
-        </button>
+   return (
+  <div className="min-h-screen bg-background p-10">
+
+    {/* Header */}
+    <div className="flex justify-between items-center mb-12">
+      <div>
+        <h2 className="text-4xl font-bold text-primary tracking-tight">
+          Category Management
+        </h2>
+        <p className="text-sm text-muted mt-1">
+          Organize bakery products by shelves and subcategories
+        </p>
       </div>
 
-      {showForm && (
-        <CategoryForm
-          topCategories={parentCategories} // ✅ use context parentCategories
-          selected={editingCategory}
-          onClose={() => {
-            setShowForm(false);
-            setEditingCategory(null);
-          }}
-          onSuccess={handleFormSuccess}
-        />
-      )}
-
-      {deletingCategory && (
-        <ConfirmDelete
-          categoryName={deletingCategory.name}
-          onCancel={() => setDeletingCategory(null)}
-          onConfirm={handleDeleteConfirmed}
-        />
-      )}
-
-      {/* Shelves */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        {shelves.map((shelf) => (
-          <div
-            key={shelf.parent._id}
-            className="bg-background rounded-2xl border border-border shadow-sm hover:shadow-md transition p-6"
-          >
-            <h3 className="text-xl font-bold text-text-main mb-4">{shelf.parent.name}</h3>
-            {shelf.children.length === 0 ? (
-              <p className="text-gray-500">No subcategories</p>
-            ) : (
-              <div className="space-y-3">
-                {shelf.children.map((child,i) => (
-                  <div
-                    key={child._id}
-                    className="flex justify-between items-center p-3 bg-[#F4A460]/20 rounded-lg hover:bg-[#F4A460]/30 transition"
-                  >
-                    <span className="text-[#3B2F2F] font-medium"><span className="text-gray-300">{i+1}</span> {child.name}</span>
-                    <div className="space-x-2">
-                      <button
-                        onClick={() => handleEdit(child)}
-                        className="px-2 py-1 text-sm text-[#A0522D] border border-[#A0522D] rounded hover:bg-[#A0522D]/10 transition"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(child)}
-                        className="px-2 py-1 text-sm text-[#E35336] border border-[#E35336] rounded hover:bg-[#E35336]/10 transition"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
+      <button
+        onClick={() => setShowForm(true)}
+        className="bg-accent text-white px-6 py-3 rounded-xl shadow-md hover:shadow-lg hover:scale-[1.03] transition font-semibold"
+      >
+        + Add Category
+      </button>
     </div>
-  );
+
+    {showForm && (
+      <CategoryForm
+        topCategories={parentCategories}
+        selected={editingCategory}
+        onClose={() => {
+          setShowForm(false);
+          setEditingCategory(null);
+        }}
+        onSuccess={handleFormSuccess}
+      />
+    )}
+
+    {deletingCategory && (
+      <ConfirmDelete
+        categoryName={deletingCategory.name}
+        onCancel={() => setDeletingCategory(null)}
+        onConfirm={handleDeleteConfirmed}
+      />
+    )}
+
+    {/* Shelves Grid */}
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-8">
+
+      {shelves.map((shelf) => (
+        <div
+          key={shelf.parent._id}
+          className="
+          rounded-3xl
+          border border-muted
+          bg-white/60
+          backdrop-blur-sm
+          p-7
+          shadow-sm
+          hover:shadow-md
+          transition
+          "
+        >
+
+          {/* Parent Category */}
+          <div className="flex items-center justify-between mb-5">
+            <h3 className="text-xl font-bold text-text-main">
+              {shelf.parent.name}
+            </h3>
+
+            <span className="text-xs px-3 py-1 rounded-full bg-accent/20 text-primary font-medium">
+              {shelf.children.length} items
+            </span>
+          </div>
+
+          {shelf.children.length === 0 ? (
+            <p className="text-sm text-muted italic">
+              No subcategories yet
+            </p>
+          ) : (
+            <div className="space-y-3">
+
+              {shelf.children.map((child, i) => (
+                <div
+                  key={child._id}
+                  className="
+                  flex justify-between items-center
+                  px-4 py-3
+                  rounded-xl
+                  border border-muted/50
+                  bg-white
+                  hover:border-accent
+                  hover:shadow-sm
+                  transition
+                  "
+                >
+
+                  {/* Name */}
+                  <div className="flex items-center gap-3">
+
+                    <span className="text-xs text-muted w-5">
+                      {i + 1}
+                    </span>
+
+                    <span className="font-medium text-text-main">
+                      {child.name}
+                    </span>
+
+                  </div>
+
+                  {/* Buttons */}
+                  <div className="flex gap-2">
+
+                    <button
+                      onClick={() => handleEdit(child)}
+                      className="
+                      text-sm
+                      px-3 py-1
+                      rounded-lg
+                      bg-accent/15
+                      text-primary
+                      hover:bg-accent/30
+                      transition
+                      "
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      onClick={() => handleDelete(child)}
+                      className="
+                      text-sm
+                      px-3 py-1
+                      rounded-lg
+                      bg-red-100
+                      text-red-600
+                      hover:bg-red-200
+                      transition
+                      "
+                    >
+                      Delete
+                    </button>
+
+                  </div>
+                </div>
+              ))}
+
+            </div>
+          )}
+
+        </div>
+      ))}
+
+    </div>
+  </div>
+);
 
 }

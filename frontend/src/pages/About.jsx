@@ -9,6 +9,7 @@ export default function About() {
         <img
           src="/about-img-3.jpg"
           alt="About Cakelet Bakery"
+          loading="lazy"
           className="w-full h-full object-cover object-center"
         />
 
@@ -26,6 +27,7 @@ export default function About() {
           <img
             src="/cake-clr.png"
             alt="Cakelet Bakery"
+            loading="lazy"
             className="w-full h-[18rem] md:h-[24rem] object-cover rounded-xl shadow-md"
           />
         </div>

@@ -11,6 +11,7 @@ export default function ShippingPolicy() {
           <img
             src="/cardd.jpg"
             alt="Sweet Delivery Banner"
+            loading="lazy"
             className="w-full h-full object-cover object-center"
           />
           <div className="absolute inset-0 bg-black/50 flex flex-col justify-center items-center px-4">

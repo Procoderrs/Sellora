@@ -1,191 +1,186 @@
-import { useEffect, useState } from "react";
-import api from "../api/api";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { DataContext } from "../context/DataContext";
 import ConfirmDelete from "./ConfirmDelete";
 
 export default function Products() {
   const navigate = useNavigate();
-
-  const [products, setProducts] = useState([]);
+  const { products, deleteProduct } = useContext(DataContext); // ✅ context
   const [deletingProduct, setDeletingProduct] = useState(null);
 
-  // Fetch products
-  const fetchData = async () => {
-    try {
-      const res = await api.get("/admin/products");
-      setProducts(res.data.products || []);
-    } catch (err) {
-      console.error("Error fetching products:", err);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const handleAdd = () => {
-    navigate("/admin/product");
-  };
-
-  const handleEdit = (product) => {
-    navigate("/admin/product", { state: { product } });
-  };
-
-  const handleDelete = (product) => {
-    setDeletingProduct(product);
-  };
+  const handleAdd = () => navigate("/admin/product");
+  const handleEdit = (product) => navigate("/admin/product", { state: { product } });
+  const handleDelete = (product) => setDeletingProduct(product);
 
   const handleDeleteConfirmed = async () => {
     try {
-      await api.delete(`/admin/products/${deletingProduct._id}`);
-      setDeletingProduct(null);
-      fetchData();
+      if (!deletingProduct) return;
+      await deleteProduct(deletingProduct._id);
+      setDeletingProduct(null); // hide modal
     } catch (err) {
       console.error(err);
       alert("Delete failed");
     }
   };
 
-  // 🔹 GROUP PRODUCTS BY PARENT CATEGORY
+  // Group by parent category
   const groupedProducts = products.reduce((acc, product) => {
     const parent = product.category?.parent;
     if (!parent) return acc;
 
-    if (!acc[parent._id]) {
-      acc[parent._id] = {
-        parent,
-        items: [],
-      };
-    }
-
+    if (!acc[parent._id]) acc[parent._id] = { parent, items: [] };
     acc[parent._id].items.push(product);
     return acc;
   }, {});
 
   return (
-    <div className="min-h-screen bg-background p-8 font-lg font-smoooch">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-10">
-        <h2 className="text-3xl font-bold text-primary">
+  <div className="min-h-screen bg-background p-10">
+    
+    {/* Header */}
+    <div className="flex justify-between items-center mb-12">
+      <div>
+        <h2 className="text-4xl font-bold text-primary tracking-tight">
           Product Management
         </h2>
-        <button
-          onClick={handleAdd}
-          className="bg-primary text-background px-5 py-2 rounded-lg shadow hover:bg-primary/90 transition"
-        >
-          + Add Product
-        </button>
+        <p className="text-sm text-muted mt-1">
+          Manage all bakery products and inventory
+        </p>
       </div>
 
-      {/* DELETE CONFIRM */}
-      {deletingProduct && (
-        <ConfirmDelete
-          categoryName={deletingProduct.title}
-          onCancel={() => setDeletingProduct(null)}
-          onConfirm={handleDeleteConfirmed}
-        />
-      )}
+      <button
+        onClick={handleAdd}
+        className="bg-accent text-white px-6 py-3 rounded-xl shadow-md hover:shadow-lg hover:scale-[1.03] transition font-semibold"
+      >
+        + Add Product
+      </button>
+    </div>
 
-      {/* 🔹 PARENT WISE PRODUCT SHELVES */}
-      <div className="space-y-8">
-        {Object.values(groupedProducts).map((group) => (
-          <div
-            key={group.parent._id}
-            className="bg-background border border-border rounded-2xl shadow-sm p-6"
-          >
-            {/* Parent Category Title */}
-            <h3 className="text-2xl font-bold text-text-main mb-5">
+    {deletingProduct && (
+      <ConfirmDelete
+        categoryName={deletingProduct.title}
+        onCancel={() => setDeletingProduct(null)}
+        onConfirm={handleDeleteConfirmed}
+      />
+    )}
+
+    <div className="space-y-10">
+      {Object.values(groupedProducts).map(group => (
+        <div
+          key={group.parent._id}
+          className="bg-white/60 border border-muted rounded-3xl shadow-md p-8"
+        >
+          {/* Category Title */}
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-2xl font-bold text-text-main">
               {group.parent.name}
-              <span className="ml-2 text-sm text-gray-500">
-                ({group.items.length})
-              </span>
             </h3>
 
-            {/* Products Table */}
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-[#F4A460]/40">
-               <thead className="bg-[#F4A460]/30">
-  <tr>
-    <th className="px-4 py-3 text-left text-sm font-semibold text-text-main w-[10%]">Image</th>
-    <th className="px-4 py-3 text-left text-sm font-semibold text-text-main w-[30%]">Title</th>
-    <th className="px-4 py-3 text-left text-sm font-semibold text-text-main w-[15%]">Subcategory</th>
-    <th className="px-4 py-3 text-left text-sm font-semibold text-text-main w-[10%]">Price</th>
-    <th className="px-4 py-3 text-left text-sm font-semibold text-text-main w-[10%]">Stock</th>
-    <th className="px-4 py-3 text-left text-sm font-semibold text-text-main w-[10%]">Status</th>
-    <th className="px-4 py-3 text-center text-sm font-semibold text-text-main w-[15%]">Actions</th>
-  </tr>
-</thead>
-
-                <tbody className="divide-y divide-[#F4A460]/20">
-                  {group.items.map((p) => (
-                    <tr
-                      key={p._id}
-                      className="hover:bg-[#F4A460]/10 transition"
-                    >
-                      <td className="px-4 py-3">
-                        {p.images?.[0] ? (
-                          <img
-                            src={p.images[0]}
-                            alt={p.title}
-                            className="w-12 h-12 object-cover rounded-lg border border-[#F4A460]/40"
-                          />
-                        ) : (
-                          <div className="w-12 h-12 flex items-center justify-center text-xs border rounded">
-                            N/A
-                          </div>
-                        )}
-                      </td>
-
-                      <td className="px-4 py-3 text-text-main">
-                        {p.title}
-                      </td>
-
-                      <td className="px-4 py-3 text-text-main">
-                        {p.category?.name}
-                      </td>
-
-                      <td className="px-4 py-3 text-text-main">
-                        {p.price}
-                      </td>
-
-                      <td className="px-4 py-3 text-text-main">
-                        {p.stock}
-                      </td>
-
-                      <td className="px-4 py-3">
-                        <span
-                          className={`px-3 py-1 text-xs font-semibold rounded-full ${
-                            p.status === "active"
-                              ? "bg-primary/20 text-primary"
-                              : "bg-danger/20 text-danger"
-                          }`}
-                        >
-                          {p.status}
-                        </span>
-                      </td>
-
-                      <td className="px-4 py-3 text-center space-x-2">
-                        <button
-                          onClick={() => handleEdit(p)}
-                          className="px-3 py-1 text-sm border border-primary text-primary rounded hover:bg-primary/10 transition"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleDelete(p)}
-                          className="px-3 py-1 text-sm border border-danger text-danger rounded hover:bg-danger/10 transition"
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <span className="bg-accent/20 text-primary px-3 py-1 rounded-full text-sm font-medium">
+              {group.items.length} Products
+            </span>
           </div>
-        ))}
-      </div>
+
+          {/* Table */}
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-left">
+              
+              <thead>
+                <tr className="border-b border-muted text-sm text-primary">
+                  <th className="py-3">Product</th>
+                  <th>Subcategory</th>
+                  <th>Price</th>
+                  <th>Stock</th>
+                  <th>Status</th>
+                  <th className="text-right">Actions</th>
+                </tr>
+              </thead>
+
+              <tbody className="divide-y divide-muted">
+                {group.items.map(p => (
+                  <tr
+                    key={p._id}
+                    className="hover:bg-accent/10 transition"
+                  >
+
+                    {/* Product */}
+                    <td className="py-4 flex items-center gap-4">
+                      {p.images?.[0] ? (
+                        <img
+                          src={p.images[0]}
+                          className="w-14 h-14 rounded-xl object-cover shadow-sm"
+                        />
+                      ) : (
+                        <div className="w-14 h-14 rounded-xl bg-muted flex items-center justify-center text-xs">
+                          N/A
+                        </div>
+                      )}
+
+                      <div>
+                        <p className="font-semibold text-text-main">
+                          {p.title}
+                        </p>
+                        {/* <p className="text-xs text-muted">
+                          ID: {p._id.slice(-6)}
+                        </p> */}
+                      </div>
+                    </td>
+
+                    {/* Subcategory */}
+                    <td className="text-sm text-primary">
+                      {p.category?.name}
+                    </td>
+
+                    {/* Price */}
+                    <td className="font-medium text-text-main">
+                      ${p.price}
+                    </td>
+
+                    {/* Stock */}
+                    <td>
+                      <span className="bg-muted px-3 py-1 rounded-full text-sm">
+                        {p.stock}
+                      </span>
+                    </td>
+
+                    {/* Status */}
+                    <td>
+                      <span
+                        className={`px-3 py-1 text-xs rounded-full font-medium
+                        ${
+                          p.status === "active"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-red-100 text-red-600"
+                        }`}
+                      >
+                        {p.status}
+                      </span>
+                    </td>
+
+                    {/* Actions */}
+                    <td className="text-right space-x-2">
+                      <button
+                        onClick={() => handleEdit(p)}
+                        className="px-3 py-1 rounded-lg text-sm bg-accent/20 text-primary hover:bg-accent/30 transition"
+                      >
+                        Edit
+                      </button>
+
+                      <button
+                        onClick={() => handleDelete(p)}
+                        className="px-3 py-1 rounded-lg text-sm bg-red-100 text-red-600 hover:bg-red-200 transition"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+
+            </table>
+          </div>
+        </div>
+      ))}
     </div>
-  );
+  </div>
+);
 }

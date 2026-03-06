@@ -1,15 +1,25 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import api from "../api/api";
+import { AuthContext } from "./AuthContext";
 
 export const DataContext = createContext();
 
 export function DataProvider({ children }) {
+  const {customer}=useContext(AuthContext)
+ const [users, setUsers] = useState([]);
+   const [usersLoading, setUsersLoading] = useState(false);
+
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [parentCategories, setParentCategories] = useState([]);
+  const [bestSelling, setBestSelling] = useState([]);   // ⭐ NEW
   const [loading, setLoading] = useState(true);
+  const [orders,setOrders]=useState([])
+  const [ordersLoading,setOrdersLoading]=useState(false)
+  const [myOrders,setMyOrders]=useState([])
+  const [dashboardLoading,setDashboardLoading]=useState(false)
 
-  // Admin dashboard data
+
   const [dashboardData, setDashboardData] = useState({
     stats: { products: 0, categories: 0, orders: 0, customers: 0, revenue: 0 },
     categoryStats: [],
@@ -21,36 +31,84 @@ export function DataProvider({ children }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch categories & products for site-wide context
-        const [catRes, prodRes] = await Promise.all([
+
+        const [
+          catRes,
+          prodRes,
+          bestSellingRes
+        ] = await Promise.all([
           api.get("/categories"),
           api.get("/products"),
+          api.get("/products/top-selling") // ⭐ BEST SELLING API
         ]);
 
         const allCategories = catRes.data.categories || [];
         const allProducts = prodRes.data.products || [];
+        const bestProducts = bestSellingRes.data.products || [];
 
         setCategories(allCategories);
         setProducts(allProducts);
+        setBestSelling(bestProducts); // ⭐ SAVE
 
-        // Parent categories info
+        // Parent categories
         const parents = allCategories.filter((c) => !c.parent);
+
         const parentsWithInfo = parents.map((parent) => {
           const parentProducts = allProducts.filter(
             (p) =>
               p.category?._id === parent._id ||
               p.category?.parent?._id === parent._id
           );
+
           return {
             ...parent,
             productCount: parentProducts.length,
             image: parentProducts[0]?.images?.[0] || "/placeholder.jpg",
           };
         });
-        setParentCategories(parentsWithInfo);
 
-        // --- Fetch admin dashboard data ---
-        const [
+        setParentCategories(parentsWithInfo);
+      } catch (err) {
+        console.error("DataProvider fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+// ✅ Fetch all users (admin)
+  const fetchUsers = async () => {
+    setUsersLoading(true);
+    try {
+      const res = await api.get("/admin/users");
+      setUsers(res.data.users || []);
+    } catch (err) {
+      console.error("Fetch users error:", err.response?.data || err.message);
+    } finally {
+      setUsersLoading(false);
+    }
+  };
+
+  useEffect(()=>{
+    if(!customer) return;
+    const fetchMyOrders=async()=>{
+      try {
+        const {data}=await api.get('/orders/my-orders');
+        setMyOrders(data.orders || []);
+      } catch (error) {
+        console.error('orders fetch errror',error);
+      }
+    }
+    fetchMyOrders();
+  },[customer])
+
+
+const  fetchDashboard=async()=>{
+  if(dashboardData?.stats?.products)return;
+  setDashboardLoading(true);
+  try {
+     const [
           productsRes,
           categoriesRes,
           ordersRes,
@@ -67,12 +125,10 @@ export function DataProvider({ children }) {
           api.get("/admin/dashboard/top-products"),
           api.get("/admin/dashboard/top-customer")
         ]);
-
-        const totalRevenue = ordersRes.data.orders
+         const totalRevenue = ordersRes.data.orders
           .filter(order => order.paymentStatus === "paid")
           .reduce((sum, order) => sum + order.totalAmount, 0);
-
-        setDashboardData({
+            setDashboardData({
           stats: {
             products: productsRes.data.products.length,
             categories: categoriesRes.data.categories.length,
@@ -91,15 +147,129 @@ export function DataProvider({ children }) {
           recentOrders: ordersRes.data.orders.slice(0, 5),
         });
 
-      } catch (err) {
-        console.error("DataProvider fetch error:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  } catch (error) {
+    console.error('Dashboard fetch error',error)
+  }
+  finally{
+    setDashboardLoading(false)
+  }
+}
 
-    fetchData();
-  }, []);
+
+
+  // ⭐ ADMIN PRODUCT APIs (added by you)
+
+// ⭐ ADMIN PRODUCT APIs (with state update)
+
+const createProduct = async (formData) => {
+  try {
+    const res = await api.post("/admin/products", formData);
+
+    const newProduct = res.data.product;
+
+    // update state
+    setProducts(prev => [newProduct, ...prev]);
+
+    return newProduct;
+
+  } catch (error) {
+    console.error("Create product error", error);
+    throw error;
+  }
+};
+
+
+
+const updateProduct = async (id, formData) => {
+  try {
+    const res = await api.put(`/admin/products/${id}`, formData);
+
+    const updatedProduct = res.data.product;
+
+    // update state
+    setProducts(prev =>
+      prev.map(p => (p._id === id ? updatedProduct : p))
+    );
+
+    return updatedProduct;
+
+  } catch (error) {
+    console.error("Update product error", error);
+    throw error;
+  }
+};
+
+
+
+const deleteProduct = async (id) => {
+  try {
+    await api.delete(`/admin/products/${id}`);
+
+    // remove from state
+    setProducts(prev => prev.filter(p => p._id !== id));
+
+  } catch (error) {
+    console.error("Delete product error", error);
+    throw error;
+  }
+};
+
+
+
+// ⭐ ADMIN CATEGORY APIs (added by you)
+
+const createCategory = async (payload) => {
+  return await api.post("/admin/categories", payload);
+};
+
+const updateCategory = async (id, payload) => {
+  return await api.put(`/admin/categories/${id}`, payload);
+};
+
+const deleteCategory = async (id) => {
+  return await api.delete(`/admin/categories/${id}`);
+};
+
+
+
+// ⭐ ADMIN ORDER APIs (added by you)
+
+const fetchOrders = async () => {
+  setOrdersLoading(true)
+  try {
+    const { data } = await api.get("/admin/orders");
+    setOrders(data.orders || []);
+  } catch (err) {
+    console.error("Fetch orders error:", err);
+  }
+  finally{
+    setOrdersLoading(false)
+  }
+};
+
+const updateOrderStatus = async (orderId, status) => {
+  try {
+    await api.put(`/admin/orders/${orderId}/status`, { status });
+
+    // update local orders state
+    setOrders(prev =>
+      prev.map(o => (o._id === orderId ? { ...o, status } : o))
+    );
+  } catch (error) {
+    console.error("Update order status error:", error);
+    throw error;
+  }
+};
+
+// ⭐ NEWSLETTER APIs (added by you)
+
+const getNewsletterSubscribers = async () => {
+  return await api.get("/newsletter/count");
+};
+
+const sendNewsletter = async (payload) => {
+  return await api.post("/newsletter/send", payload);
+};
 
   return (
     <DataContext.Provider
@@ -107,10 +277,37 @@ export function DataProvider({ children }) {
         categories,
         products,
         parentCategories,
+        bestSelling, // ⭐ EXPORT
+        myOrders,
         dashboardData,
         loading,
+
+        //admin calls
+        createProduct,
+        updateProduct,
+        deleteProduct,
+
+        createCategory,
+        updateCategory,
+        deleteCategory,
+
+        orders,
+        fetchOrders,
+        updateOrderStatus,
+        ordersLoading,
+
+        getNewsletterSubscribers,
+        sendNewsletter,
+
+        users,
+        usersLoading,
+       fetchUsers,
+       fetchDashboard,
+       dashboardLoading,
+       dashboardData,
       }}
     >
+
       {children}
     </DataContext.Provider>
   );

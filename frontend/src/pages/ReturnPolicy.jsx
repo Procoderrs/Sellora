@@ -11,6 +11,7 @@ export default function ReturnPolicy() {
           <img
             src="/return.jpg"
             alt="Return Policy Banner"
+            loading="lazy"
             className="w-full h-full object-cover object-center"
           />
           <div className="absolute inset-0 bg-black/30 flex items-center justify-center">

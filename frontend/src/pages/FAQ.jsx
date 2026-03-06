@@ -44,6 +44,7 @@ export default function FAQPage() {
         <img
           src="/berry.jpg"
           alt="FAQ Banner"
+          loading="lazy"
           className="w-full h-full object-cover object-center"
         />
         <div className="absolute inset-0 bg-black/30 flex items-center justify-center">

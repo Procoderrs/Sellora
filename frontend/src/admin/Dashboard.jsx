@@ -12,8 +12,8 @@ const MemoPieChart = React.memo(({ data, colors }) => (
   <ResponsiveContainer width="100%" height={300}>
     <PieChart>
       <Pie data={data} dataKey="value" nameKey="name" outerRadius={110} label>
-        {data.map((_, index) => (
-          <Cell key={index} fill={colors[index % colors.length]} />
+        {data.map((item, index) => (
+          <Cell key={item.name||index} fill={colors[index % colors.length]} />
         ))}
       </Pie>
       <PieTooltip />
@@ -34,30 +34,7 @@ const MemoBarChart = React.memo(({ data }) => (
   </ResponsiveContainer>
 ));
 
-export default function Dashboard() {
-
-    const { dashboardData, loading } = useContext(DataContext);
-      const { stats, categoryStats, topProducts, topCustomers, recentOrders } = dashboardData;
-
-
-  const COLORS = ["#D2B48C", "#F5DEB3", "#F78F81"];
-  const CARD_COLORS = {
-    products: ["#D2B48C", "#F5DEB3"],
-    categories: ["#F5DEB3", "#D2B48C"],
-    orders: ["#F78F81", "#F5DEB3"],
-    customers: ["#D2B48C", "#F78F81"],
-    revenue: ["#F5DEB3", "#D2B48C"],
-  };
-
-  
-
-
-
-
-  if (loading) return <p className="text-center mt-8">Loading dashboard...</p>;
-
-
-  const StatCard = React.memo(({ title, value, icon, fromColor, toColor }) => (
+const StatCard = React.memo(({ title, value, icon, fromColor, toColor }) => (
     <div
       className="relative rounded-2xl shadow-lg p-8 hover:shadow-2xl transition overflow-hidden text-white"
       style={{ background: `linear-gradient(135deg, ${fromColor} 0%, ${toColor} 100%)` }}
@@ -74,6 +51,37 @@ export default function Dashboard() {
       <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
     </div>
   ));
+export default function Dashboard() {
+
+    const { dashboardData, dashboardLoading,fetchDashboard } = useContext(DataContext);
+const {
+  stats = {},
+  categoryStats = [],
+  topProducts = [],
+  topCustomers = [],
+  recentOrders = []
+} = dashboardData || {};
+
+  const COLORS = ["#D2B48C", "#F5DEB3", "#F78F81"];
+  const CARD_COLORS = {
+    products: ["#D2B48C", "#F5DEB3"],
+    categories: ["#F5DEB3", "#D2B48C"],
+    orders: ["#F78F81", "#F5DEB3"],
+    customers: ["#D2B48C", "#F78F81"],
+    revenue: ["#F5DEB3", "#D2B48C"],
+  };
+
+  useEffect(()=>{
+    fetchDashboard()
+  },[])
+
+
+
+
+  if (dashboardLoading) return <p className="text-center mt-8">Loading dashboard...</p>;
+
+
+  
 
   return (
     <div className="min-h-screen bg-background font-Inter p-8">
@@ -117,7 +125,7 @@ export default function Dashboard() {
           </thead>
           <tbody>
             {topCustomers.map((user, idx) => (
-              <tr key={user._id} className="border-b text-sm hover:bg-[#FAF8F2]">
+              <tr key={user._id || idx} className="border-b text-sm hover:bg-[#FAF8F2]">
                 <td className="p-3">{idx + 1}</td>
                 <td className="p-3 font-medium">{user.name}</td>
                 <td className="p-3 text-gray-600">{user.email}</td>
@@ -143,8 +151,8 @@ export default function Dashboard() {
             </tr>
           </thead>
           <tbody>
-            {recentOrders.map(order => (
-              <tr key={order._id} className="border-b text-sm hover:bg-[#FAF8F2]">
+            {recentOrders.map((order,idx) => (
+              <tr key={order._id || idx} className="border-b text-sm hover:bg-[#FAF8F2]">
                 <td className="p-3 font-mono">{order._id.slice(-6)}</td>
                 <td className="p-3">{order.user?.name || "Guest"}</td>
                 <td className="p-3 font-semibold">${order.totalAmount.toLocaleString()}</td>

@@ -3,23 +3,9 @@ import api from "../api/api";
 import { useNavigate } from "react-router-dom";
 
 export default function Variety() {
-  const [products, setProducts] = useState([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchTopProducts = async () => {
-      try {
-        const res = await api.get("/products/top-selling");
-        setProducts(res.data.products || []);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchTopProducts();
-  }, []);
-
-  if (!products.length) return null;
-  const [firstProd, secondProd] = products;
+ 
 
   return (
     <>
@@ -30,6 +16,7 @@ export default function Variety() {
         <img
           src="/blobbb.svg"
           alt="Decorative background"
+          loading="lazy"
           className="w-full h-full object-cover"
         />
       </div>
@@ -64,6 +51,7 @@ export default function Variety() {
   <img
     src="/choc-1.jpg"
     alt="Chocolate Cake 1"
+    loading="lazy"
     className="rounded-2xl shadow-lg object-cover h-64 md:h-80 w-full max-w-sm transition-transform duration-500 hover:scale-105"
   />
 </div>
@@ -73,6 +61,7 @@ export default function Variety() {
   <img
     src="/choc-2.jpg"
     alt="Chocolate Cake 2"
+    loading="lazy"
     className="rounded-2xl shadow-lg object-cover h-64 md:h-80 w-full max-w-sm transition-transform duration-500 hover:scale-105"
   />
 </div>
