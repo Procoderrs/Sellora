@@ -72,7 +72,7 @@ export default function HeaderHero() {
            px-8 py-4 
            bg-accent text-hero-text
            font-medium text-lg
-           rounded-full shadow-lg
+            shadow-lg
            hover:scale-105 hover:bg-cakes
            transition-all duration-300"
           >

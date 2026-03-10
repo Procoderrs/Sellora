@@ -9,7 +9,7 @@ export default function Variety() {
 
   return (
     <>
-    <section className="relative bg-background py-24 overflow-hidden">
+    <section className="relative bg-background border-4 min-h-screen py-12 overflow-hidden">
 
       {/* RELIABLE SVG/BLOB BACKGROUND */}
       <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
@@ -40,7 +40,7 @@ export default function Variety() {
           </p>
           <button
             onClick={() => navigate("/category/all")}
-            className="px-8 py-4 bg-accent text-hero-text rounded-full font-semibold shadow-md hover:scale-105 transition transform duration-300"
+            className="px-8 py-4 bg-accent text-hero-text  font-semibold shadow-md hover:scale-105 transition transform duration-300"
           >
             CAKELET MENU
           </button>
@@ -52,7 +52,7 @@ export default function Variety() {
     src="/choc-1.jpg"
     alt="Chocolate Cake 1"
     loading="lazy"
-    className="rounded-2xl shadow-lg object-cover h-64 md:h-80 w-full max-w-sm transition-transform duration-500 hover:scale-105"
+    className="rounded-2xl shadow-lg object-cover h-64 md:h-100 w-full max-w-sm transition-transform duration-500 hover:scale-105"
   />
 </div>
 
@@ -62,7 +62,7 @@ export default function Variety() {
     src="/choc-2.jpg"
     alt="Chocolate Cake 2"
     loading="lazy"
-    className="rounded-2xl shadow-lg object-cover h-64 md:h-80 w-full max-w-sm transition-transform duration-500 hover:scale-105"
+    className="rounded-2xl shadow-lg object-cover h-64 md:h-100 w-full max-w-sm transition-transform duration-500 hover:scale-105"
   />
 </div>
       </div>

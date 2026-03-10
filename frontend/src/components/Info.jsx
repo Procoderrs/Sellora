@@ -73,7 +73,7 @@ export default function Info() {
 
           <button
             onClick={() => navigate("/category/all")}
-            className="self-start px-10 py-4 bg-accent text-hero-text rounded-full font-semibold text-lg shadow-md hover:shadow-xl hover:scale-105 transition transform duration-300"
+            className="self-start px-10 py-4 bg-accent text-hero-text font-semibold text-lg shadow-md hover:shadow-xl hover:scale-105 transition transform duration-300"
           >
             Explore Our Menu
           </button>
