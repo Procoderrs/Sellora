@@ -44,7 +44,7 @@ export default function ProductDetail() {
       <section className="max-w-6xl mx-auto mt-10 pb-10 px-4 md:px-16 flex flex-col md:flex-row gap-10">
 
         {/* Left: Thumbnails */}
-        {imagesArray.length > 1 && (
+        {/* {imagesArray.length > 1 && (
           <div className="md:flex md:flex-col gap-3 md:w-20 hidden">
             {imagesArray.map((img, idx) => (
               <img
@@ -58,10 +58,10 @@ export default function ProductDetail() {
               />
             ))}
           </div>
-        )}
+        )} */}
 
         {/* Mobile Thumbnails */}
-        {imagesArray.length > 1 && (
+        {/* {imagesArray.length > 1 && (
           <div className="md:hidden flex gap-3 overflow-x-auto scrollbar-hide py-2">
             {imagesArray.map((img, idx) => (
               <img
@@ -75,7 +75,7 @@ export default function ProductDetail() {
               />
             ))}
           </div>
-        )}
+        )} */}
 
         {/* Center: Main Image */}
         <div className="flex-1 border rounded-2xl p-4 shadow-lg hover:shadow-2xl transition-shadow bg-white">

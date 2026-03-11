@@ -38,8 +38,8 @@ export function DataProvider({ children }) {
           bestSellingRes
         ] = await Promise.all([
           api.get("/categories"),
-          api.get("/products"),
-          api.get("/products/top-selling") // ⭐ BEST SELLING API
+          api.get("/products?fields=_id,title,price,images,category,totalSold"),
+          api.get("/products/top-selling?fields=_id,title,price,images,category,totalSold"), // Best selling top products
         ]);
 
         const allCategories = catRes.data.categories || [];

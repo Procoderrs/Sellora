@@ -9,7 +9,7 @@ export default function Variety() {
 
   return (
     <>
-    <section className="relative bg-background border-4 min-h-screen py-12 overflow-hidden">
+    <section className="relative bg-background  overflow-hidden">
 
       {/* RELIABLE SVG/BLOB BACKGROUND */}
       <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
@@ -22,7 +22,7 @@ export default function Variety() {
       </div>
 
       {/* CONTENT */}
-      <div className="max-w-7xl mx-auto px-6 relative z-10 grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+      <div className="max-w-7xl min-h-screen mx-auto px-6 relative z-10 grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
 
         {/* LEFT: Intro & Description */}
         <div className="flex flex-col justify-center">

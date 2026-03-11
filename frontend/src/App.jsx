@@ -51,6 +51,8 @@ export default function App() {
       <Route path="/shop" element={<CategoryProducts />} />
       <Route path="/collection" element={<Collection/>}/>
       <Route path="/About" element={<About/>}/>
+            <Route path="/contact-us" element={<About/>}/>
+
       <Route path="/faq" element={<FAQPage />} />
             <Route path="/shipping-policy" element={<ShippingPolicy/>} />
             <Route path="/returns" element={<ReturnPolicy/>}/>

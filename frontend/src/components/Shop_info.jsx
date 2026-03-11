@@ -32,7 +32,7 @@ export default function Shop_info() {
   const navigate = useNavigate();
 
   return (
-    <section className="bg-background relative py-24 overflow-hidden">
+    <section className="bg-background relative py-24 font-heading overflow-hidden">
       {/* Decorative circles */}
       <div className="absolute -top-10 -left-10 w-48 h-48 bg-accent/20 rounded-full blur-3xl pointer-events-none"></div>
       <div className="absolute -bottom-10 -right-10 w-60 h-60 bg-primary/20 rounded-full blur-3xl pointer-events-none"></div>

@@ -168,7 +168,7 @@ export default function CategoryProducts() {
 
 			{/* PRODUCTS */}
 			<section className="max-w-7xl mx-auto px-6 py-12">
-				<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
+				<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
 					{sortedProducts.map((prod) => {
 						const qty = productQuantities[prod._id] || 1;
 						return (

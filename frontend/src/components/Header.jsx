@@ -4,7 +4,7 @@ import { AuthContext } from "../context/AuthContext";
 import { CartContext } from "../context/CartContext";
 import { DataContext } from "../context/DataContext";
 import TopCrousel from "./TopCrousel";
-import { RiUser3Line, RiShoppingBagLine, RiArrowDownSLine } from "@remixicon/react";
+import { RiUser3Line, RiShoppingBagLine, RiArrowDownSLine,RiSearchLine,RiCloseLine } from "@remixicon/react";
 import api from "../api/api";
 import debounce from "lodash.debounce";
 
@@ -17,6 +17,7 @@ export default function PublicHeader() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [categories, setCategories] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [searchVisible,setSearchVisible]=useState(false)
 
   const [search, setSearch] = useState("");
 /*   const [products, setProducts] = useState([]);
@@ -65,7 +66,7 @@ export default function PublicHeader() {
       {/* <TopCrousel /> */}
 
       <div className=" bg-background border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 h-20 flex items-center">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 h-14 flex items-center">
 
           {/* MOBILE HEADER */}
           <div className="flex w-full items-center justify-between md:hidden">
@@ -110,7 +111,7 @@ export default function PublicHeader() {
 </nav>
            
             {/* CENTER NAV + LOGO */}
-<div className="flex items-center justify-center gap-4 text-text-main whitespace-nowrap font-medium">
+<div className="flex items-center  justify-center gap-4 text-text-main whitespace-nowrap font-medium text-sm">
 
   <Link to="/home" className="hover:text-cakes transition">Home</Link>
 
@@ -151,61 +152,96 @@ export default function PublicHeader() {
 
   {/* LOGO */}
   <Link to="/" className=" ">
-    <img src="/logoggg.png" className="w-36 h-auto" />
+    <img src="/logoggg.png" className="w-24 h-auto" />
   </Link>
 
   <Link to="/about" className="hover:text-cakes transition">About</Link>
-  <Link to="/about" className="hover:text-cakes transition">About</Link>
+  <Link to="/contact-us" className="hover:text-cakes transition">Contact Us</Link>
 
 </div>
 
             {/* RIGHT ACTIONS */}
-            <div className="flex justify-end items-center text-text-main gap-4">
+            <div className="flex font-medium text-sm justify-end items-center text-text-main gap-4">
 
               {/* SEARCH */}
-              <div className="relative">
-                <input
-                  type="search"
-                  value={search}
-                  onChange={onSearchChange}
-                  placeholder="Search products..."
-                  className="px-4 py-2 rounded-xl border bg-background shrink-0 w-44 border-border bg-surface 
-                             focus:outline-none focus:ring-2 focus:ring-cakes  text-sm"
-                />
+              {/* SEARCH */}
+<div className="relative flex items-center">
 
-                {searchOpen && searchResults.length > 0 && (
-                  <div className="absolute bg-background top-full mt-2 w-full bg-surface shadow-lg rounded-xl border border-border z-50">
-                    {searchResults.map((prod) => (
-                      <div
-                        key={prod._id}
-                        className="flex items-center gap-3 p-3 font-body hover:bg-background transition cursor-pointer"
-                        onClick={() => {
-                          navigate(`/product/${prod.slug || prod._id}`, {
-                            state: {
-                              product: prod,
-                              parentCategory:
-                                prod.category?.parent?.name ||
-                                prod.category?.name,
-                            },
-                          });
-                          setSearch("");
-                          setSearchOpen(false);
-                        }}
-                      >
-                        <img
-                          src={prod.images?.[0] || "/placeholder.jpg"}
-                          alt=""
-                          className="w-10 h-10 object-cover rounded-lg"
-                        />
-                        <div>
-                          <p className="text-sm font-medium">{prod.title}</p>
-                          <p className="text-xs text-text-soft">${prod.price}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+  {/* SEARCH ICON */}
+  {!searchVisible && (
+    <button
+      onClick={() => setSearchVisible(true)}
+      className="p-2 hover:text-cakes transition"
+    >
+     <RiSearchLine size={18} />
+    </button>
+  )}
+
+  {/* SEARCH INPUT */}
+  {searchVisible && (
+    <div className="relative">
+      
+      <input
+        type="search"
+        value={search}
+        onChange={onSearchChange}
+        placeholder="Search products..."
+        className=" absolute top-7 -left-36 px-4 py-4  border bg-card shrink-0 w-56 border-border bg-surface 
+        focus:outline-none focus:ring-2 focus:ring-cakes text-sm"
+      />
+
+      {/* CLOSE BUTTON */}
+      <button
+        onClick={() => {
+          setSearchVisible(false);
+          setSearch("");
+          setSearchOpen(false);
+        }}
+        className="absolute right-2 top-1/2 -translate-y-1/2 text-sm"
+      >
+        <RiCloseLine size={18} />
+      </button>
+
+      {/* SEARCH RESULTS */}
+      {searchOpen && searchResults.length > 0 && (
+        <div className="absolute bg-background top-full mt-2 w-full bg-surface shadow-lg rounded-xl border border-border z-50">
+          {searchResults.map((prod) => (
+            <div
+              key={prod._id}
+              className="flex items-center gap-3 p-3 font-body hover:bg-background transition cursor-pointer"
+              onClick={() => {
+                navigate(`/product/${prod.slug || prod._id}`, {
+                  state: {
+                    product: prod,
+                    parentCategory:
+                      prod.category?.parent?.name ||
+                      prod.category?.name,
+                  },
+                });
+                setSearch("");
+                setSearchOpen(false);
+                setSearchVisible(false);
+              }}
+            >
+              <img
+                src={prod.images?.[0] || "/placeholder.jpg"}
+                alt=""
+                className="w-10 h-10 object-cover rounded-lg"
+              />
+
+              <div>
+                <p className="text-sm font-medium">{prod.title}</p>
+                <p className="text-xs text-text-soft">${prod.price}</p>
               </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+    </div>
+  )}
+
+</div>
 
               {!customer ? (
                 <Link
@@ -219,7 +255,7 @@ export default function PublicHeader() {
                   <button onClick={() => setProfileOpen(!profileOpen)} className="p-2">
                     <RiUser3Line size={20} />
                   </button>
- <button
+                        <button
                         className="w-full text-left text-nowrap px-3 py-2 hover:bg-background"
                         onClick={() => navigate("/my-orders")}
                       >

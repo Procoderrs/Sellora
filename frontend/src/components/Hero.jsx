@@ -58,7 +58,7 @@ export default function HeaderHero() {
       </div>
 
       {/* TEXT CONTENT */}
-      <div className="relative z-10 min-h-[calc(100vh-80px)] flex flex-col items-center justify-center text-center px-6">
+      <div className="relative z-10 min-h-[calc(100vh-50px)] flex flex-col items-center justify-center text-center px-6">
         <div className="max-w-3xl ">
           <h1 className="text-4xl md:text-6xl font-heading  font-bold leading-tight text-hero-text drop-shadow-lg">
             {slide.title}
