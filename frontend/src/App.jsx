@@ -32,6 +32,7 @@ import { AuthProvider } from "./context/AuthContext.jsx";
 import FAQPage from "./pages/FAQ.jsx";
 import ShippingPolicy from "./pages/ShippingPolicy.jsx";
 import ReturnPolicy from "./pages/ReturnPolicy.jsx";
+import Contact from "./pages/Contactus.jsx";
 export default function App() {
   return (
    
@@ -51,7 +52,7 @@ export default function App() {
       <Route path="/shop" element={<CategoryProducts />} />
       <Route path="/collection" element={<Collection/>}/>
       <Route path="/About" element={<About/>}/>
-            <Route path="/contact-us" element={<About/>}/>
+            <Route path="/contact-us" element={<Contact/>}/>
 
       <Route path="/faq" element={<FAQPage />} />
             <Route path="/shipping-policy" element={<ShippingPolicy/>} />
