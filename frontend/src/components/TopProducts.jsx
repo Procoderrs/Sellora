@@ -18,6 +18,7 @@ export default function BestSelling() {
     Coffee: "/cof.avif",
     Brownie: "/b.jpg",
     Cupcakes: "/cup.jpg",
+    Sundae:'/sundae.jpg'
   };
 
   // 📝 Memoized categories grouped by parent name
