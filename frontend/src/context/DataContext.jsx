@@ -201,7 +201,7 @@ const createProduct = async (formData) => {
 
     let newProduct = res.data.product;
     console.log("NEW PRODUCT:", newProduct);
-    console.log(newProduct.category.parent);
+    console.log(newProduct.category.parent,'new');
 
     // ✅ FIX: ensure parent exists
     if (newProduct.category && typeof newProduct.category.parent === "string") {

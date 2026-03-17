@@ -29,6 +29,8 @@ export default function CategoryProducts() {
 			{ name: "Coffee", slug: "coffee", icon: "mdi:coffee" },
 			{ name: "Brownie", slug: "brownie", icon: "mdi:cookie" },
 			{ name: "Sundae", slug: "sundae", icon: "mdi:cup" },
+		  { name: "Cookies", slug: "cookies", icon: "mdi:cup" },
+
 		].map((item) => {
 			if (item.slug === "all") return { ...item, count: allProducts.length };
 			const parent = allCategories.find((c) => c.slug === item.slug);
@@ -133,7 +135,7 @@ useEffect(() => {
 							<button
 								key={cat.slug}
 								onClick={() => navigate(`/category/${cat.slug}`)}
-								className={`flex flex-col items-center text-sm transition
+								className={`flex flex-col items-center  transition font-cookie tracking-wide text-2xl
                   ${slug === cat.slug ? "text-yellow-300" : "hover:text-yellow-300"}
                 `}
 								aria-label={`${cat.name} (${cat.count} products)`}
@@ -145,7 +147,7 @@ useEffect(() => {
 									aria-hidden="false"
 								/>
 								<span className="mt-1">{cat.name}</span>
-								<span className="text-xs opacity-70">({cat.count})</span>
+								<span className="text-lg opacity-70">({cat.count})</span>
 							</button>
 						))}
 					</div>
@@ -177,7 +179,7 @@ useEffect(() => {
 						return (
 							<div
 								key={prod._id}
-								className="bg-background rounded-3xl shadow-md hover:shadow-2xl transition transform hover:-translate-y-1 hover:scale-105 overflow-hidden cursor-pointer"
+								className="bg-white rounded-3xl shadow-md hover:shadow-2xl transition transform hover:-translate-y-1 hover:scale-105 overflow-hidden cursor-pointer"
 							>
 								{/* IMAGE + CLICK TO NAVIGATE */}
 								<div
