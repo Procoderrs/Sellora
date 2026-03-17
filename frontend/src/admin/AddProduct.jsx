@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import api from "../api/api";
 import { useNavigate, useLocation } from "react-router-dom";
-
+import { DataContext } from "../context/DataContext";
+import { useContext } from "react";
 
 export default function AddProduct() {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ export default function AddProduct() {
   const [subcategories, setSubcategories] = useState([]);
   const [parentId, setParentId] = useState("");
   const [subcategoryId, setSubcategoryId] = useState("");
+  const { createProduct, updateProduct } = useContext(DataContext);
 
   // ✅ images = only Files
   const [images, setImages] = useState(Array(2).fill(null));
@@ -137,9 +139,9 @@ export default function AddProduct() {
     try {
       setLoading(true);
       if (editingProduct) {
-        await api.put(`/admin/products/${editingProduct._id}`, formData);
+        await updateProduct(editingProduct._id, formData);
       } else {
-        await api.post("/admin/products", formData);
+        await createProduct(formData);
       }
       navigate("/admin/products");
     } catch (err) {

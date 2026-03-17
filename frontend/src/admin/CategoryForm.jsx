@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext  } from "react";
 import api from "../api/api";
+import { DataContext } from "../context/DataContext";
 
 export default function CategoryForm({ topCategories = [], selected = null, onClose, onSuccess }) {
   const [name, setName] = useState(selected?.name || "");
@@ -9,6 +10,7 @@ export default function CategoryForm({ topCategories = [], selected = null, onCl
   const [error, setError] = useState("");
 const [newParentMode, setNewParentMode] = useState(false);
 const [newParentName, setNewParentName] = useState("");
+ const {createCategory,updateCategory}=useContext(DataContext)
 
   useEffect(() => {
     if (selected) {
@@ -32,12 +34,12 @@ const [newParentName, setNewParentName] = useState("");
 
     // ✅ NEW PARENT CREATE LOGIC (CORRECT PLACE)
     if (newParentMode && newParentName.trim()) {
-      const res = await api.post("/admin/categories", {
+      const ParentCat = await createCategory( {
         name: newParentName.trim(),
         parent: null,
       });
 
-      parentId = res.data.category._id;
+      parentId = ParentCat._id;
     }
 
     // ✅ FINAL CATEGORY CREATE / UPDATE
@@ -49,9 +51,9 @@ const [newParentName, setNewParentName] = useState("");
     };
 
     if (selected) {
-      await api.put(`/admin/categories/${selected._id}`, payload);
+      await updateCategory(selected._id, payload);
     } else {
-      await api.post("/admin/categories", payload);
+      await createCategory(payload);
     }
 
     setError("");

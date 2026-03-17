@@ -45,31 +45,34 @@ export default function CategoryProducts() {
 
 		setHeroCategories(heroWithCounts);
 	}, [allCategories, allProducts]);
-
+console.log(allCategories,allProducts)
 	// Populate current category products
-	useEffect(() => {
-		if (!allProducts.length || !allCategories.length) return;
+	// Populate current category products
+useEffect(() => {
+  if (!allProducts.length || !allCategories.length) return;
 
-		if (slug === "all") {
-			setCategoryName("All Products");
-			setCategoryDescription("Browse all our freshly baked delights");
-			setProducts(allProducts);
-			return;
-		}
+  if (slug === "all") {
+    setCategoryName("All Products");
+    setCategoryDescription("Browse all our freshly baked delights");
+    setProducts(allProducts);
+    return;
+  }
 
-		const parentCategory = allCategories.find((c) => c.slug === slug);
-		if (!parentCategory) return;
+  const parentCategory = allCategories.find((c) => c.slug === slug);
+  if (!parentCategory) return;
 
-		setCategoryName(parentCategory.name);
-		setCategoryDescription(parentCategory.description || "");
+  setCategoryName(parentCategory.name);
+  setCategoryDescription(parentCategory.description || "");
 
-		const children = allCategories.filter(
-			(c) => c.parent?._id === parentCategory._id,
-		);
-		const ids = [parentCategory._id, ...children.map((c) => c._id)];
-		setProducts(allProducts.filter((p) => ids.includes(p.category?._id)));
-	}, [slug, allProducts, allCategories]);
+  // ✅ Match header logic: include products directly under parent OR under any child
+  const productsForCategory = allProducts.filter(
+    (p) =>
+      p.category?._id === parentCategory._id ||
+      p.category?.parent?._id === parentCategory._id
+  );
 
+  setProducts(productsForCategory);
+}, [slug, allProducts, allCategories]);
 	const sortedProducts = [...products].sort((a, b) => {
 		if (sortBy === "low-high") return a.price - b.price;
 		if (sortBy === "high-low") return b.price - a.price;

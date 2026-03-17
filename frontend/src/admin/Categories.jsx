@@ -5,22 +5,22 @@ import ConfirmDelete from "./ConfirmDelete";
 import api from "../api/api";
 
   export default function Categories() {
-  const { categories: allCategories, parentCategories, loading } = useContext(DataContext);
-
+  const { categories: allCategories, parentCategories, loading,deleteCategory } = useContext(DataContext);
+  console.log(allCategories)
+const childCategories = allCategories.filter(c => c.parent);
   const [showForm, setShowForm] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
   const [deletingCategory, setDeletingCategory] = useState(null);
 
   // Local state for categories grouped by parent
-  const [childCategories, setChildCategories] = useState([]);
-
+/*   const [childCategories, setChildCategories] = useState([]);
+ */
   // Update child categories whenever allCategories from context change
-  useEffect(() => {
+  /* useEffect(() => {
     if (!loading && allCategories.length) {
       setChildCategories(allCategories.filter((c) => c.parent !== null));
     }
-  }, [allCategories, loading]);
-
+  }, [allCategories, loading]); */
   const handleEdit = (cat) => {
     setEditingCategory(cat);
     setShowForm(true);
@@ -38,7 +38,7 @@ import api from "../api/api";
 
   const handleDeleteConfirmed = async () => {
     if (!deletingCategory) return;
-    await api.delete(`/admin/categories/${deletingCategory._id}`);
+    await deleteCategory(deletingCategory._id);
     setDeletingCategory(null);
     // Optionally refresh context data
   };
@@ -91,7 +91,7 @@ import api from "../api/api";
     )}
 
     {/* Shelves Grid */}
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2  gap-4">
 
       {shelves.map((shelf) => (
         <div

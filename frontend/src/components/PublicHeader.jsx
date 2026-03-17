@@ -62,7 +62,7 @@ export default function PublicHeader() {
 
   return (
     <header
-      className="bg-background  sticky top-0 z-50 shadow-sm  font-body"
+      className="bg-background  sticky top-0 z-50 shadow-sm font-body "
       
     >
       {/* <TopCrousel /> */}
@@ -135,28 +135,43 @@ onMouseLeave={() => {
       Menu <RiArrowDownSLine size={18} />
     </button>
 
-    {dropdownOpen && (
-      <div className="absolute bg-background left-0 top-full mt-4 pt-3 w-[520px]  shadow-lg rounded-2xl p-5 border border-border">
-        onMouseEnter={()=>clearTimeout(dropdownTimeOut.current)}
-        onMouseLeave={()=>setDropdownOpen(false)}
-        <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-5">
-          {parentCategories.map((cat) => (
-            <Link
-              key={cat._id}
-              to={`/category/${cat.slug}`}
-              className="flex flex-col items-center bg-background p-4 rounded-xl hover:shadow-md transition"
-            >
-              <img
-                src={cat.image}
-                className="w-24 h-24 lg:w-56 object-cover rounded-lg mb-2"
-              />
-              <span className="font-semibold text-sm">{cat.name}</span>
-              <span className="text-xs text-text-soft">{cat.productCount} products</span>
-            </Link>
-          ))}
-        </div>
-      </div>
-    )}
+   {dropdownOpen && (
+  <div
+    className="absolute bg-dropdown mt-3 mb-6  left-0 top-full  w-200 shadow-lg rounded-2xl p-3 border border-border"
+    
+    /* Prevent dropdown from closing while hovering */
+    onMouseEnter={() => clearTimeout(dropdownTimeOut.current)}
+
+    /* Close dropdown when mouse leaves */
+    onMouseLeave={() => setDropdownOpen(false)}
+
+  >
+    <h2 className=" text-4xl font-black text-black font-logo text-center mb-2">Product <span className="font-logo text-4xl text-primary font-black">Category</span></h2>
+    <div className="grid lg:grid-cols-4 mb-3 md:grid-cols-2 gap-2 ">
+      {parentCategories.map((cat) => (
+        <Link
+          key={cat._id}
+          to={`/category/${cat.slug}`}
+          className="flex flex-col items-center p-2 rounded-xl hover:shadow-md transition"
+        >
+          <img
+            src={cat.image}
+            alt={cat.name}
+            className="w-24 h-24 lg:w-64 lg:h-44 object-cover rounded-lg mb-2"
+          />
+
+          <span className="font-bold font-logo text-sm">
+            {cat.name}
+          </span>
+
+          <span className="text-xs text-text-soft">
+            {cat.productCount} products
+          </span>
+        </Link>
+      ))}
+    </div>
+  </div>
+)}
   </div>
 
   {/* LOGO */}

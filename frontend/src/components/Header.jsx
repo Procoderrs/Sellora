@@ -4,6 +4,7 @@ import { AuthContext } from "../context/AuthContext";
 import { CartContext } from "../context/CartContext";
 import { DataContext } from "../context/DataContext";
 import TopCrousel from "./TopCrousel";
+import { useRef } from "react";
 import { RiUser3Line, RiShoppingBagLine, RiArrowDownSLine,RiSearchLine,RiCloseLine } from "@remixicon/react";
 import api from "../api/api";
 import debounce from "lodash.debounce";
@@ -12,6 +13,7 @@ export default function PublicHeader() {
   const { customer, logout } = useContext(AuthContext);
   const { cartCount } = useContext(CartContext);
   const {parentCategories,products}=useContext(DataContext)
+  const dropdownTimeOut=useRef(null)
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -60,7 +62,7 @@ export default function PublicHeader() {
 
   return (
     <header
-      className="bg-background  sticky top-0 z-50 shadow-sm  font-body"
+      className="bg-background  sticky top-0 z-50 shadow-sm font-body "
       
     >
       {/* <TopCrousel /> */}
@@ -117,37 +119,59 @@ export default function PublicHeader() {
 
   <div
     className="relative inline-block"
-    onMouseEnter={() => setDropdownOpen(true)}
-    onMouseLeave={(e) => {
-      if (!e.currentTarget.contains(e.relatedTarget)) {
-        setDropdownOpen(false);
-      }
-    }}
+    onMouseEnter={() => {
+  clearTimeout(dropdownTimeOut.current);
+  setDropdownOpen(true);
+}}
+
+onMouseLeave={() => {
+
+  dropdownTimeOut.current = setTimeout(() => {
+    setDropdownOpen(false);
+  }, 200);
+}}
   >
     <button className="flex items-center gap-1 hover:text-cakes transition">
       Menu <RiArrowDownSLine size={18} />
     </button>
 
-    {dropdownOpen && (
-      <div className="absolute bg-background left-0 top-full mt-3 w-[520px] bg-surface shadow-lg rounded-2xl p-5 border border-border">
-        <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-5">
-          {parentCategories.map((cat) => (
-            <Link
-              key={cat._id}
-              to={`/category/${cat.slug}`}
-              className="flex flex-col items-center bg-background p-4 rounded-xl hover:shadow-md transition"
-            >
-              <img
-                src={cat.image}
-                className="w-24 h-24 lg:w-56 object-cover rounded-lg mb-2"
-              />
-              <span className="font-semibold text-sm">{cat.name}</span>
-              <span className="text-xs text-text-soft">{cat.productCount} products</span>
-            </Link>
-          ))}
-        </div>
-      </div>
-    )}
+   {dropdownOpen && (
+  <div
+    className="absolute bg-dropdown mt-3 mb-6  left-0 top-full  w-200 shadow-lg rounded-2xl p-3 border border-border"
+    
+    /* Prevent dropdown from closing while hovering */
+    onMouseEnter={() => clearTimeout(dropdownTimeOut.current)}
+
+    /* Close dropdown when mouse leaves */
+    onMouseLeave={() => setDropdownOpen(false)}
+
+  >
+    <h2 className=" text-4xl font-black text-black font-logo text-center mb-2">Product <span className="font-logo text-4xl text-primary font-black">Category</span></h2>
+    <div className="grid lg:grid-cols-4 mb-3 md:grid-cols-2 gap-2 ">
+      {parentCategories.map((cat) => (
+        <Link
+          key={cat._id}
+          to={`/category/${cat.slug}`}
+          className="flex flex-col items-center p-2 rounded-xl hover:shadow-md transition"
+        >
+          <img
+            src={cat.image}
+            alt={cat.name}
+            className="w-24 h-24 lg:w-64 lg:h-44 object-cover rounded-lg mb-2"
+          />
+
+          <span className="font-bold font-logo text-sm">
+            {cat.name}
+          </span>
+
+          <span className="text-xs text-text-soft">
+            {cat.productCount} products
+          </span>
+        </Link>
+      ))}
+    </div>
+  </div>
+)}
   </div>
 
   {/* LOGO */}
@@ -163,8 +187,7 @@ export default function PublicHeader() {
             {/* RIGHT ACTIONS */}
             <div className="flex font-medium text-sm justify-end items-center text-text-main gap-4">
 
-              {/* SEARCH */}
-              {/* SEARCH */}
+{/* SEARCH */}
 <div className="relative flex items-center">
 
   {/* SEARCH ICON */}
@@ -173,38 +196,37 @@ export default function PublicHeader() {
       onClick={() => setSearchVisible(true)}
       className="p-2 hover:text-cakes transition"
     >
-     <RiSearchLine size={18} />
+      <RiSearchLine size={18} />
     </button>
   )}
 
-  {/* SEARCH INPUT */}
+  {/* SEARCH INPUT + CROSS + RESULTS */}
   {searchVisible && (
-    <div className="relative">
-      
+    <div className="relative w-56">
+      {/* INPUT */}
       <input
-        type="search"
+        type="text"
         value={search}
         onChange={onSearchChange}
         placeholder="Search products..."
-        className=" absolute top-7 -left-36 px-4 py-4  border bg-card shrink-0 w-56 border-border bg-surface 
-        focus:outline-none focus:ring-2 focus:ring-cakes text-sm"
+        className="w-full px-4 py-2 border bg-surface border-border rounded-xl focus:outline-none focus:ring-cakes text-sm"
       />
 
-      {/* CLOSE BUTTON */}
+      {/* CROSS ICON */}
       <button
         onClick={() => {
           setSearchVisible(false);
           setSearch("");
           setSearchOpen(false);
         }}
-        className="absolute right-2 top-1/2 -translate-y-1/2 text-sm"
+        className="absolute right-2 top-1/2 -translate-y-1/2 text-text-soft hover:text-cakes transition"
       >
         <RiCloseLine size={18} />
       </button>
 
       {/* SEARCH RESULTS */}
       {searchOpen && searchResults.length > 0 && (
-        <div className="absolute bg-background top-full mt-2 w-full bg-surface shadow-lg rounded-xl border border-border z-50">
+        <div className="absolute bg-gray-100 left-0 top-full mt-1 w-full bg-surface shadow-lg rounded-xl border border-border z-50">
           {searchResults.map((prod) => (
             <div
               key={prod._id}
@@ -228,7 +250,6 @@ export default function PublicHeader() {
                 alt=""
                 className="w-10 h-10 object-cover rounded-lg"
               />
-
               <div>
                 <p className="text-sm font-medium">{prod.title}</p>
                 <p className="text-xs text-text-soft">${prod.price}</p>
@@ -237,12 +258,9 @@ export default function PublicHeader() {
           ))}
         </div>
       )}
-
     </div>
   )}
-
 </div>
-
               {!customer ? (
                 <Link
                   to="/login"

@@ -12,7 +12,7 @@ export function DataProvider({ children }) {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [parentCategories, setParentCategories] = useState([]);
-  const [bestSelling, setBestSelling] = useState([]);   // ⭐ NEW
+   const [bestSelling, setBestSelling] = useState([]);   // ⭐ NEW
   const [loading, setLoading] = useState(true);
   const [orders,setOrders]=useState([])
   const [ordersLoading,setOrdersLoading]=useState(false)
@@ -51,7 +51,7 @@ export function DataProvider({ children }) {
         setBestSelling(bestProducts); // ⭐ SAVE
 
         // Parent categories
-        const parents = allCategories.filter((c) => !c.parent);
+        /* const parents = allCategories.filter((c) => !c.parent);
 
         const parentsWithInfo = parents.map((parent) => {
           const parentProducts = allProducts.filter(
@@ -67,7 +67,14 @@ export function DataProvider({ children }) {
           };
         });
 
-        setParentCategories(parentsWithInfo);
+        setParentCategories(parentsWithInfo); */
+
+/* new useeffect  */
+
+
+// ✅ Parent categories auto update when categories/products change
+
+
       } catch (err) {
         console.error("DataProvider fetch error:", err);
       } finally {
@@ -77,6 +84,33 @@ export function DataProvider({ children }) {
 
     fetchData();
   }, []);
+
+useEffect(() => {
+
+  const parents = categories.filter(c => !c.parent);
+
+  const parentsWithInfo = parents.map(parent => {
+
+    const parentProducts = products.filter(
+      p =>
+        p.category?._id === parent._id ||
+        p.category?.parent?._id === parent._id
+    );
+
+    return {
+      ...parent,
+      productCount: parentProducts.length,
+      image: parentProducts[0]?.images?.[0] || "/placeholder.jpg"
+    };
+
+  });
+
+  setParentCategories(parentsWithInfo);
+
+}, [categories, products]);
+
+
+
 // ✅ Fetch all users (admin)
   const fetchUsers = async () => {
     setUsersLoading(true);
@@ -165,9 +199,25 @@ const createProduct = async (formData) => {
   try {
     const res = await api.post("/admin/products", formData);
 
-    const newProduct = res.data.product;
+    let newProduct = res.data.product;
+    console.log("NEW PRODUCT:", newProduct);
+    console.log(newProduct.category.parent);
 
-    // update state
+    // ✅ FIX: ensure parent exists
+    if (newProduct.category && typeof newProduct.category.parent === "string") {
+      const parentObj = categories.find(
+        c => c._id === newProduct.category.parent
+      );
+
+      newProduct = {
+        ...newProduct,
+        category: {
+          ...newProduct.category,
+          parent: parentObj || { _id: newProduct.category.parent }
+        }
+      };
+    }
+
     setProducts(prev => [newProduct, ...prev]);
 
     return newProduct;
@@ -177,8 +227,6 @@ const createProduct = async (formData) => {
     throw error;
   }
 };
-
-
 
 const updateProduct = async (id, formData) => {
   try {
@@ -219,17 +267,61 @@ const deleteProduct = async (id) => {
 // ⭐ ADMIN CATEGORY APIs (added by you)
 
 const createCategory = async (payload) => {
-  return await api.post("/admin/categories", payload);
+  try {
+    const res = await api.post("/admin/categories", payload);
+
+    const newCategory = res.data.category;
+
+    // ⭐ Update categories state instantly
+setCategories(prev => {
+  const normalized = {
+    ...newCategory,
+    parent: newCategory.parent
+      ? prev.find(c => c._id === newCategory.parent) || { _id: newCategory.parent }
+      : null
+  };
+
+  return [normalized, ...prev];
+});
+    return newCategory;
+
+  } catch (error) {
+    console.error("Create category error", error);
+    throw error;
+  }
 };
 
 const updateCategory = async (id, payload) => {
-  return await api.put(`/admin/categories/${id}`, payload);
-};
 
+  const res = await api.put(`/admin/categories/${id}`, payload);
+
+  const updated = res.data.category;
+
+  setCategories(prev =>
+    prev.map(c => {
+      if (c._id !== id) return c;
+
+      const normalized = {
+        ...updated,
+        parent: updated.parent
+          ? prev.find(p => p._id === updated.parent) || { _id: updated.parent }
+          : null
+      };
+
+      return normalized;
+    })
+  );
+
+  return updated;
+};
 const deleteCategory = async (id) => {
-  return await api.delete(`/admin/categories/${id}`);
-};
 
+  await api.delete(`/admin/categories/${id}`);
+
+  // ✅ remove instantly from UI
+  setCategories(prev => prev.filter(c => c._id !== id))
+
+};
 
 
 // ⭐ ADMIN ORDER APIs (added by you)
