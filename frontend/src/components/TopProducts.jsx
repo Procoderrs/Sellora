@@ -59,7 +59,7 @@ export default function BestSelling() {
                   src={categoryImages[parentName] || "/placeholder.jpg"}
                   alt={parentName}
                   loading="lazy"
-                  className="w-full h-[300px] sm:h-[400px] lg:min-h-[600px] object-cover  border border-[#f4a460]/30 shadow-xl"
+                  className="w-full h-[300px] sm:h-[400px] lg:min-h-[550px] object-cover  border border-[#f4a460]/30 shadow-xl"
                 />
               </div>
 

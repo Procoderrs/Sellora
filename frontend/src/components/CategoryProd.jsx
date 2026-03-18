@@ -135,7 +135,7 @@ useEffect(() => {
 							<button
 								key={cat.slug}
 								onClick={() => navigate(`/category/${cat.slug}`)}
-								className={`flex flex-col items-center  transition font-cookie tracking-wide text-2xl
+								className={`flex flex-col items-center   transition font-cookie tracking-wide text-2xl
                   ${slug === cat.slug ? "text-yellow-300" : "hover:text-yellow-300"}
                 `}
 								aria-label={`${cat.name} (${cat.count} products)`}
@@ -204,11 +204,11 @@ useEffect(() => {
 
 								{/* PRODUCT INFO */}
 								<div className="p-5 flex flex-col gap-2">
-									<h2 className="font-playfair text-lg font-semibold text-text-main line-clamp-2">
+									<h2 className="font-logo text-lg font-bold text-text-main line-clamp-2">
 										{prod.title}
 									</h2>
 
-									<p className="text-sm text-text-main/70 line-clamp-2">
+									<p className="text-sm font-body text-zinc-700 line-clamp-2">
 										{prod.description}
 									</p>
 

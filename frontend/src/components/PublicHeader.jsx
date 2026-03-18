@@ -181,6 +181,8 @@ onMouseLeave={() => {
 
   <Link to="/about" className="hover:text-cakes transition">About</Link>
   <Link to="/contact-us" className="hover:text-cakes transition">Contact Us</Link>
+  <Link to="/social-media" className="hover:text-cakes transition">Social Media</Link>
+
 
 </div>
 
