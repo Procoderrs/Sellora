@@ -59,7 +59,7 @@ export default function BestSelling() {
                   src={categoryImages[parentName] || "/placeholder.jpg"}
                   alt={parentName}
                   loading="lazy"
-                  className="w-full h-[300px] sm:h-[400px] lg:min-h-[600px] object-cover rounded-2xl border border-[#f4a460]/30 shadow-xl"
+                  className="w-full h-[300px] sm:h-[400px] lg:min-h-[600px] object-cover  border border-[#f4a460]/30 shadow-xl"
                 />
               </div>
 
@@ -73,7 +73,7 @@ export default function BestSelling() {
                   {topTwo.map((prod) => (
                     <div
                       key={prod._id}
-                      className="group flex flex-col items-center bg-white/70 backdrop-blur border border-[#f4a460]/30 shadow-lg hover:shadow-2xl hover:-translate-y-2 rounded-3xl transition-all duration-300 p-6"
+                      className="group flex flex-col items-center bg-white/70 backdrop-blur border border-[#f4a460]/30 shadow-lg hover:shadow-2xl hover:-translate-y-2  transition-all duration-300 p-6"
                     >
                       <div className="relative w-full overflow-hidden rounded-2xl">
                         <img

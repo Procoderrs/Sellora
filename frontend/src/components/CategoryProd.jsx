@@ -179,7 +179,7 @@ useEffect(() => {
 						return (
 							<div
 								key={prod._id}
-								className="bg-white rounded-3xl shadow-md hover:shadow-2xl transition transform hover:-translate-y-1 hover:scale-105 overflow-hidden cursor-pointer"
+								className="bg-white  shadow-md hover:shadow-2xl transition transform hover:-translate-y-1 hover:scale-105 overflow-hidden cursor-pointer"
 							>
 								{/* IMAGE + CLICK TO NAVIGATE */}
 								<div
@@ -193,7 +193,7 @@ useEffect(() => {
 									<img
 										src={prod.images?.[0] || "/placeholder.jpg"}
 										alt=""
-										className="w-full h-full object-cover rounded-t-3xl"
+										className="w-full h-full object-cover"
 									/>
 									{prod.totalSold > 2 && (
 										<span className="absolute top-3 left-3 bg-yellow-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow">
