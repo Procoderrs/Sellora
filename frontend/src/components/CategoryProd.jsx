@@ -136,7 +136,7 @@ useEffect(() => {
 								key={cat.slug}
 								onClick={() => navigate(`/category/${cat.slug}`)}
 								className={`flex flex-col items-center   transition font-cookie tracking-wide text-2xl
-                  ${slug === cat.slug ? "text-yellow-300" : "hover:text-yellow-300"}
+                  ${slug === cat.slug ? "text-yellow-300" : "hover:text-yellow-300 text-white"}
                 `}
 								aria-label={`${cat.name} (${cat.count} products)`}
 							>

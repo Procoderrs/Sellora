@@ -46,7 +46,7 @@ export default function HeaderHero() {
           </video>
         ) : (
           <img src={slide.src} alt="" className="w-full h-full object-center object-cover"
-          loading="lazy" />
+          />
         )}
         {/* DARK OVERLAY FOR PREMIUM FEEL */}
         <div className="absolute inset-0 bg-black/50 " />

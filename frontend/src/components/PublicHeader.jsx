@@ -6,6 +6,8 @@ import { DataContext } from "../context/DataContext";
 import TopCrousel from "./TopCrousel";
 import { useRef } from "react";
 import { RiUser3Line, RiShoppingBagLine, RiArrowDownSLine,RiSearchLine,RiCloseLine } from "@remixicon/react";
+import { RiFacebookFill, RiYoutubeFill, RiInstagramFill } from "react-icons/ri"; // add at top
+
 import api from "../api/api";
 import debounce from "lodash.debounce";
 
@@ -20,7 +22,8 @@ export default function PublicHeader() {
   const [categories, setCategories] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchVisible,setSearchVisible]=useState(false)
-
+  const [socialOpen,setSocialOpen]=useState(false);
+const socialTimeout = useRef(null)
   const [search, setSearch] = useState("");
 /*   const [products, setProducts] = useState([]);
  */  const [searchResults, setSearchResults] = useState([]);
@@ -181,9 +184,57 @@ onMouseLeave={() => {
 
   <Link to="/about" className="hover:text-cakes transition">About</Link>
   <Link to="/contact-us" className="hover:text-cakes transition">Contact Us</Link>
-  <Link to="/social-media" className="hover:text-cakes transition">Social Media</Link>
 
+<div
+  className="relative"
+  onMouseEnter={() => {
+    clearTimeout(socialTimeout.current);
+    setSocialOpen(true);
+  }}
+  onMouseLeave={() => {
+    socialTimeout.current = setTimeout(() => {
+      setSocialOpen(false);
+    }, 300);
+  }}
+>
+  <button className="hover:text-cakes transition font-medium text-primary">
+     <span className="text-cakes ">Social Media</span>
+  </button>
 
+  {socialOpen && (
+    <div
+      className="absolute top-full left-0 mt-3 w-120 bg-background shadow-lg rounded-xl p-4 border border-border z-999"
+      onMouseEnter={() => clearTimeout(socialTimeout.current)}
+      onMouseLeave={() => setSocialOpen(false)}
+    >
+      <div className="flex items-center justify-between  gap-3">
+        <a
+          href="https://facebook.com"
+          target="_blank"
+          className="flex items-center gap-2 hover:text-blue-600 transition"
+        >
+          <RiFacebookFill size={90} className="text-blue-600" /> 
+        </a>
+
+        <a
+          href="https://youtube.com"
+          target="_blank"
+          className="flex items-center gap-2 hover:text-red-600 transition"
+        >
+          <RiYoutubeFill size={90} className="text-red-600" /> 
+        </a>
+
+        <a
+          href="https://instagram.com"
+          target="_blank"
+          className="flex items-center gap-2 hover:text-pink-500 transition"
+        >
+          <RiInstagramFill size={90} className="text-pink-500" />
+        </a>
+      </div>
+    </div>
+  )}
+</div>
 </div>
 
             {/* RIGHT ACTIONS */}

@@ -18,7 +18,7 @@ export default function Contact() {
       <div className="relative h-[50vh] flex items-center justify-center text-center">
 
         <img
-          src="/contact-hero.jpg"
+          src="/im.avif"
           alt="Contact Cakelet Bakery"
           className="absolute inset-0 w-full h-full object-cover"
         />

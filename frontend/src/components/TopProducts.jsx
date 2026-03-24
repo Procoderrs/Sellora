@@ -104,7 +104,7 @@ export default function BestSelling() {
 
                       <button
                         onClick={() => handleAddToCart(prod, 1)}
-                        className="px-6 py-2 bg-accent text-white rounded-full font-semibold hover:scale-105 transition"
+                        className="px-6 py-2 bg-accent text-white  font-semibold hover:scale-105 transition"
                       >
                         Add to Cart
                       </button>
