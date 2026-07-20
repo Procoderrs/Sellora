@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation,Link  } from "react-router-dom";
 import api from "../api/api";
 import { AuthContext } from "../context/AuthContext";
 
@@ -128,16 +128,25 @@ export default function Login() {
           >
             Login
           </button>
-
+ {/* DEMO CREDENTIALS BOX */}
+          <div className="bg-[#FFF7ED] border border-[#F4A460] rounded-xl p-3 text-center">
+            <p className="text-xs font-semibold text-[#A0522D] mb-1">
+              Demo Admin Credentials (for testing)
+            </p>
+            <p className="text-xs text-[#3B2F2F]">
+              admin@shop.com / Admin@123
+            </p>
+          </div>
           {/* FOOTER */}
+        
           <p className="text-center text-sm text-[#3B2F2F]">
             New user?{" "}
-            <a
-              href="/signup"
+            <Link
+              to="/signup"
               className="font-semibold text-[#F4A460] hover:underline"
             >
               Signup
-            </a>
+            </Link>
           </p>
         </form>
       </div>
